@@ -29,11 +29,30 @@ namespace ECCLibrary
 
         protected void SetupPrefab<CreatureType>(out CreatureComponents<CreatureType> creatureComponents) where CreatureType : Creature
         {
+            EnsurePrefabSetupCorrectly(model, ClassID);
             prefab = GameObject.Instantiate(model);
             prefab.SetActive(false);
             creatureActions = new List<CreatureAction>();
             creatureComponents = SetupNecessaryComponents<CreatureType>();
             ECCHelpers.ApplySNShaders(prefab);
+        }
+        static void EnsurePrefabSetupCorrectly(GameObject model, string name)
+        {
+            if (model == null)
+            {
+                ErrorMessage.AddMessage(string.Format("ECC Warning: No model for creature {0} is found.", name));
+            }
+            else
+            {
+                if (model.GetComponentInChildren<Animator>() == null)
+                {
+                    ErrorMessage.AddMessage(string.Format("ECC Warning: Model for creature {0} is missing an Animator.", name));
+                }
+                if (model.GetComponentInChildren<Collider>() == null)
+                {
+                    ErrorMessage.AddMessage(string.Format("ECC Warning: Model for creature {0} has no collider.", name));
+                }
+            }
         }
         protected void CompletePrefab<CreatureType>(CreatureComponents<CreatureType> components) where CreatureType : Creature
         {
@@ -59,7 +78,7 @@ namespace ECCLibrary
         {
 
         }
-        public MeleeAttack_New AddMeleeAttack<CreatureType>(GameObject mouth, float biteInterval, float damage, string biteSoundPrefix, float consumeWholeHealthThreshold, bool regurgitateLater, CreatureComponents<CreatureType> components, ModAudio modAudio) where CreatureType : Creature
+        public MeleeAttack_New AddMeleeAttack<CreatureType>(GameObject mouth, float biteInterval, float damage, string biteSoundPrefix, float consumeWholeHealthThreshold, bool regurgitateLater, CreatureComponents<CreatureType> components) where CreatureType : Creature
         {
             OnTouch onTouch = mouth.EnsureComponent<OnTouch>();
             onTouch.gameObject.EnsureComponent<Rigidbody>().isKinematic = true;
@@ -79,7 +98,6 @@ namespace ECCLibrary
             meleeAttack.biteSoundPrefix = biteSoundPrefix;
             meleeAttack.consumeWholeHealthThreshold = consumeWholeHealthThreshold;
             meleeAttack.regurgitate = regurgitateLater;
-            meleeAttack.modAudio = modAudio;
             return meleeAttack;
         }
         /// <summary>
@@ -142,7 +160,7 @@ namespace ECCLibrary
             SetLiveMixinData(ref components.liveMixin.data);
             if (components.liveMixin.data.maxHealth <= 0f)
             {
-                ErrorMessage.AddMessage("A creature should not have a max health of zero or below.");
+                ErrorMessage.AddMessage("ECC Warning: Creatures should not have a max health of zero or below.");
             }
 
             Creature reference = CraftData.GetPrefabForTechType(CreatureTraitsReference).GetComponent<Creature>();
@@ -162,7 +180,6 @@ namespace ECCLibrary
                 roar.clipPrefix = RoarAbilitySettings.AudioClipPrefix;
                 roar.createCurrent = RoarAbilitySettings.CreateCurrentOnRoar;
                 roar.currentStrength = RoarAbilitySettings.CurrentStrength;
-                roar.modAudio = RoarAbilitySettings.ModAudio;
 
                 if (RoarAbilitySettings.RoarActionPriority > 0f)
                 {
@@ -307,6 +324,53 @@ namespace ECCLibrary
             trailRoot.gameObject.SetActive(true);
         }
 
+        #region Abstracts
+
+        /// <summary>
+        /// The creature prefab used for reference. Easier than declaring every stat manually.
+        /// </summary>
+        public abstract TechType CreatureTraitsReference { get; }
+
+        /// <summary>
+        /// Should match the EcoTargetType whenever possible. Does not do much on its own.
+        /// </summary>
+        public abstract BehaviourType BehaviourType
+        {
+            get;
+        }
+
+        /// <summary>
+        /// How far this creature can be loaded in.
+        /// </summary>
+        public abstract LargeWorldEntity.CellLevel CellLevel
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Settings on random swimming.
+        /// </summary>
+        public abstract SwimRandomData SwimRandomSettings { get; }
+
+        /// <summary>
+        /// What other creatures recognize this creature as. Should match with BehaviourType whenever possible.
+        /// </summary>
+        public abstract EcoTargetType EcoTargetType
+        {
+            get;
+        }
+
+        /// <summary>
+        /// This is where you set the LiveMixin data.
+        /// </summary>
+        /// <param name="liveMixinData"></param>
+        public abstract void SetLiveMixinData(ref LiveMixinData liveMixinData);
+
+        #endregion
+
+        /// <summary>
+        /// Settings related to edibles.
+        /// </summary>
         public virtual EatableData EatableSettings
         {
             get
@@ -314,6 +378,19 @@ namespace ECCLibrary
                 return new EatableData();
             }
         }
+        /// <summary>
+        /// Used only for the 'speed' parameter on the Animator.
+        /// </summary>
+        public virtual float GetMaxVelocity
+        {
+            get
+            {
+                return SwimRandomSettings.SwimVelocity;
+            }
+        }
+        /// <summary>
+        /// Whether the creature can be picked up or not.
+        /// </summary>
         public virtual bool Pickupable
         {
             get
@@ -321,6 +398,9 @@ namespace ECCLibrary
                 return false;
             }
         }
+        /// <summary>
+        /// Whether the creature is immune to brine or not.
+        /// </summary>
         public virtual bool AcidImmune
         {
             get
@@ -328,20 +408,14 @@ namespace ECCLibrary
                 return false;
             }
         }
-        public abstract BehaviourType BehaviourType
-        {
-            get;
-        }
-        public abstract LargeWorldEntity.CellLevel CellLevel
-        {
-            get;
-        }
-
+        /// <summary>
+        /// Possible sizes for this creature. Randomly picks a value in the range of 0 to 1. This value can not go above 1.
+        /// </summary>
         public virtual AnimationCurve SizeDistribution
         {
             get
             {
-                return ECCHelpers.Curve_Flat();
+                return ECCHelpers.Curve_Flat(1f);
             }
         }
 
@@ -370,7 +444,9 @@ namespace ECCLibrary
             }
         }
         #endregion Ency
-
+        /// <summary>
+        /// Whether this creature can randomly spawn with Kharaa symptoms.
+        /// </summary>
         public virtual bool CanBeInfected
         {
             get
@@ -378,8 +454,6 @@ namespace ECCLibrary
                 return true;
             }
         }
-
-        public abstract SwimRandomData SwimRandomSettings { get; }
 
         /// <summary>
         /// By default, the creature does not roar.
@@ -403,11 +477,10 @@ namespace ECCLibrary
                 return new AttackLastTargetSettings(0f, 0f, 0f, 0f, 0f, 0f);
             }
         }
-        public abstract EcoTargetType EcoTargetType
-        {
-            get;
-        }
 
+        /// <summary>
+        /// Determines whether AttackSettings and AggressivenessToSmallVehicles actually apply.
+        /// </summary>
         public virtual bool EnableAggression
         {
             get
@@ -415,7 +488,9 @@ namespace ECCLibrary
                 return false;
             }
         }
-
+        /// <summary>
+        /// Settings for growth in Alien Containment.
+        /// </summary>
         public virtual WaterParkCreatureParameters WaterParkParameters
         {
             get
@@ -423,7 +498,9 @@ namespace ECCLibrary
                 return default;
             }
         }
-
+        /// <summary>
+        /// The mass of the Rigidbody.
+        /// </summary>
         public virtual float Mass
         {
             get
@@ -431,7 +508,9 @@ namespace ECCLibrary
                 return 1f;
             }
         }
-
+        /// <summary>
+        /// Gravity above water. A positive value portrays downward force while a negative value portrays upward force.
+        /// </summary>
         public virtual float AboveWaterGravity
         {
             get
@@ -439,7 +518,9 @@ namespace ECCLibrary
                 return 9.81f;
             }
         }
-
+        /// <summary>
+        /// Gravity below water. A positive value portrays downward force while a negative value portrays upward force.
+        /// </summary>
         public virtual float UnderwaterGravity
         {
             get
@@ -447,7 +528,9 @@ namespace ECCLibrary
                 return 0f;
             }
         }
-
+        /// <summary>
+        /// The SurfaceType to be applied to the main collider.
+        /// </summary>
         public virtual VFXSurfaceTypes SurfaceType
         {
             get
@@ -456,8 +539,9 @@ namespace ECCLibrary
             }
         }
 
-        public abstract void SetLiveMixinData(ref LiveMixinData liveMixinData);
-
+        /// <summary>
+        /// For big creatures, you might want to increase the values.
+        /// </summary>
         public virtual BehaviourLODLevelsStruct BehaviourLODSettings
         {
             get
@@ -467,12 +551,7 @@ namespace ECCLibrary
         }
 
         /// <summary>
-        /// The creature used for reference. Easier than declaring all the stats manually.
-        /// </summary>
-        public abstract TechType CreatureTraitsReference { get; }
-
-        /// <summary>
-        /// Normalized value. Determines how fast the creature turns while swimming.
+        /// Determines how fast the creature turns while swimming. One by default.
         /// </summary>
         public virtual float TurnSpeed
         {
@@ -483,7 +562,7 @@ namespace ECCLibrary
         }
 
         /// <summary>
-        /// The FOV used for detecting things, such as targets, on a scale from 0f to 1f. -1f means it can see everything.
+        /// The FOV used for detecting things, such as targets, on a scale from 0 to 1. Is 0.25 by default. A value of -1 means a given object is ALWAYS in view.
         /// </summary>
         public virtual float EyeFov
         {
@@ -493,6 +572,9 @@ namespace ECCLibrary
             }
         }
 
+        /// <summary>
+        /// Settings on how this creature will avoid terrain and/or obstacles.
+        /// </summary>
         public virtual AvoidObstaclesData AvoidObstaclesSettings
         {
             get
@@ -501,6 +583,9 @@ namespace ECCLibrary
             }
         }
 
+        /// <summary>
+        /// Total power output of this creature.
+        /// </summary>
         public virtual float BioReactorCharge
         {
             get
@@ -509,6 +594,9 @@ namespace ECCLibrary
             }
         }
 
+        /// <summary>
+        /// Settings on shoaling behaviours.
+        /// </summary>
         public virtual SwimInSchoolData SwimInSchoolSettings
         {
             get
@@ -517,6 +605,7 @@ namespace ECCLibrary
             }
         }
 
+        #region Structs
         public struct BehaviourLODLevelsStruct
         {
             public float VeryClose;
@@ -589,21 +678,19 @@ namespace ECCLibrary
             /// <summary>
             /// The name of the Animator trigger parameter.
             /// </summary>
-            public ModAudio ModAudio;
             public float MinTimeBetweenRoars;
             public float MaxTimeBetweenRoars;
             public float RoarActionPriority;
             public bool CreateCurrentOnRoar;
             public float CurrentStrength;
 
-            public RoarAbilityData(bool canRoar, float roarSoundFalloffStart, float roarSoundMaxDistance, string audioClipPrefix, string animationName, ModAudio modAudio, float roarActionPriority = 0.5f, float minTimeBetweenRoars = 4f, float maxTimeBetweenRoars = 8f)
+            public RoarAbilityData(bool canRoar, float roarSoundFalloffStart, float roarSoundMaxDistance, string audioClipPrefix, string animationName, float roarActionPriority = 0.5f, float minTimeBetweenRoars = 4f, float maxTimeBetweenRoars = 8f)
             {
                 CanRoar = canRoar;
                 MinRoarDistance = roarSoundFalloffStart;
                 MaxRoarDistance = roarSoundMaxDistance;
                 AudioClipPrefix = audioClipPrefix;
                 AnimationName = animationName;
-                ModAudio = modAudio;
                 MinTimeBetweenRoars = minTimeBetweenRoars;
                 MaxTimeBetweenRoars = maxTimeBetweenRoars;
                 RoarActionPriority = roarActionPriority;
@@ -611,14 +698,13 @@ namespace ECCLibrary
                 CurrentStrength = 0f;
             }
 
-            public RoarAbilityData(bool canRoar, float roarSoundFalloffStart, float roarSoundMaxDistance, string audioClipPrefix, string animationName, ModAudio modAudio, bool createCurrent, float currentStrength, float roarActionPriority = 0.5f, float minTimeBetweenRoars = 4f, float maxTimeBetweenRoars = 8f)
+            public RoarAbilityData(bool canRoar, float roarSoundFalloffStart, float roarSoundMaxDistance, string audioClipPrefix, string animationName, bool createCurrent, float currentStrength, float roarActionPriority = 0.5f, float minTimeBetweenRoars = 4f, float maxTimeBetweenRoars = 8f)
             {
                 CanRoar = canRoar;
                 MinRoarDistance = roarSoundFalloffStart;
                 MaxRoarDistance = roarSoundMaxDistance;
                 AudioClipPrefix = audioClipPrefix;
                 AnimationName = animationName;
-                ModAudio = modAudio;
                 MinTimeBetweenRoars = minTimeBetweenRoars;
                 MaxTimeBetweenRoars = maxTimeBetweenRoars;
                 RoarActionPriority = roarActionPriority;
@@ -644,6 +730,10 @@ namespace ECCLibrary
                 EvaluatePriority = priority;
             }
         }
+        /// <summary>
+        /// Stores references to basic components of the creature. Do not rely on all of these to exist.
+        /// </summary>
+        /// <typeparam name="CreatureType">The Type of the main component of this creature. Must be Creature or a class that inherits from Creature.</typeparam>
         public struct CreatureComponents<CreatureType> where CreatureType : Creature
         {
             public PrefabIdentifier prefabIdentifier;
@@ -667,6 +757,7 @@ namespace ECCLibrary
             public SwimRandom swimRandom;
             public InfectedMixin infectedMixin;
             public Pickupable pickupable;
+            public AnimateByVelocity animateByVelocity;
         }
         public struct SwimInSchoolData
         {
@@ -689,5 +780,6 @@ namespace ECCLibrary
                 LoseLeaderChance = loseLeaderChance;
             }
         }
+        #endregion
     }
 }

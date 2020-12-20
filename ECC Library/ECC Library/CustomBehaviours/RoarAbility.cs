@@ -17,9 +17,8 @@ namespace ECCLibrary.CustomBehaviours
         public string clipPrefix;
         public bool createCurrent;
         public float currentStrength;
-        public ModAudio modAudio;
 
-        ModAudio.AudioClipPool clipPool;
+        ECCAudio.AudioClipPool clipPool;
 
         void Start()
         {
@@ -28,7 +27,7 @@ namespace ECCLibrary.CustomBehaviours
             source.maxDistance = maxRoarDistance;
             source.spatialBlend = 1f;
 
-            clipPool = modAudio.CreateClipPool(clipPrefix);
+            clipPool = ECCAudio.CreateClipPool(clipPrefix);
 
             creature = GetComponent<Creature>();
         }

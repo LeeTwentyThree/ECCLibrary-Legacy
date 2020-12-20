@@ -6,11 +6,16 @@ using System.Threading.Tasks;
 using UnityEngine;
 using System.Reflection;
 using SMLHelper.V2.Assets;
+using System.IO;
 
 namespace ECCLibrary
 {
     public static class ECCHelpers
     {
+        public static AssetBundle LoadAssetBundleFromAssetsFolder(Assembly modAssembly, string assetsFileName)
+        {
+            return AssetBundle.LoadFromFile(Path.Combine(Path.GetDirectoryName(modAssembly.Location), "Assets", assetsFileName));
+        }
         public static void ApplySNShaders(GameObject prefab)
         {
             var renderers = prefab.GetComponentsInChildren<Renderer>(true);

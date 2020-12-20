@@ -12,17 +12,16 @@ namespace ECCLibrary.CustomBehaviours
     {
         public OnTouch onTouch;
         public string biteSoundPrefix;
-        ModAudio.AudioClipPool clipPool;
+        ECCAudio.AudioClipPool clipPool;
         AudioSource source;
         public float consumeWholeHealthThreshold;
         public bool regurgitate;
-        public ModAudio modAudio;
 
         void Start()
         {
             onTouch.onTouch = new OnTouch.OnTouchEvent();
             onTouch.onTouch.AddListener(OnTouch);
-            clipPool = modAudio.CreateClipPool(biteSoundPrefix);
+            clipPool = ECCAudio.CreateClipPool(biteSoundPrefix);
             source = gameObject.AddComponent<AudioSource>();
             source.maxDistance = 10f;
             source.spatialBlend = 1f;

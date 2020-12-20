@@ -7,19 +7,20 @@ using UnityEngine;
 
 namespace ECCLibrary
 {
-    public class ModAudio
+    public static class ECCAudio
     {
-        private AudioClip[] allClips;
+        public static List<AudioClip> allClips;
 
-        public void Init(AssetBundle assetBundle)
+        public static void RegisterClips(AssetBundle fromAssetBundle)
         {
-            allClips = assetBundle.LoadAllAssets<AudioClip>();
+            if (allClips == null) allClips = new List<AudioClip>();
+            allClips.AddRange(fromAssetBundle.LoadAllAssets<AudioClip>());
         }
 
-        public AudioClipPool CreateClipPool(string startingLetters)
+        public static AudioClipPool CreateClipPool(string startingLetters)
         {
             List<AudioClip> clips = new List<AudioClip>();
-            for (int i = 0; i < allClips.Length; i++)
+            for (int i = 0; i < allClips.Count; i++)
             {
                 if (allClips[i].name.StartsWith(startingLetters))
                 {
