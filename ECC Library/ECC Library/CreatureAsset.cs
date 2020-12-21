@@ -54,6 +54,11 @@ namespace ECCLibrary
                 }
             }
         }
+        /// <summary>
+        /// Call this after you have set up the model for the first time.
+        /// </summary>
+        /// <typeparam name="CreatureType"></typeparam>
+        /// <param name="components"></param>
         protected void CompletePrefab<CreatureType>(CreatureComponents<CreatureType> components) where CreatureType : Creature
         {
             PropertyInfo prop = typeof(Creature).GetProperty("actions", BindingFlags.Default);
@@ -62,10 +67,17 @@ namespace ECCLibrary
                 prop.SetValue(components.creature, creatureActions, null);
             }
         }
+        /// <summary>
+        /// This is by default the 'sprite' defined in the constructor.
+        /// </summary>
+        /// <returns></returns>
         protected override Atlas.Sprite GetItemSprite()
         {
             return sprite;
         }
+        /// <summary>
+        /// The settings based around spawning,
+        /// </summary>
         public override WorldEntityInfo EntityInfo => new WorldEntityInfo()
         {
             cellLevel = CellLevel,
@@ -74,10 +86,25 @@ namespace ECCLibrary
             techType = TechType,
             localScale = Vector3.one
         };
+        /// <summary>
+        /// Any changes to be done after the AssetClass is patched.
+        /// </summary>
         protected virtual void PostPatch()
         {
 
         }
+        /// <summary>
+        /// Adds a melee attack.
+        /// </summary>
+        /// <typeparam name="CreatureType"></typeparam>
+        /// <param name="mouth">The mouth object (should have a trigger collider).</param>
+        /// <param name="biteInterval">Min time between attacks.</param>
+        /// <param name="damage">Damage of the attack.</param>
+        /// <param name="biteSoundPrefix">Creates a clip pool that can use ANY mod audio clips that start with this text.</param>
+        /// <param name="consumeWholeHealthThreshold">If the creature has this much health or less, it is deleted from existence when chewed on.</param>
+        /// <param name="regurgitateLater">If true, the creature will spit out anything swallowed whole.</param>
+        /// <param name="components"></param>
+        /// <returns></returns>
         public MeleeAttack_New AddMeleeAttack<CreatureType>(GameObject mouth, float biteInterval, float damage, string biteSoundPrefix, float consumeWholeHealthThreshold, bool regurgitateLater, CreatureComponents<CreatureType> components) where CreatureType : Creature
         {
             OnTouch onTouch = mouth.EnsureComponent<OnTouch>();
@@ -259,6 +286,11 @@ namespace ECCLibrary
                 ECCHelpers.SetPrivateField(typeof(SwimInSchool), swimInSchool, "kBreakDistance", SwimInSchoolSettings.BreakDistance);
                 creatureActions.Add(swimInSchool);
             }
+            components.animateByVelocity = prefab.AddComponent<AnimateByVelocity>();
+            components.animateByVelocity.animator = components.creature.GetAnimator();
+            components.animateByVelocity.animationMoveMaxSpeed = MaxVelocityForSpeedParameter;
+            components.animateByVelocity.levelOfDetail = components.behaviourLOD;
+            components.animateByVelocity.rootGameObject = prefab;
 
             return components;
         }
@@ -275,6 +307,15 @@ namespace ECCLibrary
             ScannableSettings.AttemptPatch(this, GetEncyTitle, GetEncyDesc);
             PostPatch();
         }
+        /// <summary>
+        /// Makes the creature aggressive to creatures matching ecoTarget.
+        /// </summary>
+        /// <param name="maxRange">The absolute max range.</param>
+        /// <param name="maxSearchRings">More rings means further search distance.</param>
+        /// <param name="ecoTarget">What kind of creatures it will attack.</param>
+        /// <param name="hungerThreshold">How hungry it has to be to attack something.</param>
+        /// <param name="aggressionSpeed">How fast it becomes aggravated.</param>
+        /// <returns></returns>
         protected AggressiveWhenSeeTarget MakeAggressiveTo(float maxRange, int maxSearchRings, EcoTargetType ecoTarget, float hungerThreshold, float aggressionSpeed)
         {
             AggressiveWhenSeeTarget aggressiveWhenSeeTarget = prefab.AddComponent<AggressiveWhenSeeTarget>();
@@ -381,7 +422,7 @@ namespace ECCLibrary
         /// <summary>
         /// Used only for the 'speed' parameter on the Animator.
         /// </summary>
-        public virtual float GetMaxVelocity
+        public virtual float MaxVelocityForSpeedParameter
         {
             get
             {
@@ -470,6 +511,9 @@ namespace ECCLibrary
                 return new SmallVehicleAggressivenessSettings(0f, 0f);
             }
         }
+        /// <summary>
+        /// Settings based around how this creature attacks its LastTarget.
+        /// </summary>
         public virtual AttackLastTargetSettings AttackSettings
         {
             get
