@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using ECCLibrary.Internal;
 
 namespace ECCLibrary
 {
@@ -27,7 +28,7 @@ namespace ECCLibrary
             this.cured = cured;
             this.sprite = ImageUtils.LoadSpriteFromTexture(sprite);
         }
-
+            
         protected override TechData GetBlueprintRecipe()
         {
             if (cured)
@@ -45,12 +46,29 @@ namespace ECCLibrary
             if(prefab == null)
             {
                 prefab = GameObject.Instantiate(model);
-                prefab.SetActive(false);
                 ECCHelpers.ApplySNShaders(prefab);
-                prefab.AddComponent<TechTag>().type = TechType;
-                prefab.AddComponent<PrefabIdentifier>().ClassId = ClassID;
-                prefab.AddComponent<Pickupable>();
-                prefab.SearchChild("CraftModel").AddComponent<VFXFabricating>();
+                prefab.EnsureComponent<TechTag>().type = TechType;
+                prefab.EnsureComponent<PrefabIdentifier>().ClassId = ClassID;
+                var pickupable = prefab.EnsureComponent<Pickupable>();
+                prefab.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Near;
+                prefab.EnsureComponent<Rigidbody>().useGravity = false;
+                var worldForces = prefab.EnsureComponent<WorldForces>();
+                GameObject craftModel = prefab.SearchChild("CraftModel");
+                if(craftModel != null)
+                {
+                    var vfxFab = craftModel.AddComponent<VFXFabricating>();
+                    Renderer renderer = craftModel.GetComponentInChildren<Renderer>();
+                    vfxFab.scaleFactor = craftModel.transform.localScale.x;
+                    vfxFab.eulerOffset = craftModel.transform.localEulerAngles;
+                    vfxFab.posOffset = new Vector3(0f, renderer.bounds.extents.y, 0f);
+                    vfxFab.localMinY = -renderer.bounds.extents.y;
+                    vfxFab.localMaxY = renderer.bounds.extents.y;
+                }
+                else
+                {
+                    ECCLog.AddMessage("No child of name CraftModel found in crafted item {0}. Using default cube model.", TechType);
+                    pickupable.cubeOnPickup = true;
+                }
                 eatableData.MakeItemEatable(prefab);
             }
             return prefab;

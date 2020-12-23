@@ -87,15 +87,18 @@
     <Compile Include="CommonStructs.cs" />
     <Compile Include="CreatureAsset.cs" />
     <Compile Include="CreatureEggAsset.cs" />
+    <Compile Include="CustomBehaviours\HeldFish.cs" />
     <Compile Include="CustomBehaviours\MeleeAttack_New.cs" />
     <Compile Include="CustomBehaviours\RoarAbility.cs" />
     <Compile Include="CustomBehaviours\RoarRandomAction.cs" />
     <Compile Include="EatableAsset.cs" />
+    <Compile Include="ECCConfig.cs" />
     <Compile Include="ECCHelpers.cs" />
     <Compile Include="CustomBehaviours\LastTargetRoar.cs" />
     <Compile Include="ECCAudio.cs" />
+    <Compile Include="Internal\ECCLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QPatch.cs" />
+    <Compile Include="ECCPatch.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

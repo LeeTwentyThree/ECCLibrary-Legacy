@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace ECCLibrary.CustomBehaviours
+namespace ECCLibrary.Internal
 {
     public class RoarAbility : MonoBehaviour
     {
@@ -26,6 +26,7 @@ namespace ECCLibrary.CustomBehaviours
             source.minDistance = minRoarDistance;
             source.maxDistance = maxRoarDistance;
             source.spatialBlend = 1f;
+            source.volume = ECCHelpers.GetECCVolume();
 
             clipPool = ECCAudio.CreateClipPool(clipPrefix);
 

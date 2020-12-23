@@ -24,14 +24,19 @@ namespace ECCLibrary
             Decomposes = decomposes;
         }
 
-        public void MakeItemEatable(GameObject go)
+        public Eatable MakeItemEatable(GameObject go)
         {
-            var eatable = go.EnsureComponent<Eatable>();
+            if(go.GetComponent<Eatable>() != null)
+            {
+                ErrorMessage.AddMessage(string.Format("ECC: Object {0} already is edible.", go.name));
+            }
+            var eatable = go.AddComponent<Eatable>();
             eatable.allowOverfill = true;
             eatable.foodValue = FoodAmount;
             eatable.waterValue = WaterAmount;
-            eatable.decomposes = Decomposes;
-            eatable.kDecayRate = 0.03f;
+            eatable.kDecayRate = 0.015f;
+            eatable.SetDecomposes(Decomposes);
+            return eatable;
         }
     }
     public struct ScannableItemData

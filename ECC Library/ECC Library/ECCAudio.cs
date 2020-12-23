@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using ECCLibrary.Internal;
 
 namespace ECCLibrary
 {
@@ -26,6 +27,10 @@ namespace ECCLibrary
                 {
                     clips.Add(allClips[i]);
                 }
+            }
+            if(clips.Count == 0)
+            {
+                ECCLog.AddMessage("No registered audio clips starting with prefix {0}.", startingLetters);
             }
             return new AudioClipPool(clips.ToArray());
         }

@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 using QModManager.API.ModLoading;
 using QModManager.Utility;
 using UnityEngine;
+using SMLHelper.V2.Handlers;
 
-namespace ECC_Library
+namespace ECCLibrary
 {
     [QModCore]
-    public class QPatch
+    public class ECCPatch
     {
+        public static ECCConfig config = OptionsPanelHandler.Main.RegisterModOptions<ECCConfig>();
+
         [QModPatch]
         public static void Patch()
         {

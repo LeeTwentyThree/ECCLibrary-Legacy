@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace ECCLibrary.CustomBehaviours
+namespace ECCLibrary.Internal
 {
     public class LastTarget_New : LastTarget
     {

@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace ECCLibrary.CustomBehaviours
+namespace ECCLibrary.Internal
 {
     public class RoarRandomAction : CreatureAction
     {

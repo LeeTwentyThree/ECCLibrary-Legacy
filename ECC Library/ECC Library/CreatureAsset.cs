@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Reflection;
 using HarmonyLib;
-using ECCLibrary.CustomBehaviours;
+using ECCLibrary.Internal;
 using UWE;
 
 namespace ECCLibrary
@@ -16,7 +16,6 @@ namespace ECCLibrary
         private Atlas.Sprite sprite;
 
         protected GameObject prefab;
-        protected List<CreatureAction> creatureActions;
 
         public CreatureAsset(string classId, string friendlyName, string description, GameObject model, Texture2D spriteTexture) : base(classId, friendlyName, description)
         {
@@ -26,46 +25,53 @@ namespace ECCLibrary
                 sprite = ImageUtils.LoadSpriteFromTexture(spriteTexture);
             }
         }
-
-        protected void SetupPrefab<CreatureType>(out CreatureComponents<CreatureType> creatureComponents) where CreatureType : Creature
+        /// <summary>
+        /// Do not override this method unless necessary.
+        /// </summary>
+        /// <returns></returns>
+        public override GameObject GetGameObject()
+        {
+            if(prefab == null)
+            {
+                SetupPrefab(out CreatureComponents components);
+                AddCustomBehaviour(components);
+                CompletePrefab(components);
+            }
+            return prefab;
+        }
+        private void SetupPrefab(out CreatureComponents creatureComponents)
         {
             EnsurePrefabSetupCorrectly(model, ClassID);
             prefab = GameObject.Instantiate(model);
             prefab.SetActive(false);
-            creatureActions = new List<CreatureAction>();
-            creatureComponents = SetupNecessaryComponents<CreatureType>();
+            creatureComponents = SetupNecessaryComponents();
             ECCHelpers.ApplySNShaders(prefab);
         }
         static void EnsurePrefabSetupCorrectly(GameObject model, string name)
         {
             if (model == null)
             {
-                ErrorMessage.AddMessage(string.Format("ECC Warning: No model for creature {0} is found.", name));
+                ECCLog.AddMessage("ECC Warning: No model for creature {0} found.", name);
             }
             else
             {
                 if (model.GetComponentInChildren<Animator>() == null)
                 {
-                    ErrorMessage.AddMessage(string.Format("ECC Warning: Model for creature {0} is missing an Animator.", name));
+                    ECCLog.AddMessage("ECC Warning: Model for creature {0} needs an Animator somewhere in its hierarchy.", name);
                 }
                 if (model.GetComponentInChildren<Collider>() == null)
                 {
-                    ErrorMessage.AddMessage(string.Format("ECC Warning: Model for creature {0} has no collider.", name));
+                    ECCLog.AddMessage("ECC Warning: Model for creature {0} has no collider.", name);
                 }
             }
         }
         /// <summary>
         /// Call this after you have set up the model for the first time.
         /// </summary>
-        /// <typeparam name="CreatureType"></typeparam>
         /// <param name="components"></param>
-        protected void CompletePrefab<CreatureType>(CreatureComponents<CreatureType> components) where CreatureType : Creature
+        private void CompletePrefab(CreatureComponents components)
         {
-            PropertyInfo prop = typeof(Creature).GetProperty("actions", BindingFlags.Default);
-            if (null != prop && prop.CanWrite)
-            {
-                prop.SetValue(components.creature, creatureActions, null);
-            }
+
         }
         /// <summary>
         /// This is by default the 'sprite' defined in the constructor.
@@ -76,7 +82,7 @@ namespace ECCLibrary
             return sprite;
         }
         /// <summary>
-        /// The settings based around spawning,
+        /// The settings based around spawning. Do not override this unless you have to.
         /// </summary>
         public override WorldEntityInfo EntityInfo => new WorldEntityInfo()
         {
@@ -96,7 +102,6 @@ namespace ECCLibrary
         /// <summary>
         /// Adds a melee attack.
         /// </summary>
-        /// <typeparam name="CreatureType"></typeparam>
         /// <param name="mouth">The mouth object (should have a trigger collider).</param>
         /// <param name="biteInterval">Min time between attacks.</param>
         /// <param name="damage">Damage of the attack.</param>
@@ -105,7 +110,7 @@ namespace ECCLibrary
         /// <param name="regurgitateLater">If true, the creature will spit out anything swallowed whole.</param>
         /// <param name="components"></param>
         /// <returns></returns>
-        public MeleeAttack_New AddMeleeAttack<CreatureType>(GameObject mouth, float biteInterval, float damage, string biteSoundPrefix, float consumeWholeHealthThreshold, bool regurgitateLater, CreatureComponents<CreatureType> components) where CreatureType : Creature
+        public MeleeAttack_New AddMeleeAttack(GameObject mouth, float biteInterval, float damage, string biteSoundPrefix, float consumeWholeHealthThreshold, bool regurgitateLater, CreatureComponents components)
         {
             OnTouch onTouch = mouth.EnsureComponent<OnTouch>();
             onTouch.gameObject.EnsureComponent<Rigidbody>().isKinematic = true;
@@ -128,13 +133,12 @@ namespace ECCLibrary
             return meleeAttack;
         }
         /// <summary>
-        /// Messy component that does most of the work.
+        /// A messy method that does most of the work.
         /// </summary>
-        /// <typeparam name="CreatureType"></typeparam>
         /// <returns></returns>
-        private CreatureComponents<CreatureType> SetupNecessaryComponents<CreatureType>() where CreatureType : Creature
+        private CreatureComponents SetupNecessaryComponents()
         {
-            CreatureComponents<CreatureType> components = new CreatureComponents<CreatureType>();
+            CreatureComponents components = new CreatureComponents();
             components.prefabIdentifier = prefab.EnsureComponent<PrefabIdentifier>();
             components.prefabIdentifier.ClassId = ClassID;
 
@@ -187,11 +191,12 @@ namespace ECCLibrary
             SetLiveMixinData(ref components.liveMixin.data);
             if (components.liveMixin.data.maxHealth <= 0f)
             {
-                ErrorMessage.AddMessage("ECC Warning: Creatures should not have a max health of zero or below.");
+                ECCLog.AddMessage("Warning: Creatures should not have a max health of zero or below.");
             }
+            components.liveMixin.health = components.liveMixin.maxHealth;
 
             Creature reference = CraftData.GetPrefabForTechType(CreatureTraitsReference).GetComponent<Creature>();
-            components.creature = prefab.AddComponent<CreatureType>();
+            components.creature = prefab.AddComponent<Creature>();
             reference.CopyFields(components.creature);
             components.creature.liveMixin = components.liveMixin;
             ECCHelpers.SetPrivateField(typeof(Creature), components.creature, "traitsAnimator", components.creature.GetComponentInChildren<Animator>());
@@ -214,7 +219,6 @@ namespace ECCLibrary
                     roarAction.roarIntervalMin = RoarAbilitySettings.MinTimeBetweenRoars;
                     roarAction.roarIntervalMax = RoarAbilitySettings.MaxTimeBetweenRoars;
                     roarAction.evaluatePriority = RoarAbilitySettings.RoarActionPriority;
-                    creatureActions.Add(roarAction);
                 }
             }
             components.lastTarget = prefab.AddComponent<LastTarget_New>();
@@ -241,7 +245,6 @@ namespace ECCLibrary
                     actionAtkLastTarget.rememberTargetTime = AttackSettings.RememberTargetTime;
                     actionAtkLastTarget.priorityMultiplier = ECCHelpers.Curve_Flat();
                     actionAtkLastTarget.lastTarget = components.lastTarget;
-                    creatureActions.Add(actionAtkLastTarget);
                 }
             }
             components.swimRandom = prefab.AddComponent<SwimRandom>();
@@ -259,19 +262,44 @@ namespace ECCLibrary
                 avoidObstacles.priorityMultiplier = ECCHelpers.Curve_Flat();
                 avoidObstacles.evaluatePriority = AvoidObstaclesSettings.evaluatePriority;
             }
-            creatureActions.Add(components.swimRandom);
             if (CanBeInfected)
             {
                 components.infectedMixin = prefab.AddComponent<InfectedMixin>();
-                components.infectedMixin.renderers = prefab.GetComponentsInChildren<Renderer>();
+                components.infectedMixin.renderers = prefab.GetComponentsInChildren<Renderer>(true);
             }
             if (Pickupable)
             {
                 components.pickupable = prefab.EnsureComponent<Pickupable>();
+                if(ViewModelSettings.ReferenceHoldingAnimation != TechType.None)
+                {
+                    HeldFish heldFish = prefab.EnsureComponent<HeldFish>();
+                    heldFish.animationName = ViewModelSettings.ReferenceHoldingAnimation.ToString().ToLower();
+                    heldFish.mainCollider = prefab.GetComponent<Collider>();
+                    heldFish.pickupable = components.pickupable;
+                }
+                else
+                {
+                    ECCLog.AddMessage("Creature {0} is Pickupable but has no applied ViewModelSettings.", TechType);
+                }
+                if (!string.IsNullOrEmpty(ViewModelSettings.ViewModelName))
+                {
+                    var fpsModel = prefab.EnsureComponent<FPModel>();
+                    fpsModel.propModel = prefab.SearchChild(ViewModelSettings.WorldModelName);
+                    if (fpsModel.propModel == null)
+                    {
+                        ECCLog.AddMessage("Error finding World model. No child of name {0} exists in the hierarchy of item {1}.", ViewModelSettings.WorldModelName, TechType);
+                    }
+                    fpsModel.viewModel = prefab.SearchChild(ViewModelSettings.ViewModelName);
+                    if (fpsModel.viewModel == null)
+                    {
+                        ECCLog.AddMessage("Error finding View model. No child of name {0} exists in the hierarchy of item {1}.", ViewModelSettings.ViewModelName, TechType);
+                    }
+                }
             }
+            Eatable eatable = null;
             if (EatableSettings.CanBeEaten)
             {
-                EatableSettings.MakeItemEatable(prefab);
+                eatable = EatableSettings.MakeItemEatable(prefab);
             }
             if(SwimInSchoolSettings.EvaluatePriority > 0f)
             {
@@ -284,7 +312,6 @@ namespace ECCLibrary
                 ECCHelpers.SetPrivateField(typeof(SwimInSchool), swimInSchool, "percentFindLeaderRespond", SwimInSchoolSettings.FindLeaderChance);
                 ECCHelpers.SetPrivateField(typeof(SwimInSchool), swimInSchool, "chanceLoseLeader", SwimInSchoolSettings.LoseLeaderChance);
                 ECCHelpers.SetPrivateField(typeof(SwimInSchool), swimInSchool, "kBreakDistance", SwimInSchoolSettings.BreakDistance);
-                creatureActions.Add(swimInSchool);
             }
             components.animateByVelocity = prefab.AddComponent<AnimateByVelocity>();
             components.animateByVelocity.animator = components.creature.GetAnimator();
@@ -292,14 +319,41 @@ namespace ECCLibrary
             components.animateByVelocity.levelOfDetail = components.behaviourLOD;
             components.animateByVelocity.rootGameObject = prefab;
 
+            components.creatureDeath = prefab.AddComponent<CreatureDeath>();
+            components.creatureDeath.useRigidbody = components.rigidbody;
+            components.creatureDeath.liveMixin = components.liveMixin;
+            components.creatureDeath.eatable = eatable;
+            if (RespawnSettings.CanRespawn)
+            {
+                GameObject respawnerPrefab = new GameObject("Respawner");
+                var respawnComponent = respawnerPrefab.AddComponent<Respawn>();
+                respawnComponent.techType = TechType;
+                respawnComponent.spawnTime = RespawnSettings.RespawnDelay;
+
+                respawnerPrefab.SetActive(false);
+                ECCHelpers.SetPrivateField(typeof(CreatureDeath), components.creatureDeath, "respawnerPrefab", respawnerPrefab);
+            }
+            var deadAnimationOnEnable = prefab.AddComponent<DeadAnimationOnEnable>();
+            deadAnimationOnEnable.enabled = false;
+            deadAnimationOnEnable.animator = components.creature.GetAnimator();
+            deadAnimationOnEnable.liveMixin = components.liveMixin;
+            deadAnimationOnEnable.enabled = true;
+
             return components;
         }
+        /// <summary>
+        /// Add this creature into the game.
+        /// </summary>
         new public void Patch()
         {
             base.Patch();
             WaterParkCreature.waterParkCreatureParameters.Add(TechType, WaterParkParameters);
             BioReactorHandler.SetBioReactorCharge(TechType, BioReactorCharge);
             ECCHelpers.PatchBehaviorType(TechType, BehaviourType);
+            if (Pickupable)
+            {
+                ECCHelpers.PatchEquipmentType(TechType, EquipmentType.Hand);
+            }
             if (AcidImmune)
             {
                 DamageSystem.acidImmune.AddItem(TechType);
@@ -330,7 +384,15 @@ namespace ECCLibrary
             aggressiveWhenSeeTarget.aggressionPerSecond = aggressionSpeed;
             return aggressiveWhenSeeTarget;
         }
-        protected void CreateTrail<CreatureType>(GameObject trailParent, CreatureComponents<CreatureType> components, float segmentSnapSpeed, float maxSegmentOffset = -1f, float multiplier = 1f) where CreatureType : Creature
+        /// <summary>
+        /// Creates a trail, which is used for procedural animation of tail-like objects.
+        /// </summary>
+        /// <param name="trailParent">The root segment, which does not move. The first child of this object and all children of the first child are used for the trail.</param>
+        /// <param name="components">The reference to all the components.</param>
+        /// <param name="segmentSnapSpeed">How fast each segment snaps back into the default position. A higher value gives a more rigid appearance.</param>
+        /// <param name="maxSegmentOffset">How far each segment can be from the original position.</param>
+        /// <param name="multiplier">The total strength of the movement. A value too low or too high will break the trail completely.</param>
+        protected TrailManager CreateTrail(GameObject trailParent, CreatureComponents components, float segmentSnapSpeed, float maxSegmentOffset = -1f, float multiplier = 1f)
         {
             TrailManager trail = trailParent.AddComponent<TrailManager>();
             trail.trails = trailParent.transform.GetChild(0).GetComponentsInChildren<Transform>();
@@ -344,8 +406,17 @@ namespace ECCLibrary
             trail.pitchMultiplier = decreasing;
             trail.rollMultiplier = decreasing;
             trail.yawMultiplier = decreasing;
+            return trail;
         }
-        protected void CreateTrail<CreatureType>(GameObject trailRoot, Transform[] trails, CreatureComponents<CreatureType> components, float segmentSnapSpeed, float maxSegmentOffset = -1f) where CreatureType : Creature
+        /// <summary>
+        /// Creates a trail manager, which is used for procedural animation of tail-like objects.
+        /// </summary>
+        /// <param name="trailRoot">The root segment, which does not move.</param>
+        /// <param name="trails">Any objects that are simulated.</param>
+        /// <param name="components">The reference to all the components.</param>
+        /// <param name="segmentSnapSpeed">How fast each segment snaps back into the default position. A higher value gives a more rigid appearance.</param>
+        /// <param name="maxSegmentOffset">How far each segment can be from the original position.</param>
+        protected TrailManager CreateTrail(GameObject trailRoot, Transform[] trails, CreatureComponents components, float segmentSnapSpeed, float maxSegmentOffset = -1f)
         {
             trailRoot.gameObject.SetActive(false);
             TrailManager trail = trailRoot.AddComponent<TrailManager>();
@@ -363,10 +434,17 @@ namespace ECCLibrary
             MethodInfo method = typeof(TrailManager).GetMethod("Initialize", BindingFlags.NonPublic | BindingFlags.Instance);
             method.Invoke(trail, new object[] { });
             trailRoot.gameObject.SetActive(true);
+            return trail;
         }
 
         #region Abstracts
 
+        /// <summary>
+        /// Add CreatureActions and things of that like here.
+        /// </summary>
+        /// <param name="components"></param>
+        public abstract void AddCustomBehaviour(CreatureComponents components);
+        
         /// <summary>
         /// The creature prefab used for reference. Easier than declaring every stat manually.
         /// </summary>
@@ -409,6 +487,21 @@ namespace ECCLibrary
 
         #endregion
 
+        #region Overrideable
+        public virtual HeldFishData ViewModelSettings
+        {
+            get
+            {
+                return new HeldFishData();
+            }
+        }
+        public RespawnData RespawnSettings
+        {
+            get
+            {
+                return new RespawnData(true, 300f);
+            }
+        }
         /// <summary>
         /// Settings related to edibles.
         /// </summary>
@@ -430,7 +523,7 @@ namespace ECCLibrary
             }
         }
         /// <summary>
-        /// Whether the creature can be picked up or not.
+        /// Whether the creature can be picked up and held, or not.
         /// </summary>
         public virtual bool Pickupable
         {
@@ -460,31 +553,6 @@ namespace ECCLibrary
             }
         }
 
-        #region Ency
-        public virtual string GetEncyTitle
-        {
-            get
-            {
-                return "no title";
-            }
-        }
-
-        public virtual string GetEncyDesc
-        {
-            get
-            {
-                return "no description";
-            }
-        }
-
-        public virtual ScannableItemData ScannableSettings
-        {
-            get
-            {
-                return new ScannableItemData();
-            }
-        }
-        #endregion Ency
         /// <summary>
         /// Whether this creature can randomly spawn with Kharaa symptoms.
         /// </summary>
@@ -649,7 +717,77 @@ namespace ECCLibrary
             }
         }
 
+        #endregion
+
+        #region Ency Related Overridables
+        public virtual string GetEncyTitle
+        {
+            get
+            {
+                return "no title";
+            }
+        }
+
+        public virtual string GetEncyDesc
+        {
+            get
+            {
+                return "no description";
+            }
+        }
+
+        public virtual ScannableItemData ScannableSettings
+        {
+            get
+            {
+                return new ScannableItemData();
+            }
+        }
+        #endregion Ency
+
         #region Structs
+        /// <summary>
+        /// First person view model settings.
+        /// </summary>
+        public struct HeldFishData
+        {
+            public TechType ReferenceHoldingAnimation;
+            public string WorldModelName;
+            public string ViewModelName;
+            /// <summary>
+            /// First person view model settings.
+            /// </summary>
+            /// <param name="referenceHoldingAnimation">The TechType that is used to find the holding animation.</param>
+            /// <param name="worldModelName">The name of the model used for the World View, which must be a child of the object.</param>
+            /// <param name="viewModelName">The name of the model used for the First Person View, which must be a child of the object.</param>
+            public HeldFishData(TechType referenceHoldingAnimation, string worldModelName, string viewModelName)
+            {
+                ReferenceHoldingAnimation = referenceHoldingAnimation;
+                WorldModelName = worldModelName;
+                ViewModelName = viewModelName;
+            }
+            /// <summary>
+            /// First person view model settings.
+            /// </summary>
+            /// <param name="referenceHoldingAnimation">The TechType that is used to find the holding animation.</param>
+            public HeldFishData(TechType referenceHoldingAnimation)
+            {
+                ReferenceHoldingAnimation = referenceHoldingAnimation;
+                WorldModelName = null;
+                ViewModelName = null;
+            }
+        }
+        public struct RespawnData
+        {
+            public bool CanRespawn;
+            public float RespawnDelay;
+
+            public RespawnData(bool respawns, float respawnDelay = 300f)
+            {
+                CanRespawn = respawns;
+                RespawnDelay = respawnDelay;
+            }
+        }
         public struct BehaviourLODLevelsStruct
         {
             public float VeryClose;
@@ -777,8 +915,7 @@ namespace ECCLibrary
         /// <summary>
         /// Stores references to basic components of the creature. Do not rely on all of these to exist.
         /// </summary>
-        /// <typeparam name="CreatureType">The Type of the main component of this creature. Must be Creature or a class that inherits from Creature.</typeparam>
-        public struct CreatureComponents<CreatureType> where CreatureType : Creature
+        public struct CreatureComponents
         {
             public PrefabIdentifier prefabIdentifier;
             public TechTag techTag;
@@ -792,7 +929,7 @@ namespace ECCLibrary
             public Rigidbody rigidbody;
             public LastScarePosition lastScarePosition;
             public WorldForces worldForces;
-            public CreatureType creature;
+            public Creature creature;
             public LiveMixin liveMixin;
             public LastTarget_New lastTarget;
             public SwimBehaviour swimBehaviour;
@@ -802,6 +939,7 @@ namespace ECCLibrary
             public InfectedMixin infectedMixin;
             public Pickupable pickupable;
             public AnimateByVelocity animateByVelocity;
+            public CreatureDeath creatureDeath;
         }
         public struct SwimInSchoolData
         {

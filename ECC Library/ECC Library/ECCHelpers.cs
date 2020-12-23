@@ -7,6 +7,7 @@ using UnityEngine;
 using System.Reflection;
 using SMLHelper.V2.Assets;
 using System.IO;
+using FMOD;
 
 namespace ECCLibrary
 {
@@ -111,6 +112,14 @@ namespace ECCLibrary
         public static void PatchBehaviorType(TechType techType, BehaviourType behaviourType)
         {
             GetPrivateStaticField<Dictionary<TechType, BehaviourType>>(typeof(BehaviourData), "behaviourTypeList").Add(techType, behaviourType);
+        }
+        public static void PatchEquipmentType(TechType techType, EquipmentType equipmentType)
+        {
+            GetPrivateStaticField<Dictionary<TechType, EquipmentType>>(typeof(CraftData), "equipmentTypes").Add(techType, equipmentType);
+        }
+        public static float GetECCVolume()
+        {
+            return ECCPatch.config.Volume;
         }
     }
     public static class GameObjectExtensions

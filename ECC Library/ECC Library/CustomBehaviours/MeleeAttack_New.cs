@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
 
-namespace ECCLibrary.CustomBehaviours
+namespace ECCLibrary.Internal
 {
     public class MeleeAttack_New : MeleeAttack
     {
@@ -25,6 +25,7 @@ namespace ECCLibrary.CustomBehaviours
             source = gameObject.AddComponent<AudioSource>();
             source.maxDistance = 10f;
             source.spatialBlend = 1f;
+            source.volume = ECCHelpers.GetECCVolume();
         }
         public override void OnTouch(Collider collider)
         {
