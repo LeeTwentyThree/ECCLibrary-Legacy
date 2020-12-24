@@ -53,6 +53,11 @@ namespace ECCLibrary
                     {
                         material.EnableKeyword("_NORMALMAP");
                     }
+
+                    if(CompareStrings(material.name, "Cutout", ECCStringComparison.Contains))
+                    {
+                        material.EnableKeyword("MARMO_ALPHA_CLIP");
+                    }
                 }
             }
         }
