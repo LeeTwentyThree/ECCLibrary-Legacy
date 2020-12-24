@@ -33,15 +33,15 @@ namespace ECCLibrary
                     if (specularTexture != null)
                     {
                         material.SetTexture("_SpecTex", specularTexture);
-                        material.SetFloat("_SpecInt", 2f);
-                        material.SetFloat("_Shininess", material.GetFloat("_Glossiness") * 5f);
+                        material.SetFloat("_SpecInt", 5f);
+                        material.SetFloat("_Shininess", material.GetFloat("_Glossiness") * 10f);
                         material.EnableKeyword("MARMO_SPECMAP");
                         material.SetColor("_SpecColor", new Color(0.796875f, 0.796875f, 0.796875f, 0.796875f));
                         material.SetFloat("_Fresnel", 0f);
                         material.SetVector("_SpecTex_ST", new Vector4(1.0f, 1.0f, 0.0f, 0.0f));
                     }
                     Texture emissionTexture = material.GetTexture("_EmissionMap");
-                    if (emissionTexture || material.name.Contains("illum"))
+                    if (material.IsKeywordEnabled("_EMISSION"))
                     {
                         material.EnableKeyword("MARMO_EMISSION");
                         material.SetFloat("_EnableGlow", 1f);
