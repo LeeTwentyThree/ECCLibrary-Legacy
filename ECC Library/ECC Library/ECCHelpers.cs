@@ -18,7 +18,7 @@ namespace ECCLibrary
         {
             return AssetBundle.LoadFromFile(Path.Combine(Path.GetDirectoryName(modAssembly.Location), "Assets", assetsFileName));
         }
-        public static void ApplySNShaders(GameObject prefab)
+        public static void ApplySNShaders(GameObject prefab, float specInt = 1f, float shininess = 8f)
         {
             var renderers = prefab.GetComponentsInChildren<Renderer>(true);
             var newShader = Shader.Find("MarmosetUBER");
@@ -27,20 +27,21 @@ namespace ECCLibrary
                 for (int j = 0; j < renderers[i].materials.Length; j++)
                 {
                     Material material = renderers[i].materials[j];
+                    Texture specularTexture = material.GetTexture("_SpecGlossMap");
+                    Texture emissionTexture = material.GetTexture("_EmissionMap");
                     material.shader = newShader;
 
-                    Texture specularTexture = material.GetTexture("_SpecGlossMap");
                     if (specularTexture != null)
                     {
+                        material.EnableKeyword("_METALLICGLOSSMAP");
                         material.SetTexture("_SpecTex", specularTexture);
-                        material.SetFloat("_SpecInt", 5f);
-                        material.SetFloat("_Shininess", material.GetFloat("_Glossiness") * 10f);
+                        material.SetFloat("_SpecInt", specInt);
+                        material.SetFloat("_Shininess", shininess);
                         material.EnableKeyword("MARMO_SPECMAP");
-                        material.SetColor("_SpecColor", new Color(0.796875f, 0.796875f, 0.796875f, 0.796875f));
+                        material.SetColor("_SpecColor", new Color(1f, 1f, 1f, 1f));
                         material.SetFloat("_Fresnel", 0f);
                         material.SetVector("_SpecTex_ST", new Vector4(1.0f, 1.0f, 0.0f, 0.0f));
                     }
-                    Texture emissionTexture = material.GetTexture("_EmissionMap");
                     if (material.IsKeywordEnabled("_EMISSION"))
                     {
                         material.EnableKeyword("MARMO_EMISSION");
