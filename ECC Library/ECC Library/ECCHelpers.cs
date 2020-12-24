@@ -8,6 +8,7 @@ using System.Reflection;
 using SMLHelper.V2.Assets;
 using System.IO;
 using FMOD;
+using ECCLibrary.Internal;
 
 namespace ECCLibrary
 {
@@ -121,18 +122,48 @@ namespace ECCLibrary
         {
             return ECCPatch.config.Volume;
         }
+        public static bool CompareStrings(string original, string compareTo, ECCStringComparison comparisonMode)
+        {
+            switch (comparisonMode)
+            {
+                default:
+                    return original == compareTo;
+                case ECCStringComparison.Equals:
+                    return original.ToLower() == compareTo.ToLower();
+                case ECCStringComparison.EqualsCaseSensitive:
+                    return original == compareTo;
+                case ECCStringComparison.StartsWith:
+                    return original.ToLower().StartsWith(compareTo.ToLower());
+                case ECCStringComparison.StartsWithCaseSensitive:
+                    return original.StartsWith(compareTo);
+                case ECCStringComparison.Contains:
+                    return original.ToLower().Contains(compareTo.ToLower());
+                case ECCStringComparison.ContainsCaseSensitive:
+                    return original.StartsWith(compareTo);
+            }
+        }
     }
     public static class GameObjectExtensions
     {
-        public static GameObject SearchChild(this GameObject gameObject, string byName)
+        public static GameObject SearchChild(this GameObject gameObject, string byName, ECCStringComparison stringComparison = ECCStringComparison.Equals)
+        {
+            GameObject obj = SearchChildRecursive(gameObject, byName, stringComparison);
+            if(obj == null)
+            {
+                ECCLog.AddMessage("No child found in hierarchy by name {0}.", byName);
+            }
+            return obj;
+        }
+
+        static GameObject SearchChildRecursive(GameObject gameObject, string byName, ECCStringComparison stringComparison)
         {
             foreach (Transform child in gameObject.transform)
             {
-                if (child.gameObject.name == byName)
+                if (ECCHelpers.CompareStrings(child.gameObject.name, byName, stringComparison))
                 {
                     return child.gameObject;
                 }
-                GameObject recursive = SearchChild(child.gameObject, byName);
+                GameObject recursive = SearchChildRecursive(child.gameObject, byName, stringComparison);
                 if (recursive)
                 {
                     return recursive;
@@ -140,5 +171,14 @@ namespace ECCLibrary
             }
             return null;
         }
+    }
+    public enum ECCStringComparison
+    {
+        Equals,
+        EqualsCaseSensitive,
+        StartsWith,
+        StartsWithCaseSensitive,
+        Contains,
+        ContainsCaseSensitive
     }
 }
