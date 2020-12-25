@@ -338,6 +338,14 @@ namespace ECCLibrary
             deadAnimationOnEnable.animator = components.creature.GetAnimator();
             deadAnimationOnEnable.liveMixin = components.liveMixin;
             deadAnimationOnEnable.enabled = true;
+            if(StayAtLeashSettings.EvaluatePriority > 0f)
+            {
+                var stayAtLeash = prefab.AddComponent<StayAtLeashPosition>();
+                stayAtLeash.evaluatePriority = StayAtLeashSettings.EvaluatePriority;
+                stayAtLeash.priorityMultiplier = ECCHelpers.Curve_Flat(1f);
+                stayAtLeash.swimVelocity = SwimRandomSettings.SwimVelocity;
+                stayAtLeash.leashDistance = StayAtLeashSettings.MaxDistance;
+            }
 
             return components;
         }
@@ -488,6 +496,13 @@ namespace ECCLibrary
         #endregion
 
         #region Overrideable
+        public virtual StayAtLeashData StayAtLeashSettings
+        {
+            get
+            {
+                return new StayAtLeashData();
+            }
+        }
         public virtual HeldFishData ViewModelSettings
         {
             get
@@ -960,6 +975,17 @@ namespace ECCLibrary
                 BreakDistance = breakDistance;
                 FindLeaderChance = findLeaderChance;
                 LoseLeaderChance = loseLeaderChance;
+            }
+        }
+        public struct StayAtLeashData
+        {
+            public float EvaluatePriority;
+            public float MaxDistance;
+
+            public StayAtLeashData(float evaluatePriority, float maxDistance)
+            {
+                EvaluatePriority = evaluatePriority;
+                MaxDistance = maxDistance;
             }
         }
         #endregion
