@@ -19,11 +19,12 @@ namespace ECCLibrary
         public static void Patch()
         {
             Debug.Log("Eel's Creature Creator loaded.");
+            MaterialDebug_Unused(TechType.Hoverfish);
         }
 
-        private static void MaterialDebug_Unused()
+        private static void MaterialDebug_Unused(TechType techType)
         {
-            GameObject peeper = CraftData.GetPrefabForTechType(TechType.Peeper);
+            GameObject peeper = CraftData.GetPrefabForTechType(techType);
             foreach (Renderer renderer in peeper.GetComponentsInChildren<Renderer>())
             {
                 Debug.Log("ECC Test----");

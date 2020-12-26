@@ -1,7 +1,7 @@
 ﻿using SMLHelper.V2.Assets;
 using SMLHelper.V2.Utility;
 using SMLHelper.V2.Handlers;
-using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using System.Reflection;
 using HarmonyLib;
@@ -38,6 +38,17 @@ namespace ECCLibrary
                 CompletePrefab(components);
             }
             return prefab;
+        }
+        public override IEnumerator GetGameObjectAsync(IOut<GameObject> gameObject)
+        {
+            if (prefab == null)
+            {
+                SetupPrefab(out CreatureComponents components);
+                AddCustomBehaviour(components);
+                CompletePrefab(components);
+            }
+            yield return null;
+            gameObject.Set(prefab);
         }
         private void SetupPrefab(out CreatureComponents creatureComponents)
         {

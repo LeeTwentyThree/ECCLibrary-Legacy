@@ -2,6 +2,7 @@
 using SMLHelper.V2.Utility;
 using SMLHelper.V2.Handlers;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -99,6 +100,50 @@ namespace ECCLibrary
                 ECCHelpers.ApplySNShaders(prefab);
             }
             return prefab;
+        }
+
+        public override IEnumerator GetGameObjectAsync(IOut<GameObject> gameObject)
+        {
+            if (prefab == null)
+            {
+                prefab = model;
+                prefab.AddComponent<PrefabIdentifier>().ClassId = ClassID;
+                prefab.AddComponent<TechTag>().type = TechType;
+                prefab.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Near;
+                SkyApplier skyApplier = prefab.AddComponent<SkyApplier>();
+                skyApplier.renderers = prefab.GetComponentsInChildren<Renderer>();
+
+                Pickupable pickupable = prefab.AddComponent<Pickupable>();
+
+                LiveMixin lm = prefab.AddComponent<LiveMixin>();
+                lm.data = eggLiveMixinData;
+                lm.health = GetMaxHealth;
+
+                VFXSurface surface = prefab.AddComponent<VFXSurface>();
+                surface.surfaceType = VFXSurfaceTypes.organic;
+
+                WaterParkItem waterParkItem = prefab.AddComponent<WaterParkItem>();
+                waterParkItem.pickupable = pickupable;
+
+                Rigidbody rb = prefab.EnsureComponent<Rigidbody>();
+                rb.mass = 10f;
+                rb.isKinematic = true;
+
+                WorldForces worldForces = prefab.EnsureComponent<WorldForces>();
+                worldForces.useRigidbody = rb;
+
+                CreatureEgg egg = prefab.AddComponent<CreatureEgg>();
+                egg.animator = prefab.GetComponentInChildren<Animator>();
+                egg.hatchingCreature = hatchingCreature;
+                egg.overrideEggType = TechType;
+                egg.daysBeforeHatching = hatchingTime;
+
+                EntityTag entityTag = prefab.AddComponent<EntityTag>();
+                entityTag.slotType = EntitySlot.Type.Small;
+                ECCHelpers.ApplySNShaders(prefab);
+            }
+            yield return null;
+            gameObject.Set(prefab);
         }
 
         protected override Atlas.Sprite GetItemSprite()

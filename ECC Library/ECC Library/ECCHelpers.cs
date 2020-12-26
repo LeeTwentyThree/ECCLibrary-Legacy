@@ -31,15 +31,16 @@ namespace ECCLibrary
                     Texture emissionTexture = material.GetTexture("_EmissionMap");
                     material.shader = newShader;
 
+                    material.DisableKeyword("_SPECGLOSSMAP");
+                    material.DisableKeyword("_NORMALMAP");
                     if (specularTexture != null)
                     {
-                        material.EnableKeyword("_METALLICGLOSSMAP");
                         material.SetTexture("_SpecTex", specularTexture);
                         material.SetFloat("_SpecInt", specInt);
                         material.SetFloat("_Shininess", shininess);
                         material.EnableKeyword("MARMO_SPECMAP");
                         material.SetColor("_SpecColor", new Color(1f, 1f, 1f, 1f));
-                        material.SetFloat("_Fresnel", 0f);
+                        material.SetFloat("_Fresnel", 0.24f);
                         material.SetVector("_SpecTex_ST", new Vector4(1.0f, 1.0f, 0.0f, 0.0f));
                     }
                     if (material.IsKeywordEnabled("_EMISSION"))
@@ -51,12 +52,30 @@ namespace ECCLibrary
 
                     if (material.GetTexture("_BumpMap"))
                     {
-                        material.EnableKeyword("_NORMALMAP");
+                        material.EnableKeyword("MARMO_NORMALMAP");
                     }
 
                     if(CompareStrings(material.name, "Cutout", ECCStringComparison.Contains))
                     {
                         material.EnableKeyword("MARMO_ALPHA_CLIP");
+                    }
+                    if (CompareStrings(material.name, "Transparent", ECCStringComparison.Contains))
+                    {
+                        material.EnableKeyword("_ZWRITE_ON");
+                        material.EnableKeyword("WBOIT");
+                        material.SetInt("_ZWrite", 0);
+                        material.SetInt("_Cutoff", 0);
+                        material.SetFloat("_SrcBlend", 1f);
+                        material.SetFloat("_DstBlend", 1f);
+                        material.SetFloat("_SrcBlend2", 0f);
+                        material.SetFloat("_DstBlend2", 10f);
+                        material.SetFloat("_AddSrcBlend", 1f);
+                        material.SetFloat("_AddDstBlend", 1f);
+                        material.SetFloat("_AddSrcBlend2", 0f);
+                        material.SetFloat("_AddDstBlend2", 10f);
+                        material.globalIlluminationFlags = MaterialGlobalIlluminationFlags.EmissiveIsBlack | MaterialGlobalIlluminationFlags.RealtimeEmissive;
+                        material.renderQueue = 3101;
+                        material.enableInstancing = true;
                     }
                 }
             }
@@ -145,7 +164,7 @@ namespace ECCLibrary
                 case ECCStringComparison.Contains:
                     return original.ToLower().Contains(compareTo.ToLower());
                 case ECCStringComparison.ContainsCaseSensitive:
-                    return original.StartsWith(compareTo);
+                    return original.Contains(compareTo);
             }
         }
     }

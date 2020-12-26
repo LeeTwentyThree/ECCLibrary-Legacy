@@ -3,6 +3,7 @@ using SMLHelper.V2.Crafting;
 using SMLHelper.V2.Utility;
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -72,6 +73,39 @@ namespace ECCLibrary
                 eatableData.MakeItemEatable(prefab);
             }
             return prefab;
+        }
+        public override IEnumerator GetGameObjectAsync(IOut<GameObject> gameObject)
+        {
+            if (prefab == null)
+            {
+                prefab = GameObject.Instantiate(model);
+                ECCHelpers.ApplySNShaders(prefab);
+                prefab.EnsureComponent<TechTag>().type = TechType;
+                prefab.EnsureComponent<PrefabIdentifier>().ClassId = ClassID;
+                var pickupable = prefab.EnsureComponent<Pickupable>();
+                prefab.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Near;
+                prefab.EnsureComponent<Rigidbody>().useGravity = false;
+                var worldForces = prefab.EnsureComponent<WorldForces>();
+                GameObject craftModel = prefab.SearchChild("CraftModel");
+                if (craftModel != null)
+                {
+                    var vfxFab = craftModel.AddComponent<VFXFabricating>();
+                    Renderer renderer = craftModel.GetComponentInChildren<Renderer>();
+                    vfxFab.scaleFactor = craftModel.transform.localScale.x;
+                    vfxFab.eulerOffset = craftModel.transform.localEulerAngles;
+                    vfxFab.posOffset = new Vector3(0f, renderer.bounds.extents.y, 0f);
+                    vfxFab.localMinY = -renderer.bounds.extents.y;
+                    vfxFab.localMaxY = renderer.bounds.extents.y;
+                }
+                else
+                {
+                    ECCLog.AddMessage("No child of name CraftModel found in crafted item {0}. Using default cube model.", TechType);
+                    pickupable.cubeOnPickup = true;
+                }
+                eatableData.MakeItemEatable(prefab);
+            }
+            yield return null;
+            gameObject.Set(prefab);
         }
 
         protected override Atlas.Sprite GetItemSprite()

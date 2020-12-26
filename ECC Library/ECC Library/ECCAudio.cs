@@ -20,6 +20,10 @@ namespace ECCLibrary
 
         public static AudioClipPool CreateClipPool(string startingLetters)
         {
+            if (string.IsNullOrEmpty(startingLetters))
+            {
+                ECCLog.AddMessage("Notice: creating clip pool from empty string");
+            }
             List<AudioClip> clips = new List<AudioClip>();
             for (int i = 0; i < allClips.Count; i++)
             {

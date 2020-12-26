@@ -39,7 +39,10 @@ namespace ECCLibrary.Internal
                     {
                         if(collider.gameObject.GetComponent<Player>() == null)
                         {
-                            Destroy(lm.gameObject, 0.3f);
+                            var suckIn = collider.gameObject.AddComponent<BeingSuckedInWhole>();
+                            suckIn.target = mouth.transform;
+                            suckIn.animationLength = 0.5f;
+                            Destroy(lm.gameObject, 0.5f);
                             if (regurgitate)
                             {
                                 StartCoroutine(Regurgitate(CraftData.GetTechType(collider.gameObject), Random.Range(5f, 8f)));
