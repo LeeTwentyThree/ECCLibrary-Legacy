@@ -19,7 +19,6 @@ namespace ECCLibrary
         public static void Patch()
         {
             Debug.Log("Eel's Creature Creator loaded.");
-            MaterialDebug_Unused(TechType.Hoverfish);
         }
 
         private static void MaterialDebug_Unused(TechType techType)
