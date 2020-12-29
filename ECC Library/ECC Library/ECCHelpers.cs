@@ -18,7 +18,7 @@ namespace ECCLibrary
         {
             return AssetBundle.LoadFromFile(Path.Combine(Path.GetDirectoryName(modAssembly.Location), "Assets", assetsFileName));
         }
-        public static void ApplySNShaders(GameObject prefab, float specInt = 1f, float shininess = 8f)
+        public static void ApplySNShaders(GameObject prefab, UBERMaterialProperties materialSettings)
         {
             var renderers = prefab.GetComponentsInChildren<Renderer>(true);
             var newShader = Shader.Find("MarmosetUBER");
@@ -36,8 +36,8 @@ namespace ECCLibrary
                     if (specularTexture != null)
                     {
                         material.SetTexture("_SpecTex", specularTexture);
-                        material.SetFloat("_SpecInt", specInt);
-                        material.SetFloat("_Shininess", shininess);
+                        material.SetFloat("_SpecInt", materialSettings.SpecularInt);
+                        material.SetFloat("_Shininess", materialSettings.Shininess);
                         material.EnableKeyword("MARMO_SPECMAP");
                         material.SetColor("_SpecColor", new Color(1f, 1f, 1f, 1f));
                         material.SetFloat("_Fresnel", 0.24f);
@@ -48,6 +48,8 @@ namespace ECCLibrary
                         material.EnableKeyword("MARMO_EMISSION");
                         material.SetFloat("_EnableGlow", 1f);
                         material.SetTexture("_Illum", emissionTexture);
+                        material.SetFloat("_GlowStrength", materialSettings.EmissionScale);
+                        material.SetFloat("_GlowStrengthNight", materialSettings.EmissionScale);
                     }
 
                     if (material.GetTexture("_BumpMap"))

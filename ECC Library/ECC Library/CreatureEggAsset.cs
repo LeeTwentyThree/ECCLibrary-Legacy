@@ -97,7 +97,7 @@ namespace ECCLibrary
 
                 EntityTag entityTag = prefab.AddComponent<EntityTag>();
                 entityTag.slotType = EntitySlot.Type.Small;
-                ECCHelpers.ApplySNShaders(prefab);
+                ECCHelpers.ApplySNShaders(prefab, MaterialSettings);
             }
             return prefab;
         }
@@ -140,7 +140,7 @@ namespace ECCLibrary
 
                 EntityTag entityTag = prefab.AddComponent<EntityTag>();
                 entityTag.slotType = EntitySlot.Type.Small;
-                ECCHelpers.ApplySNShaders(prefab);
+                ECCHelpers.ApplySNShaders(prefab, MaterialSettings);
             }
             yield return null;
             gameObject.Set(prefab);
@@ -149,6 +149,14 @@ namespace ECCLibrary
         protected override Atlas.Sprite GetItemSprite()
         {
             return sprite;
+        }
+
+        public virtual UBERMaterialProperties MaterialSettings
+        {
+            get
+            {
+                return new UBERMaterialProperties(8f, 1f);
+            }
         }
 
         public virtual bool AcidImmune

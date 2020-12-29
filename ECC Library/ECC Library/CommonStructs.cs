@@ -79,4 +79,17 @@ namespace ECCLibrary
             LanguageHandler.SetLanguageLine("EncyDesc_" + prefab.ClassID, encyDesc);
         }
     }
+    public struct UBERMaterialProperties
+    {
+        public float Shininess;
+        public float SpecularInt;
+        public float EmissionScale;
+
+        public UBERMaterialProperties(float shininess, float specularInt = 1f, float emissionScale = 1f)
+        {
+            Shininess = shininess;
+            SpecularInt = specularInt;
+            EmissionScale = emissionScale;
+        }
+    }
 }

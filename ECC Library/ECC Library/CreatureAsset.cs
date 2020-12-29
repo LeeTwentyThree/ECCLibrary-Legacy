@@ -56,7 +56,7 @@ namespace ECCLibrary
             prefab = GameObject.Instantiate(model);
             prefab.SetActive(false);
             creatureComponents = SetupNecessaryComponents();
-            ECCHelpers.ApplySNShaders(prefab);
+            ECCHelpers.ApplySNShaders(prefab, MaterialSettings);
         }
         static void EnsurePrefabSetupCorrectly(GameObject model, string name)
         {
@@ -507,6 +507,13 @@ namespace ECCLibrary
         #endregion
 
         #region Overrideable
+        public virtual UBERMaterialProperties MaterialSettings
+        {
+            get
+            {
+                return new UBERMaterialProperties(8f, 1f);
+            }
+        }
         public virtual StayAtLeashData StayAtLeashSettings
         {
             get

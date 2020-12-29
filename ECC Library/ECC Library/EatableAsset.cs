@@ -47,7 +47,7 @@ namespace ECCLibrary
             if(prefab == null)
             {
                 prefab = GameObject.Instantiate(model);
-                ECCHelpers.ApplySNShaders(prefab);
+                ECCHelpers.ApplySNShaders(prefab, MaterialSettings);
                 prefab.EnsureComponent<TechTag>().type = TechType;
                 prefab.EnsureComponent<PrefabIdentifier>().ClassId = ClassID;
                 var pickupable = prefab.EnsureComponent<Pickupable>();
@@ -79,7 +79,7 @@ namespace ECCLibrary
             if (prefab == null)
             {
                 prefab = GameObject.Instantiate(model);
-                ECCHelpers.ApplySNShaders(prefab);
+                ECCHelpers.ApplySNShaders(prefab, MaterialSettings);
                 prefab.EnsureComponent<TechTag>().type = TechType;
                 prefab.EnsureComponent<PrefabIdentifier>().ClassId = ClassID;
                 var pickupable = prefab.EnsureComponent<Pickupable>();
@@ -127,6 +127,14 @@ namespace ECCLibrary
                 {
                     return new string[] { "Survival", "CookedFood" };
                 }
+            }
+        }
+
+        public virtual UBERMaterialProperties MaterialSettings
+        {
+            get
+            {
+                return new UBERMaterialProperties(8f, 1f);
             }
         }
     }
