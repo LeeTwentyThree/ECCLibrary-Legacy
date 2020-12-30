@@ -272,6 +272,7 @@ namespace ECCLibrary
                 avoidObstacles.scanDistance = AvoidObstaclesSettings.avoidDistance;
                 avoidObstacles.priorityMultiplier = ECCHelpers.Curve_Flat();
                 avoidObstacles.evaluatePriority = AvoidObstaclesSettings.evaluatePriority;
+                avoidObstacles.swimVelocity = SwimRandomSettings.SwimVelocity;
             }
             if (CanBeInfected)
             {

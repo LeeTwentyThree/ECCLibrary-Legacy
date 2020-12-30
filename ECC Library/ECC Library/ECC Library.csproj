@@ -98,8 +98,10 @@
     <Compile Include="CustomBehaviours\LastTargetRoar.cs" />
     <Compile Include="ECCAudio.cs" />
     <Compile Include="Internal\ECCLog.cs" />
+    <Compile Include="Patches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ECCPatch.cs" />
+    <Compile Include="StaticCreatureSpawnObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="obj\" />

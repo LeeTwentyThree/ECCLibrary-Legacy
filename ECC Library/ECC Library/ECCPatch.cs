@@ -1,24 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QModManager.API.ModLoading;
-using QModManager.Utility;
+﻿using QModManager.API.ModLoading;
 using UnityEngine;
 using SMLHelper.V2.Handlers;
+using HarmonyLib;
+using System.Reflection;
 
 namespace ECCLibrary
 {
     [QModCore]
     public class ECCPatch
     {
+        public static string staticCreaturesPath = "uninitialized";
         public static ECCConfig config = OptionsPanelHandler.Main.RegisterModOptions<ECCConfig>();
 
         [QModPatch]
         public static void Patch()
         {
-            Debug.Log("Eel's Creature Creator loaded.");
+            Harmony harmony = new Harmony("Lee23.ECC");
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
+            ECCLibrary.Internal.ECCLog.AddMessage("Eel's Creature Creator loaded.");
         }
 
         private static void MaterialDebug_Unused(TechType techType)
