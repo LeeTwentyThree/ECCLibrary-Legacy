@@ -9,7 +9,7 @@ using SMLHelper.V2.Utility;
 using System.IO;
 using ECCLibrary;
 
-namespace ECC_Library
+namespace ECCLibrary
 {
     internal class Patches
     {

@@ -17,7 +17,7 @@ namespace ECCLibrary
         {
             Harmony harmony = new Harmony("Lee23.ECC");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
-            ECCLibrary.Internal.ECCLog.AddMessage("Eel's Creature Creator loaded.");
+            Internal.ECCLog.AddMessage("Eel's Creature Creator loaded.");
         }
 
         private static void MaterialDebug_Unused(TechType techType)
