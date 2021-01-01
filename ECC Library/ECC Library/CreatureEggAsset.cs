@@ -60,6 +60,7 @@ namespace ECCLibrary
             {
                 ScannableSettings.AttemptPatch(this, GetEncyTitle, GetEncyDesc);
             }
+            ECCHelpers.PatchItemSounds(TechType, ItemSoundsType.Egg);
         }
 
         public override GameObject GetGameObject()

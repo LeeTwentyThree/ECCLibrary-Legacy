@@ -23,6 +23,7 @@ namespace ECCLibrary
         bool cured;
         GameObject prefab;
         Atlas.Sprite sprite;
+        ItemSoundsType soundType;
 
         /// <summary>
         /// Constructor for a cooked/cured version of the creature.
@@ -42,8 +43,30 @@ namespace ECCLibrary
             this.eatableData = eatableData;
             this.cured = cured;
             this.sprite = ImageUtils.LoadSpriteFromTexture(sprite);
+            this.soundType = ItemSoundsType.Default;
         }
-            
+
+        /// <summary>
+        /// Constructor for a cooked/cured version of the creature.
+        /// </summary>
+        /// <param name="classId">The TechType.</param>
+        /// <param name="friendlyName">The friendly name.</param>
+        /// <param name="description">The tooltip.</param>
+        /// <param name="model">The prefab of the original fish.</param>
+        /// <param name="originalFish">The TechType of the original fish.</param>
+        /// <param name="eatableData">The data related to being edible.</param>
+        /// <param name="cured">Whether the recipe requires salt. Also, only non-cured fish will be spawned by the Thermoblade.</param>
+        /// <param name="sprite">The Icon.</param>
+        public EatableAsset(string classId, string friendlyName, string description, GameObject model, TechType originalFish, EatableData eatableData, bool cured, Texture2D sprite, ItemSoundsType soundType) : base(classId, friendlyName, description)
+        {
+            this.model = model;
+            this.originalFish = originalFish;
+            this.eatableData = eatableData;
+            this.cured = cured;
+            this.sprite = ImageUtils.LoadSpriteFromTexture(sprite);
+            this.soundType = soundType;
+        }
+
         protected override TechData GetBlueprintRecipe()
         {
             if (cured)
@@ -64,6 +87,7 @@ namespace ECCLibrary
             {
                 ECCHelpers.GetPrivateStaticField<Dictionary<TechType, TechType>>(typeof(CraftData), "cookedCreatureList").Add(originalFish, TechType); 
             }
+            ECCHelpers.PatchItemSounds(TechType, soundType);
         }
 
         public override GameObject GetGameObject()
@@ -77,7 +101,7 @@ namespace ECCLibrary
                 var pickupable = prefab.EnsureComponent<Pickupable>();
                 prefab.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Near;
                 prefab.EnsureComponent<Rigidbody>().useGravity = false;
-                var worldForces = prefab.EnsureComponent<WorldForces>();
+                prefab.EnsureComponent<WorldForces>();
                 GameObject craftModel = prefab.SearchChild("CraftModel");
                 if(craftModel != null)
                 {
@@ -109,7 +133,7 @@ namespace ECCLibrary
                 var pickupable = prefab.EnsureComponent<Pickupable>();
                 prefab.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Near;
                 prefab.EnsureComponent<Rigidbody>().useGravity = false;
-                var worldForces = prefab.EnsureComponent<WorldForces>();
+                prefab.EnsureComponent<WorldForces>();
                 GameObject craftModel = prefab.SearchChild("CraftModel");
                 if (craftModel != null)
                 {

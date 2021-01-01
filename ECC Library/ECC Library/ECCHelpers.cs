@@ -9,6 +9,7 @@ using SMLHelper.V2.Assets;
 using System.IO;
 using FMOD;
 using ECCLibrary.Internal;
+using System.Globalization;
 
 namespace ECCLibrary
 {
@@ -137,14 +138,89 @@ namespace ECCLibrary
             var prop = type.GetField(name, BindingFlags.NonPublic | BindingFlags.Static);
             return (OutputT)prop.GetValue(null);
         }
+        /// <summary>
+        /// Set the BehaviourType of a TechType. Used for certain creature interactions.
+        /// </summary>
+        /// <param name="techType"></param>
+        /// <param name="behaviourType"></param>
         public static void PatchBehaviorType(TechType techType, BehaviourType behaviourType)
         {
             GetPrivateStaticField<Dictionary<TechType, BehaviourType>>(typeof(BehaviourData), "behaviourTypeList").Add(techType, behaviourType);
         }
+        /// <summary>
+        /// Set the EquipmentType of an item.
+        /// </summary>
+        /// <param name="techType"></param>
+        /// <param name="equipmentType"></param>
         public static void PatchEquipmentType(TechType techType, EquipmentType equipmentType)
         {
             GetPrivateStaticField<Dictionary<TechType, EquipmentType>>(typeof(CraftData), "equipmentTypes").Add(techType, equipmentType);
         }
+        /// <summary>
+        /// Patch the inventory sounds of a TechType.
+        /// </summary>
+        /// <param name="techType"></param>
+        /// <param name="soundType"></param>
+        public static void PatchItemSounds(TechType techType, ItemSoundsType soundType)
+        {
+            string pickupSound = GetPickupSoundEvent(soundType);
+            string dropSound = GetDropSoundEvent(soundType);
+            string eatSound = GetEatSoundEvent(soundType);
+            GetPrivateStaticField<Dictionary<TechType, string>>(typeof(CraftData), "pickupSoundList").Add(techType, pickupSound);
+            GetPrivateStaticField<Dictionary<TechType, string>>(typeof(CraftData), "dropSoundList").Add(techType, dropSound);
+            GetPrivateStaticField<Dictionary<TechType, string>>(typeof(CraftData), "useEatSound").Add(techType, eatSound);
+        }
+        private static string GetPickupSoundEvent(ItemSoundsType soundType)
+        {
+            switch (soundType)
+            {
+                default:
+                    return CraftData.defaultPickupSound;
+                case ItemSoundsType.AirBladder:
+                    return "event:/tools/airbladder/airbladder_pickup";
+                case ItemSoundsType.Light:
+                    return "event:/tools/lights/pick_up";
+                case ItemSoundsType.Egg:
+                    return "event:/loot/pickup_egg";
+                case ItemSoundsType.Fins:
+                    return "event:/loot/pickup_fins";
+                case ItemSoundsType.Floater:
+                    return "event:/loot/floater/floater_pickup";
+                case ItemSoundsType.Suit:
+                    return "event:/loot/pickup_suit";
+                case ItemSoundsType.Tank:
+                    return "event:/loot/pickup_tank";
+                case ItemSoundsType.Organic:
+                    return "event:/loot/pickup_organic";
+                case ItemSoundsType.Fish:
+                    return "event:/loot/pickup_fish";
+        }
+        }
+        private static string GetDropSoundEvent(ItemSoundsType soundType)
+        {
+            switch (soundType)
+            {
+                default:
+                    return CraftData.defaultDropSound;
+                case ItemSoundsType.Floater:
+                    return "event:/loot/floater/floater_place";
+            }
+        }
+        private static string GetEatSoundEvent(ItemSoundsType soundType)
+        {
+            switch (soundType)
+            {
+                default:
+                    return CraftData.defaultEatSound;
+                case ItemSoundsType.Water:
+                    return "event:/player/drink";
+                case ItemSoundsType.FirstAidKit:
+                    return "event:/player/use_first_aid";
+                case ItemSoundsType.StillSuitWater:
+                    return "event:/player/drink_stillsuit";
+            }
+        }
+
         public static float GetECCVolume()
         {
             return ECCPatch.config.Volume;
@@ -207,5 +283,21 @@ namespace ECCLibrary
         StartsWithCaseSensitive,
         Contains,
         ContainsCaseSensitive
+    }
+    public enum ItemSoundsType
+    {
+        Default,
+        Organic,
+        Egg,
+        Fins,
+        Suit,
+        Tank,
+        Floater,
+        Light,
+        AirBladder,
+        FirstAidKit,
+        Water,
+        StillSuitWater,
+        Fish
     }
 }

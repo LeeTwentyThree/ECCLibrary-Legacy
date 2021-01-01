@@ -376,6 +376,7 @@ namespace ECCLibrary
                 DamageSystem.acidImmune.AddItem(TechType);
             }
             ScannableSettings.AttemptPatch(this, GetEncyTitle, GetEncyDesc);
+            ECCHelpers.PatchItemSounds(TechType, ItemSounds);
             PostPatch();
         }
         /// <summary>
@@ -505,6 +506,16 @@ namespace ECCLibrary
         #endregion
 
         #region Overrideable
+        /// <summary>
+        /// The type of sound effects this creature will use in the Inventory.
+        /// </summary>
+        public virtual ItemSoundsType ItemSounds
+        {
+            get
+            {
+                return ItemSoundsType.Fish;
+            }
+        }
         public virtual UBERMaterialProperties MaterialSettings
         {
             get
