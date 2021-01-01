@@ -48,6 +48,15 @@ namespace ECCLibrary
         public Sprite popup;
         public Texture2D encyImage;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="scannable">Whether this can be scanned and has an encyclopedia entry.</param>
+        /// <param name="scanTime">How long it takes to scan this creature.</param>
+        /// <param name="encyPath">The path to the encyclopedia. Example: "Lifeforms/Fauna/Carnivores".</param>
+        /// <param name="encyNodes">The path to the encyclopedia in array form. Example: { "Lifeforms", "Fauna", "Carnivores" }.</param>
+        /// <param name="popup">The popup image. Must be exported as a Sprite. If null, the default popup is used.</param>
+        /// <param name="encyImage">The image of the encyclopedia entry. If null, no image will be used.</param>
         public ScannableItemData(bool scannable, float scanTime, string encyPath, string[] encyNodes, Sprite popup, Texture2D encyImage)
         {
             this.scannable = scannable;
@@ -58,7 +67,7 @@ namespace ECCLibrary
             this.encyImage = encyImage;
         }
 
-        public void AttemptPatch(ModPrefab prefab, string encyTitle, string encyDesc)
+        internal void AttemptPatch(ModPrefab prefab, string encyTitle, string encyDesc)
         {
             PDAEncyclopediaHandler.AddCustomEntry(new PDAEncyclopedia.EntryData()
             {

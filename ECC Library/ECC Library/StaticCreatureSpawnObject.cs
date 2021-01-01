@@ -7,8 +7,15 @@ using UnityEngine;
 
 namespace ECCLibrary
 {
+    /// <summary>
+    /// Static class related to static spawns, such as those of Leviathans in the base game.
+    /// </summary>
     public static class StaticCreatureSpawns
     {
+        /// <summary>
+        /// Allow a new creature to spawn in a specific location. Call this in your patch method.
+        /// </summary>
+        /// <param name="spawnData"></param>
         public static void RegisterStaticSpawn(StaticSpawn spawnData)
         {
             foreach(var spawn in staticSpawns)
@@ -105,7 +112,7 @@ namespace ECCLibrary
 
         void Spawn()
         {
-            GameObject obj = UWE.Utils.InstantiateDeactivated(mySpawnData.prefab.GetGameObject(), mySpawnData.position, Quaternion.identity);
+            GameObject obj = UWE.Utils.InstantiateDeactivated(CraftData.GetPrefabForTechType(mySpawnData.prefab), mySpawnData.position, Quaternion.identity);
             LargeWorldEntity lwe = obj.GetComponent<LargeWorldEntity>();
             bool active = LargeWorld.main.streamer.cellManager.RegisterEntity(lwe);
             if (active)
@@ -128,12 +135,19 @@ namespace ECCLibrary
     /// </summary>
     public struct StaticSpawn
     {
-        public CreatureAsset prefab;
+        public TechType prefab;
         public Vector3 position;
         public string uniqueIdentifier;
         public float maxDistance;
 
         public StaticSpawn(CreatureAsset prefab, Vector3 position, string uniqueIdentifier, float maxDistance)
+        {
+            this.prefab = prefab.TechType;
+            this.position = position;
+            this.uniqueIdentifier = uniqueIdentifier;
+            this.maxDistance = maxDistance;
+        }
+        public StaticSpawn(TechType prefab, Vector3 position, string uniqueIdentifier, float maxDistance)
         {
             this.prefab = prefab;
             this.position = position;

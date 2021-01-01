@@ -12,7 +12,10 @@ using ECCLibrary.Internal;
 
 namespace ECCLibrary
 {
-    public class EatableAsset : Craftable
+    /// <summary>
+    /// A basic AssetClass that does everything required for edible fish for you. This class can not be inherited from.
+    /// </summary>
+    public sealed class EatableAsset : Craftable
     {
         TechType originalFish;
         GameObject model;
@@ -21,6 +24,17 @@ namespace ECCLibrary
         GameObject prefab;
         Atlas.Sprite sprite;
 
+        /// <summary>
+        /// Constructor for a cooked/cured version of the creature.
+        /// </summary>
+        /// <param name="classId">The TechType.</param>
+        /// <param name="friendlyName">The friendly name.</param>
+        /// <param name="description">The tooltip.</param>
+        /// <param name="model">The prefab of the original fish.</param>
+        /// <param name="originalFish">The TechType of the original fish.</param>
+        /// <param name="eatableData">The data related to being edible.</param>
+        /// <param name="cured">Whether the recipe requires salt. Also, only non-cured fish will be spawned by the Thermoblade.</param>
+        /// <param name="sprite">The Icon.</param>
         public EatableAsset(string classId, string friendlyName, string description, GameObject model, TechType originalFish, EatableData eatableData, bool cured, Texture2D sprite) : base(classId, friendlyName, description)
         {
             this.model = model;
@@ -39,6 +53,16 @@ namespace ECCLibrary
             else
             {
                 return new TechData() { Ingredients = new List<Ingredient>() { new Ingredient(originalFish, 1) }, craftAmount = 1 };
+            }
+        }
+
+        new public void Patch()
+        {
+            base.Patch();
+            //Thermoblade support
+            if (!cured && originalFish != TechType.None)
+            {
+                ECCHelpers.GetPrivateStaticField<Dictionary<TechType, TechType>>(typeof(CraftData), "cookedCreatureList").Add(originalFish, TechType); 
             }
         }
 
@@ -130,12 +154,6 @@ namespace ECCLibrary
             }
         }
 
-        public virtual UBERMaterialProperties MaterialSettings
-        {
-            get
-            {
-                return new UBERMaterialProperties(8f, 1f);
-            }
-        }
+        public UBERMaterialProperties MaterialSettings = new UBERMaterialProperties(8f, 1f);
     }
 }

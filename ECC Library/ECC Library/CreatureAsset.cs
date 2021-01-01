@@ -54,6 +54,7 @@ namespace ECCLibrary
         {
             EnsurePrefabSetupCorrectly(model, ClassID);
             prefab = GameObject.Instantiate(model);
+            prefab.tag = "Creature";
             prefab.SetActive(false);
             creatureComponents = SetupNecessaryComponents();
             ECCHelpers.ApplySNShaders(prefab, MaterialSettings);
@@ -76,10 +77,6 @@ namespace ECCLibrary
                 }
             }
         }
-        /// <summary>
-        /// Call this after you have set up the model for the first time.
-        /// </summary>
-        /// <param name="components"></param>
         private void CompletePrefab(CreatureComponents components)
         {
 
@@ -754,14 +751,20 @@ namespace ECCLibrary
         #endregion
 
         #region Ency Related Overridables
+        /// <summary>
+        /// The Title of the encyclopedia entry.
+        /// </summary>
         public virtual string GetEncyTitle
         {
             get
             {
-                return "no title";
+                return FriendlyName;
             }
         }
 
+        /// <summary>
+        /// The description of the encyclopedia entry.
+        /// </summary>
         public virtual string GetEncyDesc
         {
             get
@@ -770,6 +773,9 @@ namespace ECCLibrary
             }
         }
 
+        /// <summary>
+        /// Settings related to the encyclopedia entry.
+        /// </summary>
         public virtual ScannableItemData ScannableSettings
         {
             get

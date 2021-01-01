@@ -56,7 +56,10 @@ namespace ECCLibrary
             {
                 ECCHelpers.MakeAcidImmune(TechType);
             }
-            ScannableSettings.AttemptPatch(this, GetEncyTitle, GetEncyDesc);
+            if (IsScannable)
+            {
+                ScannableSettings.AttemptPatch(this, GetEncyTitle, GetEncyDesc);
+            }
         }
 
         public override GameObject GetGameObject()
@@ -187,11 +190,18 @@ namespace ECCLibrary
         {
             get
             {
-                return string.Format("The egg of a {0}.", FriendlyName);
+                return "No ency description.";
             }
         }
 
-        public virtual ScannableItemData ScannableSettings
+        public virtual bool IsScannable
+        {
+            get
+            {
+                return false;
+            }
+        }
+        public ScannableItemData ScannableSettings
         {
             get
             {
