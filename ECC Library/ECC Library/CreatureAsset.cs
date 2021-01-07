@@ -355,6 +355,10 @@ namespace ECCLibrary
                 stayAtLeash.swimVelocity = SwimRandomSettings.SwimVelocity;
                 stayAtLeash.leashDistance = StayAtLeashSettings.MaxDistance;
             }
+            if (ScannerRoomScannable)
+            {
+                ECCHelpers.MakeObjectScannerRoomScannable(prefab, true);
+            }
 
             return components;
         }
@@ -592,6 +596,16 @@ namespace ECCLibrary
             get
             {
                 return ECCHelpers.Curve_Flat(1f);
+            }
+        }
+        /// <summary>
+        /// If set to true, the Scanner Room can scan for this creature.
+        /// </summary>
+        public virtual bool ScannerRoomScannable
+        {
+            get
+            {
+                return false;
             }
         }
 

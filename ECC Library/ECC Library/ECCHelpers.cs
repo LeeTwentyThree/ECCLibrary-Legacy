@@ -83,7 +83,7 @@ namespace ECCLibrary
                 }
             }
         }
-        public static SwimBehaviour EssentialComponentSystem_Swimming(GameObject prefab, float turnSpeed, Rigidbody rb)
+        internal static SwimBehaviour EssentialComponentSystem_Swimming(GameObject prefab, float turnSpeed, Rigidbody rb)
         {
             Locomotion locomotion = prefab.AddComponent<Locomotion>();
             locomotion.useRigidbody = rb;
@@ -95,7 +95,7 @@ namespace ECCLibrary
             swim.turnSpeed = turnSpeed;
             return swim;
         }
-        public static BehaviourLOD EssentialComponent_BehaviourLOD(GameObject prefab, float near, float medium, float far)
+        internal static BehaviourLOD EssentialComponent_BehaviourLOD(GameObject prefab, float near, float medium, float far)
         {
             BehaviourLOD bLod = prefab.AddComponent<BehaviourLOD>();
             bLod.veryCloseThreshold = near;
@@ -137,6 +137,16 @@ namespace ECCLibrary
         {
             var prop = type.GetField(name, BindingFlags.NonPublic | BindingFlags.Static);
             return (OutputT)prop.GetValue(null);
+        }
+        public static void MakeObjectScannerRoomScannable(GameObject gameObject, bool updatePositionPeriodically)
+        {
+            ResourceTracker resourceTracker = gameObject.AddComponent<ResourceTracker>();
+            resourceTracker.prefabIdentifier = gameObject.GetComponent<PrefabIdentifier>();
+            resourceTracker.rb = gameObject.GetComponent<Rigidbody>();
+            if (updatePositionPeriodically == true)
+            {
+                gameObject.AddComponent<ResourceTrackerUpdater>();
+            }
         }
         /// <summary>
         /// Set the BehaviourType of a TechType. Used for certain creature interactions.
