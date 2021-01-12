@@ -15,6 +15,7 @@ namespace ECCLibrary
         [QModPatch]
         public static void Patch()
         {
+            LanguageHandler.SetLanguageLine("EncyPath_Lifeforms/Fauna/Eggs", "Creature Eggs");
             Harmony harmony = new Harmony("Lee23.ECC");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
             Internal.ECCLog.AddMessage("Eel's Creature Creator loaded.");
