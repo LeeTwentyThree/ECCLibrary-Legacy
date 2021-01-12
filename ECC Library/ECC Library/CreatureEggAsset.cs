@@ -68,22 +68,22 @@ namespace ECCLibrary
             if(prefab == null)
             {
                 prefab = model;
-                prefab.AddComponent<PrefabIdentifier>().ClassId = ClassID;
-                prefab.AddComponent<TechTag>().type = TechType;
+                prefab.EnsureComponent<PrefabIdentifier>().ClassId = ClassID;
+                prefab.EnsureComponent<TechTag>().type = TechType;
                 prefab.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Near;
-                SkyApplier skyApplier = prefab.AddComponent<SkyApplier>();
+                SkyApplier skyApplier = prefab.EnsureComponent<SkyApplier>();
                 skyApplier.renderers = prefab.GetComponentsInChildren<Renderer>();
 
-                Pickupable pickupable = prefab.AddComponent<Pickupable>();
+                Pickupable pickupable = prefab.EnsureComponent<Pickupable>();
 
-                LiveMixin lm = prefab.AddComponent<LiveMixin>();
+                LiveMixin lm = prefab.EnsureComponent<LiveMixin>();
                 lm.data = eggLiveMixinData;
                 lm.health = GetMaxHealth;
 
-                VFXSurface surface = prefab.AddComponent<VFXSurface>();
+                VFXSurface surface = prefab.EnsureComponent<VFXSurface>();
                 surface.surfaceType = VFXSurfaceTypes.organic;
 
-                WaterParkItem waterParkItem = prefab.AddComponent<WaterParkItem>();
+                WaterParkItem waterParkItem = prefab.EnsureComponent<WaterParkItem>();
                 waterParkItem.pickupable = pickupable;
 
                 Rigidbody rb = prefab.EnsureComponent<Rigidbody>();
@@ -93,7 +93,7 @@ namespace ECCLibrary
                 WorldForces worldForces = prefab.EnsureComponent<WorldForces>();
                 worldForces.useRigidbody = rb;
 
-                CreatureEgg egg = prefab.AddComponent<CreatureEgg>();
+                CreatureEgg egg = prefab.EnsureComponent<CreatureEgg>();
                 egg.animator = prefab.GetComponentInChildren<Animator>();
                 egg.hatchingCreature = hatchingCreature;
                 egg.overrideEggType = TechType;
