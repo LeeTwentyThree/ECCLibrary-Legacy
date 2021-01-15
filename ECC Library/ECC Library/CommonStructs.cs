@@ -9,21 +9,53 @@ using SMLHelper.V2.Assets;
 
 namespace ECCLibrary
 {
+    /// <summary>
+    /// Settings related to edible items.
+    /// </summary>
     public struct EatableData
     {
         public bool CanBeEaten;
         public float FoodAmount;
         public float WaterAmount;
         public bool Decomposes;
+        public float DecomposeSpeed;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="canBeEaten">Whether this Item is edible or not.</param>
+        /// <param name="foodAmount">The max amount of Food this item will give when eaten.</param>
+        /// <param name="waterAmount">The max amount of Water this item will give when eaten.</param>
+        /// <param name="decomposes">Whether this item decomposes over time.</param>
         public EatableData(bool canBeEaten, float foodAmount, float waterAmount, bool decomposes)
         {
             CanBeEaten = canBeEaten;
             FoodAmount = foodAmount;
             WaterAmount = waterAmount;
             Decomposes = decomposes;
+            DecomposeSpeed = 1f;
         }
-
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="canBeEaten">Whether this Item is edible or not.</param>
+        /// <param name="foodAmount">The max amount of Food this item will give when eaten.</param>
+        /// <param name="waterAmount">The max amount of Water this item will give when eaten.</param>
+        /// <param name="decomposes">Whether this item decomposes over time.</param>
+        /// <param name="decomposeSpeed">How fast this item decomposes. Default value is 1f.</param>
+        public EatableData(bool canBeEaten, float foodAmount, float waterAmount, bool decomposes, float decomposeSpeed)
+        {
+            CanBeEaten = canBeEaten;
+            FoodAmount = foodAmount;
+            WaterAmount = waterAmount;
+            Decomposes = decomposes;
+            DecomposeSpeed = decomposeSpeed;
+        }
+        /// <summary>
+        /// Apply this EatableData to an existing Item.
+        /// </summary>
+        /// <param name="go"></param>
+        /// <returns></returns>
         public Eatable MakeItemEatable(GameObject go)
         {
             if(go.GetComponent<Eatable>() != null)
@@ -34,11 +66,14 @@ namespace ECCLibrary
             eatable.allowOverfill = true;
             eatable.foodValue = FoodAmount;
             eatable.waterValue = WaterAmount;
-            eatable.kDecayRate = 0.015f;
+            eatable.kDecayRate = 0.015f * DecomposeSpeed;
             eatable.SetDecomposes(Decomposes);
             return eatable;
         }
     }
+    /// <summary>
+    /// Settings related to scanning and Databank entries.
+    /// </summary>
     public struct ScannableItemData
     {
         public bool scannable;
@@ -63,6 +98,23 @@ namespace ECCLibrary
             this.scanTime = scanTime;
             this.encyPath = encyPath;
             this.encyNodes = encyNodes;
+            this.popup = popup;
+            this.encyImage = encyImage;
+        }
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="scannable">Whether this can be scanned and has an encyclopedia entry.</param>
+        /// <param name="scanTime">How long it takes to scan this creature.</param>
+        /// <param name="encyPath">The path to the encyclopedia. Example: "Lifeforms/Fauna/Carnivores".</param>
+        /// <param name="popup">The popup image. Must be exported as a Sprite. If null, the default popup is used.</param>
+        /// <param name="encyImage">The image of the encyclopedia entry. If null, no image will be used.</param>
+        public ScannableItemData(bool scannable, float scanTime, string encyPath, Sprite popup, Texture2D encyImage)
+        {
+            this.scannable = scannable;
+            this.scanTime = scanTime;
+            this.encyPath = encyPath;
+            this.encyNodes = encyPath.Split('/');
             this.popup = popup;
             this.encyImage = encyImage;
         }

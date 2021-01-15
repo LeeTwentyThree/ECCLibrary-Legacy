@@ -14,9 +14,15 @@ using ECCLibrary;
 
 namespace ECCLibrary
 {
+    /// <summary>
+    /// Asset class for CreatureEggs. Must inherit from this class to add custom spawns.
+    /// </summary>
     public class CreatureEggAsset : Spawnable
     {
         private GameObject model;
+        /// <summary>
+        /// The object to be edited in 'AddCustomBehaviours'.
+        /// </summary>
         protected GameObject prefab;
         private TechType hatchingCreature;
         private Atlas.Sprite sprite;
@@ -24,6 +30,16 @@ namespace ECCLibrary
         static LiveMixinData eggLiveMixinData;
         float hatchingTime;
 
+        /// <summary>
+        /// Create a new egg asset.
+        /// </summary>
+        /// <param name="classId">TechType / ClassId of the egg.</param>
+        /// <param name="friendlyName">The name displayed in-game.</param>
+        /// <param name="description">The tooltip displayed in-game.</param>
+        /// <param name="model">The default model of  this egg.</param>
+        /// <param name="hatchingCreature">The creature that hatches out of this egg.</param>
+        /// <param name="spriteTexture">The texture displayed in the inventory.</param>
+        /// <param name="hatchingTime">How much time (in days) it takes for this egg to hatch.</param>
         public CreatureEggAsset(string classId, string friendlyName, string description, GameObject model, TechType hatchingCreature, Texture2D spriteTexture, float hatchingTime) : base(classId, friendlyName, description)
         {
             this.model = model;
@@ -31,7 +47,9 @@ namespace ECCLibrary
             this.spriteTexture = spriteTexture;
             this.hatchingTime = hatchingTime;
         }
-
+        /// <summary>
+        /// Information related to spawning. Most of this is done for you; only override this if necessary.
+        /// </summary>
         public override WorldEntityInfo EntityInfo => new WorldEntityInfo()
         {
             slotType = EntitySlot.Type.Small,
@@ -39,7 +57,9 @@ namespace ECCLibrary
             classId = ClassID,
             techType = TechType
         };
-
+        /// <summary>
+        /// Patch this Egg into the game. Only override this method if necessary.
+        /// </summary>
         new public void Patch()
         {
             sprite = ImageUtils.LoadSpriteFromTexture(spriteTexture);
@@ -99,9 +119,11 @@ namespace ECCLibrary
                 egg.overrideEggType = TechType;
                 egg.daysBeforeHatching = hatchingTime;
 
-                EntityTag entityTag = prefab.AddComponent<EntityTag>();
+                EntityTag entityTag = prefab.EnsureComponent<EntityTag>();
                 entityTag.slotType = EntitySlot.Type.Small;
                 ECCHelpers.ApplySNShaders(prefab, MaterialSettings);
+
+                AddCustomBehaviours();
             }
             return prefab;
         }
@@ -111,22 +133,22 @@ namespace ECCLibrary
             if (prefab == null)
             {
                 prefab = model;
-                prefab.AddComponent<PrefabIdentifier>().ClassId = ClassID;
-                prefab.AddComponent<TechTag>().type = TechType;
+                prefab.EnsureComponent<PrefabIdentifier>().ClassId = ClassID;
+                prefab.EnsureComponent<TechTag>().type = TechType;
                 prefab.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Near;
-                SkyApplier skyApplier = prefab.AddComponent<SkyApplier>();
+                SkyApplier skyApplier = prefab.EnsureComponent<SkyApplier>();
                 skyApplier.renderers = prefab.GetComponentsInChildren<Renderer>();
 
-                Pickupable pickupable = prefab.AddComponent<Pickupable>();
+                Pickupable pickupable = prefab.EnsureComponent<Pickupable>();
 
-                LiveMixin lm = prefab.AddComponent<LiveMixin>();
+                LiveMixin lm = prefab.EnsureComponent<LiveMixin>();
                 lm.data = eggLiveMixinData;
                 lm.health = GetMaxHealth;
 
-                VFXSurface surface = prefab.AddComponent<VFXSurface>();
+                VFXSurface surface = prefab.EnsureComponent<VFXSurface>();
                 surface.surfaceType = VFXSurfaceTypes.organic;
 
-                WaterParkItem waterParkItem = prefab.AddComponent<WaterParkItem>();
+                WaterParkItem waterParkItem = prefab.EnsureComponent<WaterParkItem>();
                 waterParkItem.pickupable = pickupable;
 
                 Rigidbody rb = prefab.EnsureComponent<Rigidbody>();
@@ -136,25 +158,32 @@ namespace ECCLibrary
                 WorldForces worldForces = prefab.EnsureComponent<WorldForces>();
                 worldForces.useRigidbody = rb;
 
-                CreatureEgg egg = prefab.AddComponent<CreatureEgg>();
+                CreatureEgg egg = prefab.EnsureComponent<CreatureEgg>();
                 egg.animator = prefab.GetComponentInChildren<Animator>();
                 egg.hatchingCreature = hatchingCreature;
                 egg.overrideEggType = TechType;
                 egg.daysBeforeHatching = hatchingTime;
 
-                EntityTag entityTag = prefab.AddComponent<EntityTag>();
+                EntityTag entityTag = prefab.EnsureComponent<EntityTag>();
                 entityTag.slotType = EntitySlot.Type.Small;
                 ECCHelpers.ApplySNShaders(prefab, MaterialSettings);
+
+                AddCustomBehaviours();
             }
             yield return null;
             gameObject.Set(prefab);
         }
-
+        /// <summary>
+        /// Override this to change the sprite. By default uses the sprite passed in from the constructor.
+        /// </summary>
+        /// <returns></returns>
         protected override Atlas.Sprite GetItemSprite()
         {
             return sprite;
         }
-
+        /// <summary>
+        /// Settings related to how this egh is rendered.
+        /// </summary>
         public virtual UBERMaterialProperties MaterialSettings
         {
             get
@@ -162,7 +191,9 @@ namespace ECCLibrary
                 return new UBERMaterialProperties(8f, 1f);
             }
         }
-
+        /// <summary>
+        /// Is this egg immune to acid?
+        /// </summary>
         public virtual bool AcidImmune
         {
             get
@@ -170,7 +201,9 @@ namespace ECCLibrary
                 return false;
             }
         }
-
+        /// <summary>
+        /// The max health of this egg. Note: one knife swing deals 20 damage.
+        /// </summary>
         public virtual float GetMaxHealth
         {
             get
@@ -178,7 +211,9 @@ namespace ECCLibrary
                 return 20f;
             }
         }
-
+        /// <summary>
+        /// Set to 'FriendlyName' by default.
+        /// </summary>
         public virtual string GetEncyTitle
         {
             get
@@ -186,7 +221,9 @@ namespace ECCLibrary
                 return FriendlyName;
             }
         }
-
+        /// <summary>
+        /// Override this to edit the ency text.
+        /// </summary>
         public virtual string GetEncyDesc
         {
             get
@@ -194,7 +231,9 @@ namespace ECCLibrary
                 return "No ency description.";
             }
         }
-
+        /// <summary>
+        /// Override and set to true if you want this to be scannable & have a databank entry.
+        /// </summary>
         public virtual bool IsScannable
         {
             get
@@ -202,12 +241,22 @@ namespace ECCLibrary
                 return false;
             }
         }
-        public ScannableItemData ScannableSettings
+        /// <summary>
+        /// Only override this if necessary. Scannable settings are already done for you. Override IsScannable, GetEncyTitle, and GetEncyDesc for most Ency related options.
+        /// </summary>
+        public virtual ScannableItemData ScannableSettings
         {
             get
             {
                 return new ScannableItemData(true, 2f, "Lifeforms/Fauna/Eggs", new string[] { "Lifeforms", "Fauna", "Eggs" }, Sprite.Create(sprite.texture, new Rect(Vector2.zero, new Vector2(sprite.texture.width, sprite.texture.height)), new Vector2(0.5f, 0.5f)), null);
             }
+        }
+        /// <summary>
+        /// Override this method if you want to further edit the Egg prefab.
+        /// </summary>
+        public virtual void AddCustomBehaviours()
+        {
+
         }
     }
 }

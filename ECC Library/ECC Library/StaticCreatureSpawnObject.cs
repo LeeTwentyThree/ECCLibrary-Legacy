@@ -15,7 +15,7 @@ namespace ECCLibrary
         /// <summary>
         /// Allow a new creature to spawn in a specific location. Call this in your patch method.
         /// </summary>
-        /// <param name="spawnData"></param>
+        /// <param name="spawnData">Information related to this specific StaticSpawn.</param>
         public static void RegisterStaticSpawn(StaticSpawn spawnData)
         {
             foreach(var spawn in staticSpawns)
@@ -140,6 +140,13 @@ namespace ECCLibrary
         public string uniqueIdentifier;
         public float maxDistance;
 
+        /// <summary>
+        /// Constructor for this struct.
+        /// </summary>
+        /// <param name="prefab">The Creature to be spawned.</param>
+        /// <param name="position">World position of the object's spawn.</param>
+        /// <param name="uniqueIdentifier">An ID that must be unique to all other static spawns.</param>
+        /// <param name="maxDistance">The creature will attempt to spawn when wihin this distance. Note: Non-global creatures cannot spawn in areas that have not fully loaded.</param>
         public StaticSpawn(CreatureAsset prefab, Vector3 position, string uniqueIdentifier, float maxDistance)
         {
             this.prefab = prefab.TechType;
@@ -147,6 +154,13 @@ namespace ECCLibrary
             this.uniqueIdentifier = uniqueIdentifier;
             this.maxDistance = maxDistance;
         }
+        /// <summary>
+        /// Constructor for this struct.
+        /// </summary>
+        /// <param name="prefab">The TechType to be spawned.</param>
+        /// <param name="position">World position of the object's spawn.</param>
+        /// <param name="uniqueIdentifier">An ID that must be unique to all other static spawns.</param>
+        /// <param name="maxDistance">The creature will attempt to spawn when wihin this distance. Note: Non-global creatures cannot spawn in areas that have not fully loaded.</param>
         public StaticSpawn(TechType prefab, Vector3 position, string uniqueIdentifier, float maxDistance)
         {
             this.prefab = prefab;

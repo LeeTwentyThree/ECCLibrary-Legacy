@@ -13,7 +13,7 @@ using ECCLibrary.Internal;
 namespace ECCLibrary
 {
     /// <summary>
-    /// A basic AssetClass that does everything required for edible fish for you. This class can not be inherited from.
+    /// A basic AssetClass that does everything required for edible fish for you. This class should not be inherited from.
     /// </summary>
     public sealed class EatableAsset : Craftable
     {
@@ -79,6 +79,9 @@ namespace ECCLibrary
             }
         }
 
+        /// <summary>
+        /// Patches this Edible into the game.
+        /// </summary>
         new public void Patch()
         {
             base.Patch();

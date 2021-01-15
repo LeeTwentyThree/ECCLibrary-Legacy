@@ -26,7 +26,7 @@ namespace ECCLibrary
             }
         }
         /// <summary>
-        /// Do not override this method unless necessary.
+        /// Do not override this method unless necessary. Override 'AddCustomBehaviour' instead.
         /// </summary>
         /// <returns></returns>
         public override GameObject GetGameObject()
@@ -520,6 +520,9 @@ namespace ECCLibrary
                 return ItemSoundsType.Fish;
             }
         }
+        /// <summary>
+        /// Settings related to how this creature is rendered.
+        /// </summary>
         public virtual UBERMaterialProperties MaterialSettings
         {
             get
@@ -527,6 +530,9 @@ namespace ECCLibrary
                 return new UBERMaterialProperties(8f, 1f);
             }
         }
+        /// <summary>
+        /// Settings related to how creatures respond to wandering out of their spawn zone.
+        /// </summary>
         public virtual StayAtLeashData StayAtLeashSettings
         {
             get
@@ -968,6 +974,14 @@ namespace ECCLibrary
             public float SwimInterval;
             public float EvaluatePriority;
 
+            /// <summary>
+            /// Constructor.
+            /// </summary>
+            /// <param name="swimRandomly">Whether this action is added to the creature or not.</param>
+            /// <param name="swimRadius">The distance this creature can wander in each direction.</param>
+            /// <param name="swimVelocity">The speed at which this creature swims idly.</param>
+            /// <param name="swimInterval">The time in seconds between each change in direction.</param>
+            /// <param name="priority">The priority for this inidividual CreatureAction.</param>
             public SwimRandomData(bool swimRandomly, Vector3 swimRadius, float swimVelocity, float swimInterval, float priority)
             {
                 SwimRandomly = swimRandomly;
@@ -1016,6 +1030,16 @@ namespace ECCLibrary
             public float FindLeaderChance;
             public float LoseLeaderChance;
 
+            /// <summary>
+            /// Constructor.
+            /// </summary>
+            /// <param name="evaluatePriority">The priority of this CreatureAction.</param>
+            /// <param name="swimVelocity">The speed at which the creature moves while schooling.</param>
+            /// <param name="swimInterval">The time between each "swim".</param>
+            /// <param name="schoolSize">The max distance each fish can move from its leader.</param>
+            /// <param name="breakDistance">The distance at which an individual fish breaks off from the school.</param>
+            /// <param name="findLeaderChance">The chance, per attempt, for a school to be formed.</param>
+            /// <param name="loseLeaderChance">The chance, each second, for a school to be broken.</param>
             public SwimInSchoolData(float evaluatePriority, float swimVelocity, float swimInterval, float schoolSize, float breakDistance, float findLeaderChance, float loseLeaderChance)
             {
                 EvaluatePriority = evaluatePriority;
@@ -1027,11 +1051,19 @@ namespace ECCLibrary
                 LoseLeaderChance = loseLeaderChance;
             }
         }
+        /// <summary>
+        /// Settings based around StayAtLeash.
+        /// </summary>
         public struct StayAtLeashData
         {
             public float EvaluatePriority;
             public float MaxDistance;
 
+            /// <summary>
+            /// Constructor.
+            /// </summary>
+            /// <param name="evaluatePriority">The priority of the action when applicable.</param>
+            /// <param name="maxDistance">The distance at which the creature will attempt to perform this action.</param>
             public StayAtLeashData(float evaluatePriority, float maxDistance)
             {
                 EvaluatePriority = evaluatePriority;
