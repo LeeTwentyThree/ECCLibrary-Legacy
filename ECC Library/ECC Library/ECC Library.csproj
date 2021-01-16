@@ -103,8 +103,6 @@
     <Compile Include="ECCPatch.cs" />
     <Compile Include="StaticCreatureSpawnObject.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="obj\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

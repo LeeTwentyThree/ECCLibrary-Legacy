@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UWE;
 
 namespace ECCLibrary
 {
@@ -110,9 +111,29 @@ namespace ECCLibrary
             return true;
         }
 
+        GameObject GetPrefab()
+        {
+            GameObject prefab = null;
+            if(mySpawnData.spawnType == StaticSpawn.SpawnType.TechType)
+            {
+                prefab = CraftData.GetPrefabForTechType(mySpawnData.prefab);
+            }
+            else if(mySpawnData.spawnType == StaticSpawn.SpawnType.ClassID)
+            {
+                if (!PrefabDatabase.TryGetPrefab(mySpawnData.classId, out prefab))
+                {
+                    ECCLog.AddMessage("No prefab found by classId {0}.", mySpawnData.classId);
+                }
+            }
+            if (prefab == null)
+            {
+                ECCLog.AddMessage("Warning: StaticCreatureSpawnObject failed for Unique Spawn {0}.", mySpawnData.uniqueIdentifier);
+            }
+            return prefab;
+        }
         void Spawn()
         {
-            GameObject obj = UWE.Utils.InstantiateDeactivated(CraftData.GetPrefabForTechType(mySpawnData.prefab), mySpawnData.position, Quaternion.identity);
+            GameObject obj = UWE.Utils.InstantiateDeactivated(GetPrefab(), mySpawnData.position, Quaternion.identity);
             LargeWorldEntity lwe = obj.GetComponent<LargeWorldEntity>();
             bool active = LargeWorld.main.streamer.cellManager.RegisterEntity(lwe);
             if (active)
@@ -135,7 +156,9 @@ namespace ECCLibrary
     /// </summary>
     public struct StaticSpawn
     {
+        internal SpawnType spawnType;
         public TechType prefab;
+        public string classId;
         public Vector3 position;
         public string uniqueIdentifier;
         public float maxDistance;
@@ -153,6 +176,8 @@ namespace ECCLibrary
             this.position = position;
             this.uniqueIdentifier = uniqueIdentifier;
             this.maxDistance = maxDistance;
+            spawnType = SpawnType.TechType;
+            classId = string.Empty;
         }
         /// <summary>
         /// Constructor for this struct.
@@ -167,6 +192,30 @@ namespace ECCLibrary
             this.position = position;
             this.uniqueIdentifier = uniqueIdentifier;
             this.maxDistance = maxDistance;
+            spawnType = SpawnType.TechType;
+            classId = string.Empty;
+        }
+        /// <summary>
+        /// Constructor for this struct.
+        /// </summary>
+        /// <param name="classId">The ClassId of the prefab to be spawned.</param>
+        /// <param name="position">World position of the object's spawn.</param>
+        /// <param name="uniqueIdentifier">An ID that must be unique to all other static spawns.</param>
+        /// <param name="maxDistance">The creature will attempt to spawn when wihin this distance. Note: Non-global creatures cannot spawn in areas that have not fully loaded.</param>
+        public StaticSpawn(string classId, Vector3 position, string uniqueIdentifier, float maxDistance)
+        {
+            this.classId = classId;
+            this.prefab = TechType.None;
+            this.position = position;
+            this.uniqueIdentifier = uniqueIdentifier;
+            this.maxDistance = maxDistance;
+            spawnType = SpawnType.ClassID;
+        }
+
+        public enum SpawnType
+        {
+            TechType,
+            ClassID
         }
     }
 }
