@@ -123,6 +123,17 @@ namespace ECCLibrary
                 entityTag.slotType = EntitySlot.Type.Small;
                 ECCHelpers.ApplySNShaders(prefab, MaterialSettings);
 
+                if (ManualEggExplosion)
+                {
+                    egg.explodeOnHatch = false;
+
+                    if (egg.progress >= 1f)
+                    {
+                        lm.TakeDamage(GetMaxHealth);
+                        GameObject.Destroy(prefab, 15f);
+                    }
+                }
+
                 AddCustomBehaviours();
             }
             return prefab;
@@ -167,6 +178,17 @@ namespace ECCLibrary
                 EntityTag entityTag = prefab.EnsureComponent<EntityTag>();
                 entityTag.slotType = EntitySlot.Type.Small;
                 ECCHelpers.ApplySNShaders(prefab, MaterialSettings);
+
+                if (ManualEggExplosion)
+                {
+                    egg.explodeOnHatch = false;
+
+                    if (egg.progress >= 1f)
+                    {
+                        lm.TakeDamage(GetMaxHealth);
+                        GameObject.Destroy(prefab, 15f);
+                    }
+                }
 
                 AddCustomBehaviours();
             }
@@ -258,5 +280,10 @@ namespace ECCLibrary
         {
 
         }
+        /// <summary>
+        /// <para>Only meshes with read and write enabled can be exploded.</para>
+        /// <para>Override this to true if your mesh doesn't have read and write enabled.</para>
+        /// </summary>
+        public virtual bool ManualEggExplosion { get; } = false;
     }
 }
