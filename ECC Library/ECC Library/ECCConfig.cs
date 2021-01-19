@@ -11,8 +11,8 @@ namespace ECCLibrary
     [Menu("Eel's Creature Creator Settings")]
     public class ECCConfig : ConfigFile
     {
-        [Slider("ECC Master volume", 0f, 1f, Step = 0.02f, DefaultValue = 1f, Tooltip = "Not influenced by the in-game sound setting.")]
-        public float Volume;
+        [Slider("ECC Master volume", 0f, 100f, Step = 1f, DefaultValue = 100f, Tooltip = "Not influenced by the in-game sound setting.")]
+        public float VolumeNew;
         [Toggle("ECC Verbose Messages", Tooltip = "Whether to display ECC log messages & errors on the screen.")]
         public bool ECCLogMessages;
     }
