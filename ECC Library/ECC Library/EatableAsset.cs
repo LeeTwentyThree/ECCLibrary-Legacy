@@ -9,7 +9,10 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using ECCLibrary.Internal;
-
+#if SN1
+using Sprite = Atlas.Sprite;
+using RecipeData = SMLHelper.V2.Crafting.TechData;
+#endif
 namespace ECCLibrary
 {
     /// <summary>
@@ -22,7 +25,7 @@ namespace ECCLibrary
         EatableData eatableData;
         bool cured;
         GameObject prefab;
-        Atlas.Sprite sprite;
+        Sprite sprite;
         ItemSoundsType soundType;
 
         /// <summary>
@@ -67,15 +70,15 @@ namespace ECCLibrary
             this.soundType = soundType;
         }
 
-        protected override TechData GetBlueprintRecipe()
+        protected override RecipeData GetBlueprintRecipe()
         {
             if (cured)
             {
-                return new TechData() { Ingredients = new List<Ingredient>() { new Ingredient(originalFish, 1), new Ingredient(TechType.Salt, 1) }, craftAmount = 1 };
+                return new RecipeData() { Ingredients = new List<Ingredient>() { new Ingredient(originalFish, 1), new Ingredient(TechType.Salt, 1) }, craftAmount = 1 };
             }
             else
             {
-                return new TechData() { Ingredients = new List<Ingredient>() { new Ingredient(originalFish, 1) }, craftAmount = 1 };
+                return new RecipeData() { Ingredients = new List<Ingredient>() { new Ingredient(originalFish, 1) }, craftAmount = 1 };
             }
         }
 
@@ -92,7 +95,7 @@ namespace ECCLibrary
             }
             ECCHelpers.PatchItemSounds(TechType, soundType);
         }
-
+#if SN1
         public override GameObject GetGameObject()
         {
             if(prefab == null)
@@ -125,6 +128,7 @@ namespace ECCLibrary
             }
             return prefab;
         }
+#endif
         public override IEnumerator GetGameObjectAsync(IOut<GameObject> gameObject)
         {
             if (prefab == null)
@@ -159,7 +163,7 @@ namespace ECCLibrary
             gameObject.Set(prefab);
         }
 
-        protected override Atlas.Sprite GetItemSprite()
+        protected override Sprite GetItemSprite()
         {
             return sprite;
         }

@@ -7,13 +7,15 @@ using System.Reflection;
 using HarmonyLib;
 using ECCLibrary.Internal;
 using UWE;
-
+#if SN1
+using Sprite = Atlas.Sprite;
+#endif
 namespace ECCLibrary
 {
     public abstract class CreatureAsset : Spawnable
     {
         private GameObject model;
-        private Atlas.Sprite sprite;
+        private Sprite sprite;
 
         protected GameObject prefab;
 
@@ -25,6 +27,7 @@ namespace ECCLibrary
                 sprite = ImageUtils.LoadSpriteFromTexture(spriteTexture);
             }
         }
+#if SN1
         /// <summary>
         /// Do not override this method unless necessary. Override 'AddCustomBehaviour' instead.
         /// </summary>
@@ -39,6 +42,7 @@ namespace ECCLibrary
             }
             return prefab;
         }
+#endif
         public override IEnumerator GetGameObjectAsync(IOut<GameObject> gameObject)
         {
             if (prefab == null)
@@ -85,7 +89,7 @@ namespace ECCLibrary
         /// This is by default the 'sprite' defined in the constructor.
         /// </summary>
         /// <returns></returns>
-        protected override Atlas.Sprite GetItemSprite()
+        protected override Sprite GetItemSprite()
         {
             return sprite;
         }

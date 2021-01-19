@@ -11,7 +11,9 @@ using UnityEngine;
 using UWE;
 using HarmonyLib;
 using ECCLibrary;
-
+#if SN1
+using Sprite = Atlas.Sprite;
+#endif
 namespace ECCLibrary
 {
     /// <summary>
@@ -25,7 +27,7 @@ namespace ECCLibrary
         /// </summary>
         protected GameObject prefab;
         private TechType hatchingCreature;
-        private Atlas.Sprite sprite;
+        private Sprite sprite;
         Texture2D spriteTexture;
         static LiveMixinData eggLiveMixinData;
         float hatchingTime;
@@ -82,7 +84,7 @@ namespace ECCLibrary
             }
             ECCHelpers.PatchItemSounds(TechType, ItemSoundsType.Egg);
         }
-
+#if SN1
         public override GameObject GetGameObject()
         {
             if(prefab == null)
@@ -138,7 +140,7 @@ namespace ECCLibrary
             }
             return prefab;
         }
-
+#endif
         public override IEnumerator GetGameObjectAsync(IOut<GameObject> gameObject)
         {
             if (prefab == null)
@@ -199,7 +201,7 @@ namespace ECCLibrary
         /// Override this to change the sprite. By default uses the sprite passed in from the constructor.
         /// </summary>
         /// <returns></returns>
-        protected override Atlas.Sprite GetItemSprite()
+        protected override Sprite GetItemSprite()
         {
             return sprite;
         }
@@ -270,7 +272,7 @@ namespace ECCLibrary
         {
             get
             {
-                return new ScannableItemData(true, 2f, "Lifeforms/Fauna/Eggs", new string[] { "Lifeforms", "Fauna", "Eggs" }, Sprite.Create(sprite.texture, new Rect(Vector2.zero, new Vector2(sprite.texture.width, sprite.texture.height)), new Vector2(0.5f, 0.5f)), null);
+                return new ScannableItemData(true, 2f, "Lifeforms/Fauna/Eggs", new string[] { "Lifeforms", "Fauna", "Eggs" }, UnityEngine.Sprite.Create(sprite.texture, new Rect(Vector2.zero, new Vector2(sprite.texture.width, sprite.texture.height)), new Vector2(0.5f, 0.5f)), null);
             }
         }
         /// <summary>
