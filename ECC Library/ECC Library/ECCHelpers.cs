@@ -231,9 +231,13 @@ namespace ECCLibrary
             }
         }
 
+        /// <summary>
+        /// Returns the master volume for ECC (ranges from 0-1)
+        /// </summary>
+        /// <returns></returns>
         public static float GetECCVolume()
         {
-            return ECCPatch.config.Volume;
+            return ECCPatch.config.VolumeNew / 100f;
         }
         public static bool CompareStrings(string original, string compareTo, ECCStringComparison comparisonMode)
         {

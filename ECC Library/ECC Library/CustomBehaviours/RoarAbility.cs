@@ -35,6 +35,10 @@ namespace ECCLibrary.Internal
 
         public void PlayRoar()
         {
+            if (!creature.liveMixin.IsAlive())
+            {
+                return;
+            }
             creature.GetAnimator().SetTrigger(animationName);
             AudioClip clip = clipPool.GetRandomClip();
             source.PlayOneShot(clip);

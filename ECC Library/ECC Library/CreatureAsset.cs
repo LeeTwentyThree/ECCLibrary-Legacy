@@ -43,6 +43,10 @@ namespace ECCLibrary
             return prefab;
         }
 #endif
+        /// <summary>
+        /// Do not override this method unless necessary. Override 'AddCustomBehaviour' instead.
+        /// </summary>
+        /// <returns></returns>
         public override IEnumerator GetGameObjectAsync(IOut<GameObject> gameObject)
         {
             if (prefab == null)
@@ -283,7 +287,7 @@ namespace ECCLibrary
             if (Pickupable)
             {
                 components.pickupable = prefab.EnsureComponent<Pickupable>();
-                if(ViewModelSettings.ReferenceHoldingAnimation != TechType.None)
+                if (ViewModelSettings.ReferenceHoldingAnimation != TechType.None)
                 {
                     HeldFish heldFish = prefab.EnsureComponent<HeldFish>();
                     heldFish.animationName = ViewModelSettings.ReferenceHoldingAnimation.ToString().ToLower();
@@ -292,7 +296,7 @@ namespace ECCLibrary
                 }
                 else
                 {
-                    ECCLog.AddMessage("Creature {0} is Pickupable but has no applied ViewModelSettings.", TechType);
+                    ECCLog.AddMessage("Creature {0} is Pickupable but has no applied ViewModelSettings. This is necessary to be held and placed in an aquarium.", TechType);
                 }
                 if (!string.IsNullOrEmpty(ViewModelSettings.ViewModelName))
                 {
@@ -301,6 +305,14 @@ namespace ECCLibrary
                     if (fpsModel.propModel == null)
                     {
                         ECCLog.AddMessage("Error finding World model. No child of name {0} exists in the hierarchy of item {1}.", ViewModelSettings.WorldModelName, TechType);
+                    }
+                    else
+                    {
+                        prefab.EnsureComponent<AquariumFish>().model = fpsModel.propModel;
+                        if(fpsModel.propModel.GetComponentInChildren<AnimateByVelocity>() == null)
+                        {
+                            fpsModel.propModel.AddComponent<AnimateByVelocity>();
+                        }
                     }
                     fpsModel.viewModel = prefab.SearchChild(ViewModelSettings.ViewModelName);
                     if (fpsModel.viewModel == null)
@@ -579,7 +591,7 @@ namespace ECCLibrary
             }
         }
         /// <summary>
-        /// Whether the creature can be picked up and held, or not.
+        /// Whether the creature can be picked up and held, or not. Pickupable fish can also be placed in the Small Aquarium if ViewModelSettings are set correctly.
         /// </summary>
         public virtual bool Pickupable
         {
