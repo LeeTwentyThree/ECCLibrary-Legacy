@@ -15,7 +15,7 @@ namespace ECCLibrary
     /// <summary>
     /// A basic AssetClass that does everything required for edible fish for you. This class should not be inherited from.
     /// </summary>
-    public sealed class EatableAsset : Craftable
+    public class EatableAsset : Craftable
     {
         TechType originalFish;
         GameObject model;
@@ -182,5 +182,28 @@ namespace ECCLibrary
         }
 
         public UBERMaterialProperties MaterialSettings = new UBERMaterialProperties(8f, 1f);
+
+        public override TechCategory CategoryForPDA
+        {
+            get
+            {
+                if (cured)
+                {
+                    return TechCategory.CuredFood;
+                }
+                else
+                {
+                    return TechCategory.CookedFood;
+                }
+            }
+        }
+
+        public override TechGroup GroupForPDA
+        {
+            get
+            {
+                return TechGroup.Survival;
+            }
+        }
     }
 }
