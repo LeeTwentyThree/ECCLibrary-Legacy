@@ -7,14 +7,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECC Library", "ECC Library.
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
+		SN1|Any CPU = SN1|Any CPU
+		BZ|Any CPU = BZ|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8D61D155-585B-46E1-A88C-AA2623D69830}.Debug|Any CPU.ActiveCfg = Release|Any CPU
-		{8D61D155-585B-46E1-A88C-AA2623D69830}.Debug|Any CPU.Build.0 = Release|Any CPU
-		{8D61D155-585B-46E1-A88C-AA2623D69830}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8D61D155-585B-46E1-A88C-AA2623D69830}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D61D155-585B-46E1-A88C-AA2623D69830}.SN1|Any CPU.ActiveCfg = SN1|Any CPU
+		{8D61D155-585B-46E1-A88C-AA2623D69830}.SN1|Any CPU.Build.0 = SN1|Any CPU
+		{8D61D155-585B-46E1-A88C-AA2623D69830}.BZ|Any CPU.ActiveCfg = BZ|Any CPU
+		{8D61D155-585B-46E1-A88C-AA2623D69830}.BZ|Any CPU.Build.0 = BZ|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
