@@ -89,12 +89,18 @@ namespace ECCLibrary
         {
             if(prefab == null)
             {
-                prefab = model;
+                var obj = GameObject.Instantiate(model);
+                prefab = obj;
                 prefab.EnsureComponent<PrefabIdentifier>().ClassId = ClassID;
                 prefab.EnsureComponent<TechTag>().type = TechType;
                 prefab.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Near;
                 SkyApplier skyApplier = prefab.EnsureComponent<SkyApplier>();
                 skyApplier.renderers = prefab.GetComponentsInChildren<Renderer>();
+                skyApplier.anchorSky = Skies.Auto;
+                skyApplier.dynamic = false;
+                skyApplier.emissiveFromPower = false;
+                skyApplier.hideFlags = HideFlags.None;
+                skyApplier.enabled = true;
 
                 Pickupable pickupable = prefab.EnsureComponent<Pickupable>();
 
@@ -116,7 +122,7 @@ namespace ECCLibrary
                 worldForces.useRigidbody = rb;
 
                 CreatureEgg egg = prefab.EnsureComponent<CreatureEgg>();
-                egg.animator = prefab.GetComponentInChildren<Animator>();
+                egg.animator = prefab.GetComponentInChildren<Animator>() ?? prefab.GetComponent<Animator>() ?? prefab.AddComponent<Animator>();
                 egg.hatchingCreature = hatchingCreature;
                 egg.overrideEggType = TechType;
                 egg.daysBeforeHatching = hatchingTime;
@@ -135,9 +141,11 @@ namespace ECCLibrary
                         GameObject.Destroy(prefab, 15f);
                     }
                 }
+                obj.SetActive(false);
 
                 AddCustomBehaviours();
             }
+
             return prefab;
         }
 #endif
@@ -145,12 +153,18 @@ namespace ECCLibrary
         {
             if (prefab == null)
             {
-                prefab = model;
+                var obj = GameObject.Instantiate(model);
+                prefab = obj;
                 prefab.EnsureComponent<PrefabIdentifier>().ClassId = ClassID;
                 prefab.EnsureComponent<TechTag>().type = TechType;
                 prefab.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Near;
                 SkyApplier skyApplier = prefab.EnsureComponent<SkyApplier>();
                 skyApplier.renderers = prefab.GetComponentsInChildren<Renderer>();
+                skyApplier.anchorSky = Skies.Auto;
+                skyApplier.dynamic = false;
+                skyApplier.emissiveFromPower = false;
+                skyApplier.hideFlags = HideFlags.None;
+                skyApplier.enabled = true;
 
                 Pickupable pickupable = prefab.EnsureComponent<Pickupable>();
 
@@ -172,7 +186,7 @@ namespace ECCLibrary
                 worldForces.useRigidbody = rb;
 
                 CreatureEgg egg = prefab.EnsureComponent<CreatureEgg>();
-                egg.animator = prefab.GetComponentInChildren<Animator>();
+                egg.animator = prefab.GetComponentInChildren<Animator>() ?? prefab.GetComponent<Animator>() ?? prefab.AddComponent<Animator>();
                 egg.hatchingCreature = hatchingCreature;
                 egg.overrideEggType = TechType;
                 egg.daysBeforeHatching = hatchingTime;
@@ -191,6 +205,7 @@ namespace ECCLibrary
                         GameObject.Destroy(prefab, 15f);
                     }
                 }
+                obj.SetActive(false);
 
                 AddCustomBehaviours();
             }
