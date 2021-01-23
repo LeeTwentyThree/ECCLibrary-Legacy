@@ -19,6 +19,8 @@ namespace ECCLibrary
 
         protected GameObject prefab;
 
+        static GameObject electricalDamagePrefab;
+
         public CreatureAsset(string classId, string friendlyName, string description, GameObject model, Texture2D spriteTexture) : base(classId, friendlyName, description)
         {
             this.model = model;
@@ -27,6 +29,32 @@ namespace ECCLibrary
                 sprite = ImageUtils.LoadSpriteFromTexture(spriteTexture);
             }
         }
+#if SN1
+        private static void ValidateElectricalDamagePrefab()
+        {
+            if(electricalDamagePrefab)
+            {
+                return;
+            }
+            GameObject reaperLeviathan = Resources.Load<GameObject>("WorldEntities/Creatures/ReaperLeviathan");
+            if (reaperLeviathan)
+            {
+                electricalDamagePrefab = reaperLeviathan.GetComponent<LiveMixin>().data.electricalDamageEffect;                
+            }
+        }
+#endif
+
+#if BZ
+        private static void ValidateElectricalDamagePrefab()
+        {
+            if(electricalDamagePrefab)
+            {
+                return;
+            }
+            //logic for getting the electrical damage prefab goes here
+        }
+#endif
+
 #if SN1
         /// <summary>
         /// Do not override this method unless necessary. Override 'AddCustomBehaviour' instead.
@@ -202,8 +230,10 @@ namespace ECCLibrary
             components.worldForces.underwaterGravity = UnderwaterGravity;
             components.worldForces.aboveWaterGravity = AboveWaterGravity;
 
+            ValidateElectricalDamagePrefab();
             components.liveMixin = prefab.EnsureComponent<LiveMixin>();
             components.liveMixin.data = ECCHelpers.CreateNewLiveMixinData();
+            components.liveMixin.data.electricalDamageEffect = electricalDamagePrefab;
             SetLiveMixinData(ref components.liveMixin.data);
             if (components.liveMixin.data.maxHealth <= 0f)
             {
@@ -475,7 +505,7 @@ namespace ECCLibrary
             return trail;
         }
 
-        #region Abstracts
+#region Abstracts
 
         /// <summary>
         /// Add CreatureActions and things of that like here.
@@ -523,9 +553,9 @@ namespace ECCLibrary
         /// <param name="liveMixinData"></param>
         public abstract void SetLiveMixinData(ref LiveMixinData liveMixinData);
 
-        #endregion
+#endregion
 
-        #region Overrideable
+#region Overrideable
         /// <summary>
         /// The type of sound effects this creature will use in the Inventory.
         /// </summary>
@@ -795,9 +825,9 @@ namespace ECCLibrary
             }
         }
 
-        #endregion
+#endregion
 
-        #region Ency Related Overridables
+#region Ency Related Overridables
         /// <summary>
         /// The Title of the encyclopedia entry.
         /// </summary>
@@ -830,9 +860,9 @@ namespace ECCLibrary
                 return new ScannableItemData();
             }
         }
-        #endregion Ency
+#endregion Ency
 
-        #region Structs
+#region Structs
         /// <summary>
         /// First person view model settings.
         /// </summary>
@@ -1086,6 +1116,6 @@ namespace ECCLibrary
                 MaxDistance = maxDistance;
             }
         }
-        #endregion
+#endregion
     }
 }
