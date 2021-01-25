@@ -209,5 +209,13 @@ namespace ECCLibrary
                 return TechGroup.Survival;
             }
         }
+
+        public override TechType RequiredForUnlock
+        {
+            get
+            {
+                return originalFish;
+            }
+        }
     }
 }
