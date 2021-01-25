@@ -593,7 +593,7 @@ namespace ECCLibrary
                 return new HeldFishData();
             }
         }
-        public RespawnData RespawnSettings
+        public virtual RespawnData RespawnSettings
         {
             get
             {
