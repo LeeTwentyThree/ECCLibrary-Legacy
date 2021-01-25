@@ -24,6 +24,7 @@ namespace ECCLibrary
         GameObject prefab;
         Sprite sprite;
         ItemSoundsType soundType;
+        UnityEngine.Sprite popup;
 
         /// <summary>
         /// Constructor for a cooked/cured version of the creature.
@@ -35,7 +36,7 @@ namespace ECCLibrary
         /// <param name="originalFish">The TechType of the original fish.</param>
         /// <param name="eatableData">The data related to being edible.</param>
         /// <param name="cured">Whether the recipe requires salt. Also, only non-cured fish will be spawned by the Thermoblade.</param>
-        /// <param name="sprite">The Icon.</param>
+        /// <param name="sprite">The icon in the inventory.</param>
         public EatableAsset(string classId, string friendlyName, string description, GameObject model, TechType originalFish, EatableData eatableData, bool cured, Texture2D sprite) : base(classId, friendlyName, description)
         {
             this.model = model;
@@ -56,7 +57,8 @@ namespace ECCLibrary
         /// <param name="originalFish">The TechType of the original fish.</param>
         /// <param name="eatableData">The data related to being edible.</param>
         /// <param name="cured">Whether the recipe requires salt. Also, only non-cured fish will be spawned by the Thermoblade.</param>
-        /// <param name="sprite">The Icon.</param>
+        /// <param name="sprite">The icon in the inventory.</param>
+        /// <param name="soundType">The audio used for this creature in the inventory.</param>
         public EatableAsset(string classId, string friendlyName, string description, GameObject model, TechType originalFish, EatableData eatableData, bool cured, Texture2D sprite, ItemSoundsType soundType) : base(classId, friendlyName, description)
         {
             this.model = model;
@@ -65,6 +67,29 @@ namespace ECCLibrary
             this.cured = cured;
             this.sprite = ImageUtils.LoadSpriteFromTexture(sprite);
             this.soundType = soundType;
+        }
+
+        /// <summary>
+        /// Constructor for a cooked/cured version of the creature.
+        /// </summary>
+        /// <param name="classId">The TechType.</param>
+        /// <param name="friendlyName">The friendly name.</param>
+        /// <param name="description">The tooltip.</param>
+        /// <param name="model">The prefab of the original fish.</param>
+        /// <param name="originalFish">The TechType of the original fish.</param>
+        /// <param name="eatableData">The data related to being edible.</param>
+        /// <param name="cured">Whether the recipe requires salt. Also, only non-cured fish will be spawned by the Thermoblade.</param>
+        /// <param name="sprite">The icon in the inventory.</param>
+        /// <param name="soundType">The audio used for this creature in the inventory.</param>
+        public EatableAsset(string classId, string friendlyName, string description, GameObject model, TechType originalFish, EatableData eatableData, bool cured, Texture2D sprite, ItemSoundsType soundType, UnityEngine.Sprite unlockPopup) : base(classId, friendlyName, description)
+        {
+            this.model = model;
+            this.originalFish = originalFish;
+            this.eatableData = eatableData;
+            this.cured = cured;
+            this.sprite = ImageUtils.LoadSpriteFromTexture(sprite);
+            this.soundType = soundType;
+            this.popup = unlockPopup;
         }
 
         protected override RecipeData GetBlueprintRecipe()
@@ -92,8 +117,8 @@ namespace ECCLibrary
             }
             ECCHelpers.PatchItemSounds(TechType, soundType);
             LanguageHandler.SetLanguageLine(string.Format("{0}_DiscoverMessage", ClassID), "NEW LIFEFORM DISCOVERED");
-            ECCLog.AddMessage(string.Format("{0}_DiscoverMessage", ClassID));
         }
+
 #if SN1
         public override GameObject GetGameObject()
         {
