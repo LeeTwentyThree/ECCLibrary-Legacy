@@ -1,14 +1,11 @@
 ﻿using SMLHelper.V2.Assets;
 using SMLHelper.V2.Crafting;
 using SMLHelper.V2.Utility;
-using System;
 using System.Collections.Generic;
 using System.Collections;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using ECCLibrary.Internal;
+using SMLHelper.V2.Handlers;
 #if SN1
 using Sprite = Atlas.Sprite;
 using RecipeData = SMLHelper.V2.Crafting.TechData;
@@ -94,6 +91,8 @@ namespace ECCLibrary
                 ECCHelpers.GetPrivateStaticField<Dictionary<TechType, TechType>>(typeof(CraftData), "cookedCreatureList").Add(originalFish, TechType); 
             }
             ECCHelpers.PatchItemSounds(TechType, soundType);
+            LanguageHandler.SetLanguageLine(string.Format("{0}_DiscoverMessage", ClassID), "NEW LIFEFORM DISCOVERED");
+            ECCLog.AddMessage(string.Format("{0}_DiscoverMessage", ClassID));
         }
 #if SN1
         public override GameObject GetGameObject()
@@ -217,5 +216,7 @@ namespace ECCLibrary
                 return originalFish;
             }
         }
+
+        public override string DiscoverMessage => "NotificationCreatureDiscovered";
     }
 }

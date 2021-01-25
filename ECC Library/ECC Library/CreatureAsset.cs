@@ -29,6 +29,7 @@ namespace ECCLibrary
                 sprite = ImageUtils.LoadSpriteFromTexture(spriteTexture);
             }
         }
+
 #if SN1
         private static void ValidateElectricalDamagePrefab()
         {
@@ -427,6 +428,7 @@ namespace ECCLibrary
             }
             ScannableSettings.AttemptPatch(this, GetEncyTitle, GetEncyDesc);
             ECCHelpers.PatchItemSounds(TechType, ItemSounds);
+            LanguageHandler.SetLanguageLine(string.Format("{0}_DiscoverMessage", ClassID), "NEW LIFEFORM DISCOVERED");
             PostPatch();
         }
         /// <summary>
