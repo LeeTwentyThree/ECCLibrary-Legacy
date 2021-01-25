@@ -140,12 +140,21 @@ namespace ECCLibrary
             LanguageHandler.SetLanguageLine("EncyDesc_" + prefab.ClassID, encyDesc);
         }
     }
+    /// <summary>
+    /// Settings related to the standard Subnautica shader.
+    /// </summary>
     public struct UBERMaterialProperties
     {
         public float Shininess;
         public float SpecularInt;
         public float EmissionScale;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="shininess">How smooth the material appears. Recommended range: 1-8.</param>
+        /// <param name="specularInt">How bright the reflection is. Recommended range: 1-10.</param>
+        /// <param name="emissionScale">How bright the emission/illum is. Recommended range: 0-5.</param>
         public UBERMaterialProperties(float shininess, float specularInt = 1f, float emissionScale = 1f)
         {
             Shininess = shininess;
