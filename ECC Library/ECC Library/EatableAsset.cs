@@ -45,6 +45,16 @@ namespace ECCLibrary
             this.cured = cured;
             this.sprite = ImageUtils.LoadSpriteFromTexture(sprite);
             this.soundType = ItemSoundsType.Default;
+            OnFinishedPatching += () => 
+            {
+                //Thermoblade support
+                if (!cured && originalFish != TechType.None)
+                {
+                    ECCHelpers.GetPrivateStaticField<Dictionary<TechType, TechType>>(typeof(CraftData), "cookedCreatureList").Add(originalFish, TechType); 
+                }
+                ECCHelpers.PatchItemSounds(TechType, soundType);
+                LanguageHandler.SetLanguageLine(string.Format("{0}_DiscoverMessage", ClassID), "NEW LIFEFORM DISCOVERED");
+            };
         }
 
         /// <summary>
@@ -100,6 +110,16 @@ namespace ECCLibrary
             this.sprite = ImageUtils.LoadSpriteFromTexture(sprite);
             this.soundType = soundType;
             this.popup = unlockPopup;
+            OnFinishedPatching += () => 
+            {
+                //Thermoblade support
+                if (!cured && originalFish != TechType.None)
+                {
+                    ECCHelpers.GetPrivateStaticField<Dictionary<TechType, TechType>>(typeof(CraftData), "cookedCreatureList").Add(originalFish, TechType); 
+                }
+                ECCHelpers.PatchItemSounds(TechType, soundType);
+                LanguageHandler.SetLanguageLine(string.Format("{0}_DiscoverMessage", ClassID), "NEW LIFEFORM DISCOVERED");
+            };
         }
 
         protected override RecipeData GetBlueprintRecipe()
