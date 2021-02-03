@@ -26,6 +26,23 @@ namespace ECCLibrary
             {
                 sprite = ImageUtils.LoadSpriteFromTexture(spriteTexture);
             }
+            OnFinishedPatching += () =>
+            {
+                WaterParkCreature.waterParkCreatureParameters.Add(TechType, WaterParkParameters);
+                BioReactorHandler.SetBioReactorCharge(TechType, BioReactorCharge);
+                ECCHelpers.PatchBehaviorType(TechType, BehaviourType);
+                if (Pickupable)
+                {
+                    ECCHelpers.PatchEquipmentType(TechType, EquipmentType.Hand);
+                }
+                if (AcidImmune)
+                {
+                    DamageSystem.acidImmune.AddItem(TechType);
+                }
+                ScannableSettings.AttemptPatch(this, GetEncyTitle, GetEncyDesc);
+                ECCHelpers.PatchItemSounds(TechType, ItemSounds);
+                PostPatch();
+            };
         }
 #if SN1
         /// <summary>
@@ -377,27 +394,6 @@ namespace ECCLibrary
             }
 
             return components;
-        }
-        /// <summary>
-        /// Add this creature into the game.
-        /// </summary>
-        new public void Patch()
-        {
-            base.Patch();
-            WaterParkCreature.waterParkCreatureParameters.Add(TechType, WaterParkParameters);
-            BioReactorHandler.SetBioReactorCharge(TechType, BioReactorCharge);
-            ECCHelpers.PatchBehaviorType(TechType, BehaviourType);
-            if (Pickupable)
-            {
-                ECCHelpers.PatchEquipmentType(TechType, EquipmentType.Hand);
-            }
-            if (AcidImmune)
-            {
-                DamageSystem.acidImmune.AddItem(TechType);
-            }
-            ScannableSettings.AttemptPatch(this, GetEncyTitle, GetEncyDesc);
-            ECCHelpers.PatchItemSounds(TechType, ItemSounds);
-            PostPatch();
         }
         /// <summary>
         /// Makes the creature aggressive to creatures matching ecoTarget.
