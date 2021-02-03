@@ -17,8 +17,21 @@ namespace ECCLibrary
         private GameObject model;
         private Sprite sprite;
 
+        /// <summary>
+        /// The prefab for this Creature. Edit this from the AddCustomBehaviour override.
+        /// </summary>
         protected GameObject prefab;
 
+        static GameObject electricalDamagePrefab;
+
+        /// <summary>
+        /// Creates a new instance of a CreatureAsset.
+        /// </summary>
+        /// <param name="classId">The ClassID / TechType. Example: 'ReaperLeviathan'. Should not match an existing creature.</param>
+        /// <param name="friendlyName">The name seen in-game. Example: 'Reaper Leviathan'.</param>
+        /// <param name="description">The description/tooltip seen in the inventory.</param>
+        /// <param name="model">The GameObject to be converted to a Creature.</param>
+        /// <param name="spriteTexture">The image seen in the inventory/</param>
         public CreatureAsset(string classId, string friendlyName, string description, GameObject model, Texture2D spriteTexture) : base(classId, friendlyName, description)
         {
             this.model = model;
@@ -44,6 +57,33 @@ namespace ECCLibrary
                 PostPatch();
             };
         }
+
+#if SN1
+        private static void ValidateElectricalDamagePrefab()
+        {
+            if(electricalDamagePrefab)
+            {
+                return;
+            }
+            GameObject reaperLeviathan = Resources.Load<GameObject>("WorldEntities/Creatures/ReaperLeviathan");
+            if (reaperLeviathan)
+            {
+                electricalDamagePrefab = reaperLeviathan.GetComponent<LiveMixin>().data.electricalDamageEffect;                
+            }
+        }
+#endif
+
+#if BZ
+        private static void ValidateElectricalDamagePrefab()
+        {
+            if(electricalDamagePrefab)
+            {
+                return;
+            }
+            //logic for getting the electrical damage prefab goes here
+        }
+#endif
+
 #if SN1
         /// <summary>
         /// Do not override this method unless necessary. Override 'AddCustomBehaviour' instead.
@@ -219,8 +259,10 @@ namespace ECCLibrary
             components.worldForces.underwaterGravity = UnderwaterGravity;
             components.worldForces.aboveWaterGravity = AboveWaterGravity;
 
+            ValidateElectricalDamagePrefab();
             components.liveMixin = prefab.EnsureComponent<LiveMixin>();
             components.liveMixin.data = ECCHelpers.CreateNewLiveMixinData();
+            components.liveMixin.data.electricalDamageEffect = electricalDamagePrefab;
             SetLiveMixinData(ref components.liveMixin.data);
             if (components.liveMixin.data.maxHealth <= 0f)
             {
@@ -471,7 +513,7 @@ namespace ECCLibrary
             return trail;
         }
 
-        #region Abstracts
+#region Abstracts
 
         /// <summary>
         /// Add CreatureActions and things of that like here.
@@ -519,9 +561,9 @@ namespace ECCLibrary
         /// <param name="liveMixinData"></param>
         public abstract void SetLiveMixinData(ref LiveMixinData liveMixinData);
 
-        #endregion
+#endregion
 
-        #region Overrideable
+#region Overrideable
         /// <summary>
         /// The type of sound effects this creature will use in the Inventory.
         /// </summary>
@@ -559,7 +601,7 @@ namespace ECCLibrary
                 return new HeldFishData();
             }
         }
-        public RespawnData RespawnSettings
+        public virtual RespawnData RespawnSettings
         {
             get
             {
@@ -791,9 +833,9 @@ namespace ECCLibrary
             }
         }
 
-        #endregion
+#endregion
 
-        #region Ency Related Overridables
+#region Ency Related Overridables
         /// <summary>
         /// The Title of the encyclopedia entry.
         /// </summary>
@@ -826,9 +868,9 @@ namespace ECCLibrary
                 return new ScannableItemData();
             }
         }
-        #endregion Ency
+#endregion Ency
 
-        #region Structs
+#region Structs
         /// <summary>
         /// First person view model settings.
         /// </summary>
@@ -860,11 +902,19 @@ namespace ECCLibrary
                 ViewModelName = null;
             }
         }
+        /// <summary>
+        /// Settings related to respawning.
+        /// </summary>
         public struct RespawnData
         {
             public bool CanRespawn;
             public float RespawnDelay;
 
+            /// <summary>
+            /// Constructor.
+            /// </summary>
+            /// <param name="respawns">Whether this creature can respawn when killed or not.</param>
+            /// <param name="respawnDelay">How long it takes for this creature to respawn, after death.</param>
             public RespawnData(bool respawns, float respawnDelay = 300f)
             {
                 CanRespawn = respawns;
@@ -877,6 +927,12 @@ namespace ECCLibrary
             public float Close;
             public float Far;
 
+            /// <summary>
+            /// Constructor.
+            /// </summary>
+            /// <param name="veryClose">Beyond this distance some animations may be removed.</param>
+            /// <param name="close">Beyond this distance some functionalities may be less precise.</param>
+            /// <param name="far">Beyond this distance trail animations will no longer exist.</param>
             public BehaviourLODLevelsStruct(float veryClose, float close, float far)
             {
                 VeryClose = veryClose;
@@ -1082,6 +1138,6 @@ namespace ECCLibrary
                 MaxDistance = maxDistance;
             }
         }
-        #endregion
+#endregion
     }
 }
