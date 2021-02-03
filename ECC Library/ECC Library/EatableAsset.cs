@@ -67,6 +67,16 @@ namespace ECCLibrary
             this.cured = cured;
             this.sprite = ImageUtils.LoadSpriteFromTexture(sprite);
             this.soundType = soundType;
+            OnFinishedPatching += () => 
+            {
+                //Thermoblade support
+                if (!cured && originalFish != TechType.None)
+                {
+                    ECCHelpers.GetPrivateStaticField<Dictionary<TechType, TechType>>(typeof(CraftData), "cookedCreatureList").Add(originalFish, TechType); 
+                }
+                ECCHelpers.PatchItemSounds(TechType, soundType);
+                LanguageHandler.SetLanguageLine(string.Format("{0}_DiscoverMessage", ClassID), "NEW LIFEFORM DISCOVERED");
+            };
         }
 
         /// <summary>
@@ -102,21 +112,6 @@ namespace ECCLibrary
             {
                 return new RecipeData() { Ingredients = new List<Ingredient>() { new Ingredient(originalFish, 1) }, craftAmount = 1 };
             }
-        }
-
-        /// <summary>
-        /// Patches this Edible into the game.
-        /// </summary>
-        new public void Patch()
-        {
-            base.Patch();
-            //Thermoblade support
-            if (!cured && originalFish != TechType.None)
-            {
-                ECCHelpers.GetPrivateStaticField<Dictionary<TechType, TechType>>(typeof(CraftData), "cookedCreatureList").Add(originalFish, TechType); 
-            }
-            ECCHelpers.PatchItemSounds(TechType, soundType);
-            LanguageHandler.SetLanguageLine(string.Format("{0}_DiscoverMessage", ClassID), "NEW LIFEFORM DISCOVERED");
         }
 
 #if SN1
