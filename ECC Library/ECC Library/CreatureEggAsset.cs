@@ -48,6 +48,30 @@ namespace ECCLibrary
             this.hatchingCreature = hatchingCreature;
             this.spriteTexture = spriteTexture;
             this.hatchingTime = hatchingTime;
+            OnStartedPatching += () =>
+            {
+                sprite = ImageUtils.LoadSpriteFromTexture(spriteTexture);
+                if (eggLiveMixinData == null)
+                {
+                    eggLiveMixinData = ECCHelpers.CreateNewLiveMixinData();
+                    eggLiveMixinData.destroyOnDeath = true;
+                    eggLiveMixinData.explodeOnDestroy = true;
+                    eggLiveMixinData.maxHealth = GetMaxHealth;
+                    eggLiveMixinData.knifeable = true;
+                }
+            };
+            OnFinishedPatching += () =>
+            {
+                if (AcidImmune)
+                {
+                    ECCHelpers.MakeAcidImmune(TechType);
+                }
+                if (IsScannable)
+                {
+                    ScannableSettings.AttemptPatch(this, GetEncyTitle, GetEncyDesc);
+                }
+                ECCHelpers.PatchItemSounds(TechType, ItemSoundsType.Egg);
+            };
         }
         /// <summary>
         /// Information related to spawning. Most of this is done for you; only override this if necessary.
@@ -59,31 +83,6 @@ namespace ECCLibrary
             classId = ClassID,
             techType = TechType
         };
-        /// <summary>
-        /// Patch this Egg into the game. Only override this method if necessary.
-        /// </summary>
-        new public void Patch()
-        {
-            sprite = ImageUtils.LoadSpriteFromTexture(spriteTexture);
-            if(eggLiveMixinData == null)
-            {
-                eggLiveMixinData = ECCHelpers.CreateNewLiveMixinData();
-                eggLiveMixinData.destroyOnDeath = true;
-                eggLiveMixinData.explodeOnDestroy = true;
-                eggLiveMixinData.maxHealth = GetMaxHealth;
-                eggLiveMixinData.knifeable = true;
-            }
-            base.Patch();
-            if (AcidImmune)
-            {
-                ECCHelpers.MakeAcidImmune(TechType);
-            }
-            if (IsScannable)
-            {
-                ScannableSettings.AttemptPatch(this, GetEncyTitle, GetEncyDesc);
-            }
-            ECCHelpers.PatchItemSounds(TechType, ItemSoundsType.Egg);
-        }
 #if SN1
         public override GameObject GetGameObject()
         {
