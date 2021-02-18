@@ -23,8 +23,8 @@ namespace ECCLibrary
                 ECCPatch.staticCreaturesPath = Path.Combine(directory, "StaticCreatures.data");
                 if (!File.Exists(ECCPatch.staticCreaturesPath))
                 {
-                    FileStream stream = File.Create(ECCPatch.staticCreaturesPath);
-                    stream.Dispose();
+                    FileStream stream = File.Create(ECCPatch.staticCreaturesPath, 4096);
+                    stream.Close();
                 }
                 StaticCreatureSpawns.InstantiateAllPrefabSpawners();
             }

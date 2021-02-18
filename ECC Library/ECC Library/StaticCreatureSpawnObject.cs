@@ -140,7 +140,7 @@ namespace ECCLibrary
             {
                 obj.SetActive(true);
                 Destroy(gameObject);
-                using (StreamWriter sw = new StreamWriter(ECCPatch.staticCreaturesPath))
+                using (StreamWriter sw = new StreamWriter(ECCPatch.staticCreaturesPath, true))
                 {
                     sw.Write(mySpawnData.uniqueIdentifier + ",");
                 }
