@@ -271,9 +271,12 @@ namespace ECCLibrary
             }
             components.liveMixin.health = components.liveMixin.maxHealth;
 
-            Creature reference = CraftData.GetPrefabForTechType(CreatureTraitsReference).GetComponent<Creature>();
             components.creature = prefab.AddComponent<Creature>();
-            reference.CopyFields(components.creature);
+
+            components.creature.Aggression = new CreatureTrait(0f, TraitsSettings.AggressionDecreaseRate);
+            components.creature.Hunger = new CreatureTrait(0f, -TraitsSettings.HungerIncreaseRate);
+            components.creature.Scared = new CreatureTrait(0f, TraitsSettings.ScaredDecreaseRate);
+
             components.creature.liveMixin = components.liveMixin;
             ECCHelpers.SetPrivateField(typeof(Creature), components.creature, "traitsAnimator", components.creature.GetComponentInChildren<Animator>());
             components.creature.sizeDistribution = SizeDistribution;
@@ -521,11 +524,6 @@ namespace ECCLibrary
         /// </summary>
         /// <param name="components"></param>
         public abstract void AddCustomBehaviour(CreatureComponents components);
-        
-        /// <summary>
-        /// The creature prefab used for reference. Easier than declaring every stat manually.
-        /// </summary>
-        public abstract TechType CreatureTraitsReference { get; }
 
         /// <summary>
         /// Should match the EcoTargetType whenever possible. Does not do much on its own.
@@ -565,6 +563,23 @@ namespace ECCLibrary
 #endregion
 
 #region Overrideable
+        /// <summary>
+        /// Settings that determine basic attributes of the creature.
+        /// </summary>
+        public virtual CreatureTraitsData TraitsSettings
+        {
+            get
+            {
+                if (EnableAggression)
+                {
+                    return new CreatureTraitsData(0.05f, 0.05f, 0.1f); //Aggressive fish are hungrier and less scared
+                }
+                else
+                {
+                    return new CreatureTraitsData(0.01f, 0.1f, 0.25f);
+                }
+            }
+        }
         /// <summary>
         /// The type of sound effects this creature will use in the Inventory.
         /// </summary>
@@ -834,6 +849,16 @@ namespace ECCLibrary
             }
         }
 
+        #endregion
+
+#region Unused
+
+        /// <summary>
+        /// The creature prefab used for reference. Easier than declaring every stat manually.
+        /// </summary>
+        [System.Obsolete("Doesn't do anything.")]
+        public virtual TechType CreatureTraitsReference { get; }
+
 #endregion
 
 #region Ency Related Overridables
@@ -869,7 +894,7 @@ namespace ECCLibrary
                 return new ScannableItemData();
             }
         }
-#endregion Ency
+#endregion
 
 #region Structs
         /// <summary>
@@ -1137,6 +1162,38 @@ namespace ECCLibrary
             {
                 EvaluatePriority = evaluatePriority;
                 MaxDistance = maxDistance;
+            }
+        }
+
+        /// <summary>
+        /// Basic settings related to creature "traits".
+        /// </summary>
+        public struct CreatureTraitsData
+        {
+            /// <summary>
+            /// The rate at which the creature gets hungrier. Predators often require higher levels of hunger to attack.
+            /// </summary>
+            public float HungerIncreaseRate;
+            /// <summary>
+            /// The rate at which this creature becomes passive while actively hunting.
+            /// </summary>
+            public float AggressionDecreaseRate;
+            /// <summary>
+            /// The rate at which this creature becomes less scared. Used in very specific circumstances, most notably when taking damage.
+            /// </summary>
+            public float ScaredDecreaseRate;
+
+            /// <summary>
+            /// The rate of change for each 'trait' is measured per second.
+            /// </summary>
+            /// <param name="hungerIncreaseRate">The rate at which the creature gets hungrier. Predators often require higher levels of hunger to attack.</param>
+            /// <param name="aggressionDecreaseRate">The rate at which this creature becomes passive while actively hunting.</param>
+            /// <param name="scaredDecreaseRate">The rate at which this creature becomes less scared. Used in very specific circumstances, most notably when taking damage.</param>
+            public CreatureTraitsData(float hungerIncreaseRate = 0f, float aggressionDecreaseRate = 0.05f, float scaredDecreaseRate = 0.25f)
+            {
+                HungerIncreaseRate = hungerIncreaseRate;
+                AggressionDecreaseRate = aggressionDecreaseRate;
+                ScaredDecreaseRate = scaredDecreaseRate;
             }
         }
 #endregion
