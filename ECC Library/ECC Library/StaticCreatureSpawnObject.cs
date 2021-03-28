@@ -96,7 +96,7 @@ namespace ECCLibrary
                     yield return new WaitForSeconds(doubleCheckDelay);
                     if (InSpawningDistance())
                     {
-                        Spawn();
+                        StartCoroutine(Spawn());
                     }
                 }
             }
@@ -111,16 +111,20 @@ namespace ECCLibrary
             return true;
         }
 
-        GameObject GetPrefab()
+        IEnumerator GetPrefab(IOut<GameObject> gameObject)
         {
             GameObject prefab = null;
             if(mySpawnData.spawnType == StaticSpawn.SpawnType.TechType)
             {
-                prefab = CraftData.GetPrefabForTechType(mySpawnData.prefab);
+                CoroutineTask<GameObject> task = CraftData.GetPrefabForTechTypeAsync(mySpawnData.prefab);
+                yield return task;
+                prefab = task.GetResult();
             }
             else if(mySpawnData.spawnType == StaticSpawn.SpawnType.ClassID)
             {
-                if (!PrefabDatabase.TryGetPrefab(mySpawnData.classId, out prefab))
+                IPrefabRequest request = PrefabDatabase.GetPrefabAsync(mySpawnData.classId);
+                yield return request;
+                if (!request.TryGetPrefab(out prefab))
                 {
                     ECCLog.AddMessage("No prefab found by classId {0}.", mySpawnData.classId);
                 }
@@ -129,11 +133,13 @@ namespace ECCLibrary
             {
                 ECCLog.AddMessage("Warning: StaticCreatureSpawnObject failed for Unique Spawn {0}.", mySpawnData.uniqueIdentifier);
             }
-            return prefab;
+            gameObject.Set(prefab);
         }
-        void Spawn()
+        IEnumerator Spawn()
         {
-            GameObject obj = UWE.Utils.InstantiateDeactivated(GetPrefab(), mySpawnData.position, Quaternion.identity);
+            TaskResult<GameObject> prefab = new TaskResult<GameObject>();
+            yield return GetPrefab(prefab);
+            GameObject obj = UWE.Utils.InstantiateDeactivated(prefab.Get(), mySpawnData.position, Quaternion.identity);
             LargeWorldEntity lwe = obj.GetComponent<LargeWorldEntity>();
             bool active = LargeWorld.main.streamer.cellManager.RegisterEntity(lwe);
             if (active)
