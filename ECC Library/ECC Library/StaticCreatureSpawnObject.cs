@@ -139,7 +139,7 @@ namespace ECCLibrary
         {
             TaskResult<GameObject> prefab = new TaskResult<GameObject>();
             yield return GetPrefab(prefab);
-            GameObject obj = UWE.Utils.InstantiateDeactivated(prefab.Get(), mySpawnData.position, Quaternion.identity);
+            GameObject obj = UWE.Utils.InstantiateDeactivated(prefab.Get(), mySpawnData.position, Quaternion.Euler(mySpawnData.eulers));
             LargeWorldEntity lwe = obj.GetComponent<LargeWorldEntity>();
             bool active = LargeWorld.main.streamer.cellManager.RegisterEntity(lwe);
             if (active)
@@ -168,6 +168,7 @@ namespace ECCLibrary
         public Vector3 position;
         public string uniqueIdentifier;
         public float maxDistance;
+        public Vector3 eulers;
 
         /// <summary>
         /// Constructor for this struct.
@@ -184,6 +185,7 @@ namespace ECCLibrary
             this.maxDistance = maxDistance;
             spawnType = SpawnType.TechType;
             classId = string.Empty;
+            eulers = Vector3.zero;
         }
         /// <summary>
         /// Constructor for this struct.
@@ -200,6 +202,7 @@ namespace ECCLibrary
             this.maxDistance = maxDistance;
             spawnType = SpawnType.TechType;
             classId = string.Empty;
+            eulers = Vector3.zero;
         }
         /// <summary>
         /// Constructor for this struct.
@@ -216,6 +219,25 @@ namespace ECCLibrary
             this.uniqueIdentifier = uniqueIdentifier;
             this.maxDistance = maxDistance;
             spawnType = SpawnType.ClassID;
+            eulers = Vector3.zero;
+        }
+        /// <summary>
+        /// Constructor for this struct.
+        /// </summary>
+        /// <param name="classId">The ClassId of the prefab to be spawned.</param>
+        /// <param name="position">World position of the object's spawn.</param>
+        /// <param name="uniqueIdentifier">An ID that must be unique to all other static spawns.</param>
+        /// <param name="maxDistance">The creature will attempt to spawn when wihin this distance. Note: Non-global creatures cannot spawn in areas that have not fully loaded.</param>
+        /// <param name="eulers">Rotation of the creature when spawned.</param>
+        public StaticSpawn(string classId, Vector3 position, string uniqueIdentifier, float maxDistance, Vector3 eulers)
+        {
+            this.classId = classId;
+            this.prefab = TechType.None;
+            this.position = position;
+            this.uniqueIdentifier = uniqueIdentifier;
+            this.maxDistance = maxDistance;
+            spawnType = SpawnType.ClassID;
+            this.eulers = eulers;
         }
 
         public enum SpawnType
