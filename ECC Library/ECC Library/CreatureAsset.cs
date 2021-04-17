@@ -259,6 +259,7 @@ namespace ECCLibrary
             components.worldForces.handleGravity = true;
             components.worldForces.underwaterGravity = UnderwaterGravity;
             components.worldForces.aboveWaterGravity = AboveWaterGravity;
+            components.worldForces.underwaterDrag = UnderwaterDrag;
 
             ValidateElectricalDamagePrefab();
             components.liveMixin = prefab.EnsureComponent<LiveMixin>();
@@ -563,6 +564,16 @@ namespace ECCLibrary
 #endregion
 
 #region Overrideable
+        /// <summary>
+        /// Higher values make creatures move more slowly.
+        /// </summary>
+        public virtual float UnderwaterDrag
+        {
+            get
+            {
+                return 0.1f;
+            }
+        }
         /// <summary>
         /// Settings that determine basic attributes of the creature.
         /// </summary>
