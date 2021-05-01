@@ -58,7 +58,7 @@ namespace ECCLibrary.Internal
             {
                 ErrorMessage.AddMessage(message);
             }
-            Debug.LogError(message);
+            //Debug.LogError(message);
         }
     }
 }
