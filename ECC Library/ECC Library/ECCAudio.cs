@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using ECCLibrary.Internal;
+using QModManager.Utility;
 
 namespace ECCLibrary
 {
@@ -30,15 +31,11 @@ namespace ECCLibrary
             }
             if (allClips == null) allClips = new Dictionary<string, AudioClip>();
             AudioClip[] loadedClips = assetBundle.LoadAllAssets<AudioClip>();
-            if(loadedClips == null || loadedClips.Length == 0)
-            {
-                ECCLog.AddMessage("RegisterClips was called but the asset bundle has no clips to load.");
-            }
             foreach(AudioClip clip in loadedClips)
             {
                 if (allClips.ContainsKey(clip.name))
                 {
-                    ECCLog.AddMessage("ModAudio already contains an AudioClip by name {0}. This clip is being ignored.", clip.name);
+                    QModManager.API.QModServices.Main.AddCriticalMessage(string.Format("ECC: ModAudio already contains an AudioClip by name {0}. This clip is being ignored.", clip.name));
                 }
                 else
                 {

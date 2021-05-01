@@ -15,6 +15,7 @@ namespace ECCLibrary.Internal
         ECCAudio.AudioClipPool clipPool;
         AudioSource source;
         public float consumeWholeHealthThreshold;
+        [System.Obsolete("Doesn't work, pointless, and creates errors if not commented out.")]
         public bool regurgitate;
 
         void Start()
@@ -43,10 +44,10 @@ namespace ECCLibrary.Internal
                             suckIn.target = mouth.transform;
                             suckIn.animationLength = 0.5f;
                             Destroy(lm.gameObject, 0.5f);
-                            if (regurgitate)
+                            /*if (regurgitate)
                             {
                                 StartCoroutine(Regurgitate(CraftData.GetTechType(collider.gameObject), Random.Range(5f, 8f)));
-                            }
+                            }*/
                         }
                     }
                 }
@@ -74,7 +75,8 @@ namespace ECCLibrary.Internal
 
         IEnumerator Regurgitate(TechType techType, float delay)
         {
-            yield return new WaitForSeconds(delay);
+            yield break;
+            /*yield return new WaitForSeconds(delay);
             GameObject regurgitation = CraftData.InstantiateFromPrefab(techType);
             regurgitation.transform.position = mouth.transform.position;
             LiveMixin lm = regurgitation.GetComponent<LiveMixin>();
@@ -86,7 +88,7 @@ namespace ECCLibrary.Internal
             if (rb)
             {
                 rb.AddForce(transform.forward * 15f, ForceMode.VelocityChange);
-            }
+            }*/
         }
     }
 }
