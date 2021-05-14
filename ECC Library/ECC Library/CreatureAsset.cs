@@ -405,6 +405,10 @@ namespace ECCLibrary
             components.animateByVelocity = prefab.AddComponent<AnimateByVelocity>();
             components.animateByVelocity.animator = components.creature.GetAnimator();
             components.animateByVelocity.animationMoveMaxSpeed = MaxVelocityForSpeedParameter;
+            components.animateByVelocity.useStrafeAnimation = AnimateByVelocitySettings.UseStrafeAnimation;
+            components.animateByVelocity.animationMaxPitch = AnimateByVelocitySettings.AnimationMaxPitch;
+            components.animateByVelocity.animationMaxTilt = AnimateByVelocitySettings.AnimationMaxTilt;
+            components.animateByVelocity.dampTime = AnimateByVelocitySettings.DampTime;
             components.animateByVelocity.levelOfDetail = components.behaviourLOD;
             components.animateByVelocity.rootGameObject = prefab;
 
@@ -564,6 +568,16 @@ namespace ECCLibrary
 #endregion
 
 #region Overrideable
+        /// <summary>
+        /// Settings related to more complex animations.
+        /// </summary>
+        public virtual AnimateByVelocityData AnimateByVelocitySettings
+        {
+            get
+            {
+                return new AnimateByVelocityData();
+            }
+        }
         /// <summary>
         /// Higher values make creatures move more slowly.
         /// </summary>
@@ -1175,7 +1189,31 @@ namespace ECCLibrary
                 MaxDistance = maxDistance;
             }
         }
+        /// <summary>
+        /// Data related to the AnimateByVelocity component. Note that <see cref="CreatureAsset.MaxVelocityForSpeedParameter"/> is also related to this component. It was created before this struct existed, so is separate.
+        /// </summary>
+        public struct AnimateByVelocityData
+        {
+            internal bool UseStrafeAnimation;
+            internal float AnimationMaxPitch;
+            internal float AnimationMaxTilt;
+            internal float DampTime;
 
+            /// <summary>
+            /// Constructor for these settings.
+            /// </summary>
+            /// <param name="useStrafeAnimation">Strafe animation consists of Up, Down, Left, Right, Forward, and Backwards animations, always relative to the creature's current rotation. The parameters used by this are 'speed_x'. 'speed_y', and 'speed_z', on a scale from -1 to 1. False by default.</param>
+            /// <param name="animationMaxPitch">Pitch can be described by looking up and down. The parameter for pitch 'pitch' and is always on a scale from -1 to 1. When the creature has rotated by a pitch of <paramref name="animationMaxPitch"/> in one way, it will equal 1. If it rotated the opposite direction the same amount, it wouls equal -1.</param>
+            /// <param name="animationMaxTilt">In this case, tilt is rotating left and right. This parameter has the same rules, basically, as <paramref name="animationMaxPitch"/>.</param>
+            /// <param name="dampTime">A longer damp time means it takes longer for these strafe, pitch, and tilt animations to take effect.</param>
+            public AnimateByVelocityData(bool useStrafeAnimation, float animationMaxPitch = 30f, float animationMaxTilt = 45f, float dampTime = 0.5f)
+            {
+                UseStrafeAnimation = useStrafeAnimation;
+                AnimationMaxPitch = animationMaxPitch;
+                AnimationMaxTilt = animationMaxTilt;
+                DampTime = dampTime;
+            }
+        }
         /// <summary>
         /// Basic settings related to creature "traits".
         /// </summary>
