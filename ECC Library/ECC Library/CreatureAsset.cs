@@ -7,6 +7,9 @@ using System.Reflection;
 using HarmonyLib;
 using ECCLibrary.Internal;
 using UWE;
+#if BZ
+using UnityEngine.AddressableAssets;
+#endif
 #if SN1
 using Sprite = Atlas.Sprite;
 #endif
@@ -23,6 +26,7 @@ namespace ECCLibrary
         protected GameObject prefab;
 
         static GameObject electricalDamagePrefab;
+        private WaterParkCreatureData myWaterParkData;
 
         /// <summary>
         /// Creates a new instance of a CreatureAsset.
@@ -41,7 +45,19 @@ namespace ECCLibrary
             }
             OnFinishedPatching += () =>
             {
+#if SN1
                 WaterParkCreature.waterParkCreatureParameters.Add(TechType, WaterParkParameters);
+#else
+                myWaterParkData = ScriptableObject.CreateInstance<WaterParkCreatureData>();
+                myWaterParkData.initialSize = WaterParkParameters.initialSize;
+                myWaterParkData.maxSize = WaterParkParameters.maxSize;
+                myWaterParkData.outsideSize = WaterParkParameters.outsideSize;
+                myWaterParkData.daysToGrow = WaterParkParameters.daysToGrow;
+                myWaterParkData.canBreed = WaterParkParameters.canBreed;
+                myWaterParkData.isPickupableOutside = WaterParkParameters.isPickupableOutside;
+                myWaterParkData.eggOrChildPrefab = WaterParkParameters.eggOrChildPrefab;
+                myWaterParkData.adultPrefab = WaterParkParameters.adultPrefab;
+#endif
                 BioReactorHandler.SetBioReactorCharge(TechType, BioReactorCharge);
                 ECCHelpers.PatchBehaviorType(TechType, BehaviourType);
                 if (Pickupable)
@@ -757,6 +773,7 @@ namespace ECCLibrary
                 return false;
             }
         }
+#if SN1
         /// <summary>
         /// Settings for growth in Alien Containment.
         /// </summary>
@@ -767,6 +784,55 @@ namespace ECCLibrary
                 return default;
             }
         }
+#else
+        /// <summary>
+        /// Settings for growth in Alien Containment.
+        /// </summary>
+        public virtual WaterParkCreatureDataConstructor WaterParkParameters
+        {
+            get
+            {
+                return new WaterParkCreatureDataConstructor(0.02f, 0.3f, 0.5f, 1f, true, false);
+            }
+        }
+        /// <summary>
+        /// A BZ-specific struct for editing water park creature data.
+        /// </summary>
+        public struct WaterParkCreatureDataConstructor
+        {
+            internal float initialSize;
+            internal float maxSize;
+            internal float outsideSize;
+            internal float daysToGrow;
+            internal bool isPickupableOutside;
+            internal bool canBreed;
+            internal AssetReferenceGameObject eggOrChildPrefab;
+            internal AssetReferenceGameObject adultPrefab;
+
+            /// <summary>
+            /// Constructor.
+            /// </summary>
+            /// <param name="initialSize">Size multiplier when born.</param>
+            /// <param name="maxSize">Size multiplier after <paramref name="daysToGrow"/> days.</param>
+            /// <param name="outsideSize">Size multiplier when released.</param>
+            /// <param name="daysToGrow">How many days it takes to reach full size.</param>
+            /// <param name="isPickupableOutside"></param>
+            /// <param name="canBreed">If it can breed or not.</param>
+            /// <param name="eggOrChildPrefab">The object created when they breed. Can be set to null if they do not breed.</param>
+            /// <param name="adultPrefab">The prefab for growing up. Can be set to null if this is unwanted.</param>
+            public WaterParkCreatureDataConstructor(float initialSize, float maxSize, float outsideSize, float daysToGrow, bool isPickupableOutside, bool canBreed = false, AssetReferenceGameObject eggOrChildPrefab = null, AssetReferenceGameObject adultPrefab = null)
+            {
+                this.initialSize = initialSize;
+                this.maxSize = maxSize;
+                this.outsideSize = outsideSize;
+                this.daysToGrow = daysToGrow;
+                this.isPickupableOutside = isPickupableOutside;
+                this.canBreed = canBreed;
+                this.eggOrChildPrefab = eggOrChildPrefab;
+                this.adultPrefab = adultPrefab;
+            }
+        }
+#endif
         /// <summary>
         /// The mass of the Rigidbody.
         /// </summary>
@@ -874,7 +940,7 @@ namespace ECCLibrary
             }
         }
 
-        #endregion
+#endregion
 
 #region Unused
 
