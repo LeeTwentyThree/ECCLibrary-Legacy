@@ -268,8 +268,9 @@ namespace ECCLibrary
             components.swimBehaviour.splineFollowing = components.splineFollowing;
             components.swimBehaviour.turnSpeed = TurnSpeed;
 
+#if SN1
             components.lastScarePosition = prefab.AddComponent<LastScarePosition>();
-
+#endif
             components.worldForces = prefab.EnsureComponent<WorldForces>();
             components.worldForces.useRigidbody = components.rigidbody;
             components.worldForces.handleGravity = true;
@@ -478,7 +479,9 @@ namespace ECCLibrary
             aggressiveWhenSeeTarget.distanceAggressionMultiplier = ECCHelpers.Curve_Flat();
             aggressiveWhenSeeTarget.maxRangeScalar = maxRange;
             aggressiveWhenSeeTarget.maxSearchRings = maxSearchRings;
+#if SN1
             aggressiveWhenSeeTarget.lastScarePosition = prefab.GetComponent<LastScarePosition>();
+#endif
             aggressiveWhenSeeTarget.lastTarget = prefab.GetComponent<LastTarget>();
             aggressiveWhenSeeTarget.targetType = ecoTarget;
             aggressiveWhenSeeTarget.hungerThreshold = hungerThreshold;
@@ -1191,11 +1194,17 @@ namespace ECCLibrary
             public VFXSurface vfxSurface;
             public BehaviourLOD behaviourLOD;
             public Rigidbody rigidbody;
+#if SN1
             public LastScarePosition lastScarePosition;
+#endif
             public WorldForces worldForces;
             public Creature creature;
             public LiveMixin liveMixin;
+#if SN1
             public LastTarget_New lastTarget;
+#else
+            public LastTarget lastTarget;
+#endif
             public SwimBehaviour swimBehaviour;
             public Locomotion locomotion;
             public SplineFollowing splineFollowing;
