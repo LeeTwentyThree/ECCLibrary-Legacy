@@ -155,7 +155,11 @@ namespace ECCLibrary
         /// <param name="behaviourType"></param>
         public static void PatchBehaviorType(TechType techType, BehaviourType behaviourType)
         {
+#if SN1
             GetPrivateStaticField<Dictionary<TechType, BehaviourType>>(typeof(BehaviourData), "behaviourTypeList").Add(techType, behaviourType);
+#else
+            CreatureData.behaviourTypeList.Add(techType, behaviourType);
+#endif
         }
         /// <summary>
         /// Set the EquipmentType of an item.
@@ -166,6 +170,7 @@ namespace ECCLibrary
         {
             GetPrivateStaticField<Dictionary<TechType, EquipmentType>>(typeof(CraftData), "equipmentTypes").Add(techType, equipmentType);
         }
+#if SN1
         /// <summary>
         /// Patch the inventory sounds of a TechType.
         /// </summary>
@@ -180,6 +185,7 @@ namespace ECCLibrary
             GetPrivateStaticField<Dictionary<TechType, string>>(typeof(CraftData), "dropSoundList").Add(techType, dropSound);
             GetPrivateStaticField<Dictionary<TechType, string>>(typeof(CraftData), "useEatSound").Add(techType, eatSound);
         }
+
         private static string GetPickupSoundEvent(ItemSoundsType soundType)
         {
             switch (soundType)
@@ -230,6 +236,7 @@ namespace ECCLibrary
                     return "event:/player/drink_stillsuit";
             }
         }
+#endif
 
         /// <summary>
         /// Returns the master volume for ECC (ranges from 0-1)

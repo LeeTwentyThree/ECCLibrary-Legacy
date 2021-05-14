@@ -18,6 +18,22 @@ namespace ECCLibrary.Internal
             timeNextRoar = Time.time + Random.Range(roarIntervalMin, roarIntervalMax);
             roarAction = GetComponent<RoarAbility>();
         }
+#if BZ
+        public override float Evaluate(float time)
+        {
+            if (Time.time > timeNextRoar)
+            {
+                return evaluatePriority;
+            }
+            return 0f;
+        }
+        public override void StartPerform(float time)
+        {
+            if (roarAction == null) roarAction = GetComponent<RoarAbility>();
+            timeNextRoar = Time.time + Random.Range(roarIntervalMin, roarIntervalMax);
+            roarAction.PlayRoar();
+        }
+#else
         public override float Evaluate(Creature creature)
         {
             if(Time.time > timeNextRoar)
@@ -32,5 +48,6 @@ namespace ECCLibrary.Internal
             timeNextRoar = Time.time + Random.Range(roarIntervalMin, roarIntervalMax);
             roarAction.PlayRoar();
         }
+#endif
     }
 }

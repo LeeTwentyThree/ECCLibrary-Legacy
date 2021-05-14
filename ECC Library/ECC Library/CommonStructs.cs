@@ -63,7 +63,9 @@ namespace ECCLibrary
                 ErrorMessage.AddMessage(string.Format("ECC: Object {0} already is edible.", go.name));
             }
             var eatable = go.AddComponent<Eatable>();
+#if SN1
             eatable.allowOverfill = true;
+#endif
             eatable.foodValue = FoodAmount;
             eatable.waterValue = WaterAmount;
             eatable.kDecayRate = 0.015f * DecomposeSpeed;

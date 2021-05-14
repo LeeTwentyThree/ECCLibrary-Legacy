@@ -119,13 +119,15 @@ namespace ECCLibrary
                 {
                     ScannableSettings.AttemptPatch(this, GetEncyTitle, GetEncyDesc);
                 }
+                #if SN1
                 ECCHelpers.PatchItemSounds(TechType, ItemSoundsType.Egg);
+#endif
             };
         }
 #endif
-        /// <summary>
-        /// Information related to spawning. Most of this is done for you; only override this if necessary.
-        /// </summary>
+            /// <summary>
+            /// Information related to spawning. Most of this is done for you; only override this if necessary.
+            /// </summary>
         public override WorldEntityInfo EntityInfo => new WorldEntityInfo()
         {
             slotType = EntitySlot.Type.Small,

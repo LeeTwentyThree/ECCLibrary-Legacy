@@ -52,7 +52,9 @@ namespace ECCLibrary
                 {
                     ECCHelpers.GetPrivateStaticField<Dictionary<TechType, TechType>>(typeof(CraftData), "cookedCreatureList").Add(originalFish, TechType); 
                 }
+                #if SN1
                 ECCHelpers.PatchItemSounds(TechType, soundType);
+#endif
                 LanguageHandler.SetLanguageLine(string.Format("{0}_DiscoverMessage", ClassID), "NEW LIFEFORM DISCOVERED");
             };
         }
@@ -84,7 +86,9 @@ namespace ECCLibrary
                 {
                     ECCHelpers.GetPrivateStaticField<Dictionary<TechType, TechType>>(typeof(CraftData), "cookedCreatureList").Add(originalFish, TechType); 
                 }
+                #if SN1
                 ECCHelpers.PatchItemSounds(TechType, soundType);
+#endif
                 LanguageHandler.SetLanguageLine(string.Format("{0}_DiscoverMessage", ClassID), "NEW LIFEFORM DISCOVERED");
             };
         }
@@ -117,7 +121,9 @@ namespace ECCLibrary
                 {
                     ECCHelpers.GetPrivateStaticField<Dictionary<TechType, TechType>>(typeof(CraftData), "cookedCreatureList").Add(originalFish, TechType); 
                 }
+                #if SN1
                 ECCHelpers.PatchItemSounds(TechType, soundType);
+#endif
                 LanguageHandler.SetLanguageLine(string.Format("{0}_DiscoverMessage", ClassID), "NEW LIFEFORM DISCOVERED");
             };
         }
@@ -194,7 +200,11 @@ namespace ECCLibrary
                 else
                 {
                     ECCLog.AddMessage("No child of name CraftModel found in crafted item {0}. Using default cube model.", TechType);
+#if SN1
                     pickupable.cubeOnPickup = true;
+#else
+                    pickupable.isLootCube = true;
+#endif
                 }
                 eatableData.MakeItemEatable(prefab);
             }
@@ -230,6 +240,7 @@ namespace ECCLibrary
         {
             get
             {
+#if SN1
                 if (cured)
                 {
                     return TechCategory.CuredFood;
@@ -238,6 +249,9 @@ namespace ECCLibrary
                 {
                     return TechCategory.CookedFood;
                 }
+#else
+                return TechCategory.FoodAndDrinks;
+#endif
             }
         }
 

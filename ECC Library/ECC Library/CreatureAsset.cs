@@ -69,7 +69,9 @@ namespace ECCLibrary
                     DamageSystem.acidImmune.AddItem(TechType);
                 }
                 ScannableSettings.AttemptPatch(this, GetEncyTitle, GetEncyDesc);
+#if SN1
                 ECCHelpers.PatchItemSounds(TechType, ItemSounds);
+#endif
                 LanguageHandler.SetLanguageLine(string.Format("{0}_DiscoverMessage", ClassID), "NEW LIFEFORM DISCOVERED");
                 PostPatch();
             };
@@ -318,8 +320,12 @@ namespace ECCLibrary
                     roarAction.evaluatePriority = RoarAbilitySettings.RoarActionPriority;
                 }
             }
+#if SN1
             components.lastTarget = prefab.AddComponent<LastTarget_New>();
             components.lastTarget.roar = roar;
+#else
+            components.lastTarget = prefab.AddComponent<LastTarget>();
+#endif
             if (EnableAggression)
             {
                 if (AggressivenessToSmallVehicles.Aggression > 0f)
@@ -360,11 +366,13 @@ namespace ECCLibrary
                 avoidObstacles.evaluatePriority = AvoidObstaclesSettings.evaluatePriority;
                 avoidObstacles.swimVelocity = SwimRandomSettings.SwimVelocity;
             }
+#if SN1
             if (CanBeInfected)
             {
                 components.infectedMixin = prefab.AddComponent<InfectedMixin>();
                 components.infectedMixin.renderers = prefab.GetComponentsInChildren<Renderer>(true);
             }
+#endif
             if (Pickupable)
             {
                 components.pickupable = prefab.EnsureComponent<Pickupable>();
@@ -729,6 +737,7 @@ namespace ECCLibrary
             }
         }
 
+#if SN1
         /// <summary>
         /// Whether this creature can randomly spawn with Kharaa symptoms.
         /// </summary>
@@ -739,6 +748,7 @@ namespace ECCLibrary
                 return true;
             }
         }
+#endif
 
         /// <summary>
         /// By default, the creature does not roar.
