@@ -8,6 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+#if BZ
+using UnityEngine.AddressableAssets;
+#endif
 using UWE;
 using HarmonyLib;
 using ECCLibrary;
@@ -26,12 +29,17 @@ namespace ECCLibrary
         /// The object to be edited in 'AddCustomBehaviours'.
         /// </summary>
         protected GameObject prefab;
+#if SN1
         private TechType hatchingCreature;
+#else
+        private AssetReferenceGameObject hatchingCreature;
+#endif
         private Sprite sprite;
         Texture2D spriteTexture;
         static LiveMixinData eggLiveMixinData;
         float hatchingTime;
 
+#if SN1
         /// <summary>
         /// Create a new egg asset.
         /// </summary>
@@ -73,6 +81,48 @@ namespace ECCLibrary
                 ECCHelpers.PatchItemSounds(TechType, ItemSoundsType.Egg);
             };
         }
+#elif BZ
+        /// <summary>
+        /// Create a new egg asset.
+        /// </summary>
+        /// <param name="classId">TechType / ClassId of the egg.</param>
+        /// <param name="friendlyName">The name displayed in-game.</param>
+        /// <param name="description">The tooltip displayed in-game.</param>
+        /// <param name="model">The default model of  this egg.</param>
+        /// <param name="hatchingCreature">The creature that hatches out of this egg.</param>
+        /// <param name="spriteTexture">The texture displayed in the inventory.</param>
+        /// <param name="hatchingTime">How much time (in days) it takes for this egg to hatch.</param>
+        public CreatureEggAsset(string classId, string friendlyName, string description, GameObject model, AssetReferenceGameObject hatchingCreature, Texture2D spriteTexture, float hatchingTime) : base(classId, friendlyName, description)
+        {
+            this.model = model;
+            this.hatchingCreature = hatchingCreature;
+            this.spriteTexture = spriteTexture;
+            this.hatchingTime = hatchingTime;
+            OnStartedPatching += () =>
+            {
+                sprite = ImageUtils.LoadSpriteFromTexture(spriteTexture);
+                if (eggLiveMixinData == null)
+                {
+                    eggLiveMixinData = ECCHelpers.CreateNewLiveMixinData();
+                    eggLiveMixinData.destroyOnDeath = true;
+                    eggLiveMixinData.maxHealth = GetMaxHealth;
+                    eggLiveMixinData.knifeable = true;
+                }
+            };
+            OnFinishedPatching += () =>
+            {
+                if (AcidImmune)
+                {
+                    ECCHelpers.MakeAcidImmune(TechType);
+                }
+                if (IsScannable)
+                {
+                    ScannableSettings.AttemptPatch(this, GetEncyTitle, GetEncyDesc);
+                }
+                ECCHelpers.PatchItemSounds(TechType, ItemSoundsType.Egg);
+            };
+        }
+#endif
         /// <summary>
         /// Information related to spawning. Most of this is done for you; only override this if necessary.
         /// </summary>
@@ -185,8 +235,16 @@ namespace ECCLibrary
                 worldForces.useRigidbody = rb;
 
                 CreatureEgg egg = prefab.EnsureComponent<CreatureEgg>();
+#if SN1
                 egg.animator = prefab.GetComponentInChildren<Animator>() ?? prefab.GetComponent<Animator>() ?? prefab.AddComponent<Animator>();
+#else
+                egg.animators = prefab.GetComponentsInChildren<Animator>() ?? new Animator[] { prefab.AddComponent<Animator>() };
+#endif
+#if SN1
                 egg.hatchingCreature = hatchingCreature;
+#else
+                egg.creaturePrefab = hatchingCreature;
+#endif
                 egg.overrideEggType = TechType;
                 egg.daysBeforeHatching = hatchingTime;
 
@@ -196,8 +254,9 @@ namespace ECCLibrary
 
                 if (ManualEggExplosion)
                 {
+#if SN1
                     egg.explodeOnHatch = false;
-
+#endif
                     if (egg.progress >= 1f)
                     {
                         lm.TakeDamage(GetMaxHealth);
