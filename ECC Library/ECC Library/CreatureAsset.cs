@@ -129,6 +129,13 @@ namespace ECCLibrary
             {
                 SetupPrefab(out CreatureComponents components);
                 AddCustomBehaviour(components);
+#if BZ
+                foreach (CreatureAction action in prefab.GetComponentsInChildren<CreatureAction>())
+                {
+                    action.creature = components.creature;
+                    action.swimBehaviour = components.swimBehaviour;
+                }
+#endif
                 CompletePrefab(components);
             }
             yield return null;
@@ -263,9 +270,16 @@ namespace ECCLibrary
 
             components.locomotion = prefab.AddComponent<Locomotion>();
             components.locomotion.useRigidbody = components.rigidbody;
+#if BZ
+            components.locomotion.levelOfDetail = components.behaviourLOD;
+#endif
             components.splineFollowing = prefab.AddComponent<SplineFollowing>();
             components.splineFollowing.respectLOD = false;
             components.splineFollowing.locomotion = components.locomotion;
+#if BZ
+            components.splineFollowing.useRigidbody = components.rigidbody;
+            components.splineFollowing.locomotion = components.locomotion;
+#endif
             components.swimBehaviour = prefab.AddComponent<SwimBehaviour>();
             components.swimBehaviour.splineFollowing = components.splineFollowing;
             components.swimBehaviour.turnSpeed = TurnSpeed;
