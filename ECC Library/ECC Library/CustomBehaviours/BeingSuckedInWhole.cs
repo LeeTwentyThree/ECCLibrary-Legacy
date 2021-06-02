@@ -29,7 +29,7 @@ namespace ECCLibrary.Internal
             Creature creature = GetComponent<Creature>();
             if(creature != null)
             {
-                ECCHelpers.SetPrivateField(typeof(Creature), creature, "flinch", 50f);
+                creature.flinch = 50f;
             }
         }
 

@@ -103,7 +103,7 @@
       <Private>False</Private>
     </Reference>
   </ItemGroup>
-  <ItemGroup Condition="$(Configuration.StartsWith('BZ')) Or $(Configuration.EndsWith('EXP'))">
+  <ItemGroup Condition="'$(Configuration)' == 'BZ'">
     <Reference Include="Unity.Addressables">
       <HintPath>$(GameDir)\$(DataFolder)\Managed\Unity.Addressables.dll</HintPath>
       <Private>False</Private>

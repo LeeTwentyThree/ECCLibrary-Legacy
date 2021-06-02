@@ -19,8 +19,7 @@ namespace ECCLibrary.Internal
         {
             if(roar != null && Time.time >= timeNextRoar)
             {
-                GameObject oldTarget = ECCHelpers.GetPrivateField<GameObject>(typeof(LastTarget), this, "_target");
-                if (target != null && oldTarget != target)
+                if (target != null && _target != target)
                 {
                     timeNextRoar = Time.time + minTimeBetweenRoars;
                     roar.PlayRoar();

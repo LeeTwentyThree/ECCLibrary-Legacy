@@ -50,7 +50,7 @@ namespace ECCLibrary
                 //Thermoblade support
                 if (!cured && originalFish != TechType.None)
                 {
-                    ECCHelpers.GetPrivateStaticField<Dictionary<TechType, TechType>>(typeof(CraftData), "cookedCreatureList").Add(originalFish, TechType); 
+                    CraftData.cookedCreatureList.Add(originalFish, TechType); 
                 }
                 #if SN1
                 ECCHelpers.PatchItemSounds(TechType, soundType);
@@ -84,7 +84,7 @@ namespace ECCLibrary
                 //Thermoblade support
                 if (!cured && originalFish != TechType.None)
                 {
-                    ECCHelpers.GetPrivateStaticField<Dictionary<TechType, TechType>>(typeof(CraftData), "cookedCreatureList").Add(originalFish, TechType); 
+                    CraftData.cookedCreatureList.Add(originalFish, TechType); 
                 }
                 #if SN1
                 ECCHelpers.PatchItemSounds(TechType, soundType);
@@ -105,6 +105,7 @@ namespace ECCLibrary
         /// <param name="cured">Whether the recipe requires salt. Also, only non-cured fish will be spawned by the Thermoblade.</param>
         /// <param name="sprite">The icon in the inventory.</param>
         /// <param name="soundType">The audio used for this creature in the inventory.</param>
+        /// <param name="unlockPopup">The icon shown when unlocked</param>
         public EatableAsset(string classId, string friendlyName, string description, GameObject model, TechType originalFish, EatableData eatableData, bool cured, Texture2D sprite, ItemSoundsType soundType, UnityEngine.Sprite unlockPopup) : base(classId, friendlyName, description)
         {
             this.model = model;
@@ -119,9 +120,9 @@ namespace ECCLibrary
                 //Thermoblade support
                 if (!cured && originalFish != TechType.None)
                 {
-                    ECCHelpers.GetPrivateStaticField<Dictionary<TechType, TechType>>(typeof(CraftData), "cookedCreatureList").Add(originalFish, TechType); 
+                    CraftData.cookedCreatureList.Add(originalFish, TechType); 
                 }
-                #if SN1
+#if SN1
                 ECCHelpers.PatchItemSounds(TechType, soundType);
 #endif
                 LanguageHandler.SetLanguageLine(string.Format("{0}_DiscoverMessage", ClassID), "NEW LIFEFORM DISCOVERED");

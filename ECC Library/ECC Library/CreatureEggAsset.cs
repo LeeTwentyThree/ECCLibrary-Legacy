@@ -283,73 +283,31 @@ namespace ECCLibrary
         /// <summary>
         /// Settings related to how this egh is rendered.
         /// </summary>
-        public virtual UBERMaterialProperties MaterialSettings
-        {
-            get
-            {
-                return new UBERMaterialProperties(8f, 1f);
-            }
-        }
+        public virtual UBERMaterialProperties MaterialSettings => new UBERMaterialProperties(8f, 1f);
         /// <summary>
         /// Is this egg immune to acid?
         /// </summary>
-        public virtual bool AcidImmune
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public virtual bool AcidImmune => false;
         /// <summary>
         /// The max health of this egg. Note: one knife swing deals 20 damage.
         /// </summary>
-        public virtual float GetMaxHealth
-        {
-            get
-            {
-                return 20f;
-            }
-        }
+        public virtual float GetMaxHealth => 20f;
         /// <summary>
         /// Set to 'FriendlyName' by default.
         /// </summary>
-        public virtual string GetEncyTitle
-        {
-            get
-            {
-                return FriendlyName;
-            }
-        }
+        public virtual string GetEncyTitle => FriendlyName;
         /// <summary>
         /// Override this to edit the ency text.
         /// </summary>
-        public virtual string GetEncyDesc
-        {
-            get
-            {
-                return "No ency description.";
-            }
-        }
+        public virtual string GetEncyDesc => "No ency description.";
         /// <summary>
-        /// Override and set to true if you want this to be scannable & have a databank entry.
+        /// Override and set to true if you want this to be scannable and have a databank entry.
         /// </summary>
-        public virtual bool IsScannable
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public virtual bool IsScannable => false;
         /// <summary>
         /// Only override this if necessary. Scannable settings are already done for you. Override IsScannable, GetEncyTitle, and GetEncyDesc for most Ency related options.
         /// </summary>
-        public virtual ScannableItemData ScannableSettings
-        {
-            get
-            {
-                return new ScannableItemData(true, 2f, "Lifeforms/Fauna/Eggs", new string[] { "Lifeforms", "Fauna", "Eggs" }, UnityEngine.Sprite.Create(sprite.texture, new Rect(Vector2.zero, new Vector2(sprite.texture.width, sprite.texture.height)), new Vector2(0.5f, 0.5f)), null);
-            }
-        }
+        public virtual ScannableItemData ScannableSettings => new ScannableItemData(true, 2f, "Lifeforms/Fauna/Eggs", new string[] { "Lifeforms", "Fauna", "Eggs" }, UnityEngine.Sprite.Create(sprite.texture, new Rect(Vector2.zero, new Vector2(sprite.texture.width, sprite.texture.height)), new Vector2(0.5f, 0.5f)), null);
         /// <summary>
         /// Override this method if you want to further edit the Egg prefab.
         /// </summary>

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ECCLibrary.Internal
 {
-    public class HeldFish : DropTool
+    internal class HeldFish : DropTool
     {
         public string animationName;
 

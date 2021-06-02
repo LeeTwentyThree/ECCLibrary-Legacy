@@ -314,7 +314,7 @@ namespace ECCLibrary
             components.creature.Scared = new CreatureTrait(0f, TraitsSettings.ScaredDecreaseRate);
 
             components.creature.liveMixin = components.liveMixin;
-            ECCHelpers.SetPrivateField(typeof(Creature), components.creature, "traitsAnimator", components.creature.GetComponentInChildren<Animator>());
+            components.creature.traitsAnimator = components.creature.GetComponentInChildren<Animator>();
             components.creature.sizeDistribution = SizeDistribution;
 
             RoarAbility roar = null;
@@ -447,9 +447,9 @@ namespace ECCLibrary
                 swimInSchool.swimInterval = SwimInSchoolSettings.SwimInterval;
                 swimInSchool.swimVelocity = SwimInSchoolSettings.SwimVelocity;
                 swimInSchool.schoolSize = SwimInSchoolSettings.SchoolSize;
-                ECCHelpers.SetPrivateField(typeof(SwimInSchool), swimInSchool, "percentFindLeaderRespond", SwimInSchoolSettings.FindLeaderChance);
-                ECCHelpers.SetPrivateField(typeof(SwimInSchool), swimInSchool, "chanceLoseLeader", SwimInSchoolSettings.LoseLeaderChance);
-                ECCHelpers.SetPrivateField(typeof(SwimInSchool), swimInSchool, "kBreakDistance", SwimInSchoolSettings.BreakDistance);
+                swimInSchool.percentFindLeaderRespond = SwimInSchoolSettings.FindLeaderChance;
+                swimInSchool.chanceLoseLeader = SwimInSchoolSettings.LoseLeaderChance;
+                swimInSchool.kBreakDistance = SwimInSchoolSettings.BreakDistance;
             }
             components.animateByVelocity = prefab.AddComponent<AnimateByVelocity>();
             components.animateByVelocity.animator = components.creature.GetAnimator();
@@ -473,7 +473,7 @@ namespace ECCLibrary
                 respawnComponent.spawnTime = RespawnSettings.RespawnDelay;
 
                 respawnerPrefab.SetActive(false);
-                ECCHelpers.SetPrivateField(typeof(CreatureDeath), components.creatureDeath, "respawnerPrefab", respawnerPrefab);
+                components.creatureDeath.respawnerPrefab = respawnerPrefab;
             }
             var deadAnimationOnEnable = prefab.AddComponent<DeadAnimationOnEnable>();
             deadAnimationOnEnable.enabled = false;
