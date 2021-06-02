@@ -15,7 +15,7 @@ namespace ECCLibrary.Internal
         float timeNextRoar;
         const float minTimeBetweenRoars = 5f;
 
-        protected override void SetTarget(GameObject target)
+        public override void SetTarget(GameObject target)
         {
             if(roar != null && Time.time >= timeNextRoar)
             {
