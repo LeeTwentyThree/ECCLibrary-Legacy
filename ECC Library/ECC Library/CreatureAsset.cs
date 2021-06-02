@@ -26,7 +26,9 @@ namespace ECCLibrary
         protected GameObject prefab;
 
         static GameObject electricalDamagePrefab;
+#if BZ
         private WaterParkCreatureData myWaterParkData;
+#endif
 
         /// <summary>
         /// Creates a new instance of a CreatureAsset.
