@@ -416,7 +416,15 @@ namespace ECCLibrary
                         prefab.EnsureComponent<AquariumFish>().model = fpsModel.propModel;
                         if(fpsModel.propModel.GetComponentInChildren<AnimateByVelocity>() == null)
                         {
-                            fpsModel.propModel.AddComponent<AnimateByVelocity>();
+                            AnimateByVelocity animateByVelocity = fpsModel.propModel.AddComponent<AnimateByVelocity>();
+                            animateByVelocity.animator = components.creature.GetAnimator();
+                            animateByVelocity.animationMoveMaxSpeed = MaxVelocityForSpeedParameter;
+                            animateByVelocity.useStrafeAnimation = AnimateByVelocitySettings.UseStrafeAnimation;
+                            animateByVelocity.animationMaxPitch = AnimateByVelocitySettings.AnimationMaxPitch;
+                            animateByVelocity.animationMaxTilt = AnimateByVelocitySettings.AnimationMaxTilt;
+                            animateByVelocity.dampTime = AnimateByVelocitySettings.DampTime;
+                            animateByVelocity.levelOfDetail = components.behaviourLOD;
+                            animateByVelocity.rootGameObject = fpsModel.propModel;
                         }
                     }
                     fpsModel.viewModel = prefab.SearchChild(ViewModelSettings.ViewModelName);
