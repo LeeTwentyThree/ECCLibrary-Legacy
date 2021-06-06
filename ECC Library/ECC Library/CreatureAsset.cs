@@ -316,6 +316,7 @@ namespace ECCLibrary
             components.creature.liveMixin = components.liveMixin;
             components.creature.traitsAnimator = components.creature.GetComponentInChildren<Animator>();
             components.creature.sizeDistribution = SizeDistribution;
+            components.creature.eyeFOV = EyeFov;
 
             RoarAbility roar = null;
             if (!string.IsNullOrEmpty(RoarAbilitySettings.AudioClipPrefix))
