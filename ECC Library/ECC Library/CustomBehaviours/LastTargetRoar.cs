@@ -15,12 +15,11 @@ namespace ECCLibrary.Internal
         float timeNextRoar;
         const float minTimeBetweenRoars = 5f;
 
-        protected override void SetTarget(GameObject target)
+        public override void SetTarget(GameObject target)
         {
             if(roar != null && Time.time >= timeNextRoar)
             {
-                GameObject oldTarget = ECCHelpers.GetPrivateField<GameObject>(typeof(LastTarget), this, "_target");
-                if (target != null && oldTarget != target)
+                if (target != null && _target != target)
                 {
                     timeNextRoar = Time.time + minTimeBetweenRoars;
                     roar.PlayRoar();

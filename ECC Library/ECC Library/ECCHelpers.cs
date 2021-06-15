@@ -122,22 +122,7 @@ namespace ECCLibrary
         {
             return ScriptableObject.CreateInstance<LiveMixinData>();
         }
-
-        public static void SetPrivateField<T>(Type type, T instance, string name, object value)
-        {
-            var prop = type.GetField(name, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
-            prop.SetValue(instance, value);
-        }
-        public static OutputT GetPrivateField<OutputT>(Type type, object target, string name)
-        {
-            var prop = type.GetField(name, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
-            return (OutputT)prop.GetValue(target);
-        }
-        public static OutputT GetPrivateStaticField<OutputT>(Type type, string name)
-        {
-            var prop = type.GetField(name, BindingFlags.NonPublic | BindingFlags.Static);
-            return (OutputT)prop.GetValue(null);
-        }
+        
         public static void MakeObjectScannerRoomScannable(GameObject gameObject, bool updatePositionPeriodically)
         {
             ResourceTracker resourceTracker = gameObject.AddComponent<ResourceTracker>();
@@ -156,7 +141,7 @@ namespace ECCLibrary
         public static void PatchBehaviorType(TechType techType, BehaviourType behaviourType)
         {
 #if SN1
-            GetPrivateStaticField<Dictionary<TechType, BehaviourType>>(typeof(BehaviourData), "behaviourTypeList").Add(techType, behaviourType);
+            BehaviourData.behaviourTypeList.Add(techType, behaviourType);
 #else
             CreatureData.behaviourTypeList.Add(techType, behaviourType);
 #endif
@@ -168,7 +153,7 @@ namespace ECCLibrary
         /// <param name="equipmentType"></param>
         public static void PatchEquipmentType(TechType techType, EquipmentType equipmentType)
         {
-            GetPrivateStaticField<Dictionary<TechType, EquipmentType>>(typeof(CraftData), "equipmentTypes").Add(techType, equipmentType);
+            CraftData.equipmentTypes.Add(techType, equipmentType);
         }
 #if SN1
         /// <summary>
@@ -181,9 +166,9 @@ namespace ECCLibrary
             string pickupSound = GetPickupSoundEvent(soundType);
             string dropSound = GetDropSoundEvent(soundType);
             string eatSound = GetEatSoundEvent(soundType);
-            GetPrivateStaticField<Dictionary<TechType, string>>(typeof(CraftData), "pickupSoundList").Add(techType, pickupSound);
-            GetPrivateStaticField<Dictionary<TechType, string>>(typeof(CraftData), "dropSoundList").Add(techType, dropSound);
-            GetPrivateStaticField<Dictionary<TechType, string>>(typeof(CraftData), "useEatSound").Add(techType, eatSound);
+            CraftData.pickupSoundList.Add(techType, pickupSound);
+            CraftData.dropSoundList.Add(techType, dropSound);
+            CraftData.useEatSound.Add(techType, eatSound);
         }
 
         private static string GetPickupSoundEvent(ItemSoundsType soundType)

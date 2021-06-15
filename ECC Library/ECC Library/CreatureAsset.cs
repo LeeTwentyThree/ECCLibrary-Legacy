@@ -26,7 +26,9 @@ namespace ECCLibrary
         protected GameObject prefab;
 
         static GameObject electricalDamagePrefab;
+#if BZ
         private WaterParkCreatureData myWaterParkData;
+#endif
 
         /// <summary>
         /// Creates a new instance of a CreatureAsset.
@@ -312,8 +314,9 @@ namespace ECCLibrary
             components.creature.Scared = new CreatureTrait(0f, TraitsSettings.ScaredDecreaseRate);
 
             components.creature.liveMixin = components.liveMixin;
-            ECCHelpers.SetPrivateField(typeof(Creature), components.creature, "traitsAnimator", components.creature.GetComponentInChildren<Animator>());
+            components.creature.traitsAnimator = components.creature.GetComponentInChildren<Animator>();
             components.creature.sizeDistribution = SizeDistribution;
+            components.creature.eyeFOV = EyeFov;
 
             RoarAbility roar = null;
             if (!string.IsNullOrEmpty(RoarAbilitySettings.AudioClipPrefix))
@@ -414,7 +417,15 @@ namespace ECCLibrary
                         prefab.EnsureComponent<AquariumFish>().model = fpsModel.propModel;
                         if(fpsModel.propModel.GetComponentInChildren<AnimateByVelocity>() == null)
                         {
-                            fpsModel.propModel.AddComponent<AnimateByVelocity>();
+                            AnimateByVelocity animateByVelocity = fpsModel.propModel.AddComponent<AnimateByVelocity>();
+                            animateByVelocity.animator = components.creature.GetAnimator();
+                            animateByVelocity.animationMoveMaxSpeed = MaxVelocityForSpeedParameter;
+                            animateByVelocity.useStrafeAnimation = AnimateByVelocitySettings.UseStrafeAnimation;
+                            animateByVelocity.animationMaxPitch = AnimateByVelocitySettings.AnimationMaxPitch;
+                            animateByVelocity.animationMaxTilt = AnimateByVelocitySettings.AnimationMaxTilt;
+                            animateByVelocity.dampTime = AnimateByVelocitySettings.DampTime;
+                            animateByVelocity.levelOfDetail = components.behaviourLOD;
+                            animateByVelocity.rootGameObject = fpsModel.propModel;
                         }
                     }
                     fpsModel.viewModel = prefab.SearchChild(ViewModelSettings.ViewModelName);
@@ -437,9 +448,9 @@ namespace ECCLibrary
                 swimInSchool.swimInterval = SwimInSchoolSettings.SwimInterval;
                 swimInSchool.swimVelocity = SwimInSchoolSettings.SwimVelocity;
                 swimInSchool.schoolSize = SwimInSchoolSettings.SchoolSize;
-                ECCHelpers.SetPrivateField(typeof(SwimInSchool), swimInSchool, "percentFindLeaderRespond", SwimInSchoolSettings.FindLeaderChance);
-                ECCHelpers.SetPrivateField(typeof(SwimInSchool), swimInSchool, "chanceLoseLeader", SwimInSchoolSettings.LoseLeaderChance);
-                ECCHelpers.SetPrivateField(typeof(SwimInSchool), swimInSchool, "kBreakDistance", SwimInSchoolSettings.BreakDistance);
+                swimInSchool.percentFindLeaderRespond = SwimInSchoolSettings.FindLeaderChance;
+                swimInSchool.chanceLoseLeader = SwimInSchoolSettings.LoseLeaderChance;
+                swimInSchool.kBreakDistance = SwimInSchoolSettings.BreakDistance;
             }
             components.animateByVelocity = prefab.AddComponent<AnimateByVelocity>();
             components.animateByVelocity.animator = components.creature.GetAnimator();
@@ -463,7 +474,7 @@ namespace ECCLibrary
                 respawnComponent.spawnTime = RespawnSettings.RespawnDelay;
 
                 respawnerPrefab.SetActive(false);
-                ECCHelpers.SetPrivateField(typeof(CreatureDeath), components.creatureDeath, "respawnerPrefab", respawnerPrefab);
+                components.creatureDeath.respawnerPrefab = respawnerPrefab;
             }
             var deadAnimationOnEnable = prefab.AddComponent<DeadAnimationOnEnable>();
             deadAnimationOnEnable.enabled = false;
