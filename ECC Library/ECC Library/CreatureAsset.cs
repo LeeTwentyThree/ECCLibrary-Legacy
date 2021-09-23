@@ -272,6 +272,8 @@ namespace ECCLibrary
 
             components.locomotion = prefab.AddComponent<Locomotion>();
             components.locomotion.useRigidbody = components.rigidbody;
+            components.locomotion.forwardRotationSpeed = TurnSpeedHorizontal;
+            components.locomotion.upRotationSpeed = TurnSpeedVertical;
 #if BZ
             components.locomotion.levelOfDetail = components.behaviourLOD;
 #endif
@@ -718,13 +720,33 @@ namespace ECCLibrary
             }
         }
         /// <summary>
-        /// Used only for the 'speed' parameter on the Animator.
+        /// Used only for the 'speed' parameter on the Animator. By default is SwimRandomSettings.SwimVelocity + 1.
         /// </summary>
         public virtual float MaxVelocityForSpeedParameter
         {
             get
             {
-                return SwimRandomSettings.SwimVelocity;
+                return SwimRandomSettings.SwimVelocity + 1f;
+            }
+        }
+        /// <summary>
+        /// The horizontal turn speed. Default value is 0.6f.
+        /// </summary>
+        public virtual float TurnSpeedHorizontal
+        {
+            get
+            {
+                return 0.6f;
+            }
+        }
+        /// <summary>
+        /// The vertical turn speed (applies when looking up or down). Default value is 3f.
+        /// </summary>
+        public virtual float TurnSpeedVertical
+        {
+            get
+            {
+                return 3f;
             }
         }
         /// <summary>
@@ -919,24 +941,13 @@ namespace ECCLibrary
         }
 
         /// <summary>
-        /// For big creatures, you might want to increase the values.
+        /// For big creatures, you might want to increase the values. Default values are 30, 60, 100.
         /// </summary>
         public virtual BehaviourLODLevelsStruct BehaviourLODSettings
         {
             get
             {
                 return new BehaviourLODLevelsStruct(30f, 60f, 100f);
-            }
-        }
-
-        /// <summary>
-        /// Determines how fast the creature turns while swimming. One by default.
-        /// </summary>
-        public virtual float TurnSpeed
-        {
-            get
-            {
-                return 1f;
             }
         }
 
@@ -963,7 +974,7 @@ namespace ECCLibrary
         }
 
         /// <summary>
-        /// Total power output of this creature.
+        /// Total power output of this creature. All ECC creatures can be put in the bioreactor.
         /// </summary>
         public virtual float BioReactorCharge
         {
@@ -994,9 +1005,21 @@ namespace ECCLibrary
         [System.Obsolete("Doesn't do anything.")]
         public virtual TechType CreatureTraitsReference { get; }
 
-#endregion
+        /// <summary>
+        /// Determines how fast the creature turns while swimming. One by default.
+        /// </summary>
+        [System.Obsolete("The field set by this value is not used. Please use the TurnSpeedHorizontal and TurnSpeedVertical properties instead.")]
+        public virtual float TurnSpeed
+        {
+            get
+            {
+                return 1f;
+            }
+        }
 
-#region Ency Related Overridables
+        #endregion
+
+        #region Ency Related Overridables
         /// <summary>
         /// The Title of the encyclopedia entry.
         /// </summary>
