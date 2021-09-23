@@ -687,6 +687,9 @@ namespace ECCLibrary
                 return new StayAtLeashData();
             }
         }
+        /// <summary>
+        /// Settings related to fish that are held.
+        /// </summary>
         public virtual HeldFishData ViewModelSettings
         {
             get
@@ -694,6 +697,9 @@ namespace ECCLibrary
                 return new HeldFishData();
             }
         }
+        /// <summary>
+        /// Settings related to respawning. By default respawns after 300 seconds.
+        /// </summary>
         public virtual RespawnData RespawnSettings
         {
             get
