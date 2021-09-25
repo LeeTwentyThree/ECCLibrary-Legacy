@@ -311,8 +311,11 @@ namespace ECCLibrary
             components.liveMixin = prefab.EnsureComponent<LiveMixin>();
             components.liveMixin.data = ECCHelpers.CreateNewLiveMixinData();
             components.liveMixin.data.electricalDamageEffect = electricalDamagePrefab;
-            components.liveMixin.data.damageEffect = damageEffectPrefab;
-            components.liveMixin.data.deathEffect = deathEffectPrefab;
+            if (UseBloodEffects)
+            {
+                components.liveMixin.data.damageEffect = damageEffectPrefab;
+                components.liveMixin.data.deathEffect = deathEffectPrefab;
+            }
             SetLiveMixinData(ref components.liveMixin.data);
             if (components.liveMixin.data.maxHealth <= 0f)
             {
@@ -680,6 +683,12 @@ namespace ECCLibrary
                 return ItemSoundsType.Fish;
             }
         }
+
+        /// <summary>
+        /// Whether the LiveMixinData damageEffect and deathEffect is automatically set. True by default.
+        /// </summary>
+        public virtual bool UseBloodEffects => true;
+
         /// <summary>
         /// Settings related to how this creature is rendered.
         /// </summary>
