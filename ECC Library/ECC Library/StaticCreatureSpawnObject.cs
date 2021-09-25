@@ -11,6 +11,7 @@ namespace ECCLibrary
     /// <summary>
     /// Static class related to static spawns, such as those of Leviathans in the base game.
     /// </summary>
+    [System.Obsolete("This system still works completely fine and is supported, but it is recommended to use SMLHelper's CoordinatedSpawns system.")]
     public static class StaticCreatureSpawns
     {
         /// <summary>
