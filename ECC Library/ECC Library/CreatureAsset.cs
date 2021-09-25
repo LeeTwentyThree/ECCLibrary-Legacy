@@ -359,29 +359,26 @@ namespace ECCLibrary
 #else
             components.lastTarget = prefab.AddComponent<LastTarget>();
 #endif
-            if (EnableAggression)
+            if (AggressivenessToSmallVehicles.Aggression > 0f)
             {
-                if (AggressivenessToSmallVehicles.Aggression > 0f)
-                {
-                    AggressiveToPilotingVehicle atpv = prefab.AddComponent<AggressiveToPilotingVehicle>();
-                    atpv.aggressionPerSecond = AggressivenessToSmallVehicles.Aggression;
-                    atpv.range = AggressivenessToSmallVehicles.MaxRange;
-                    atpv.creature = components.creature;
-                    atpv.lastTarget = components.lastTarget;
-                }
-                if (AttackSettings.EvaluatePriority > 0f)
-                {
-                    AttackLastTarget actionAtkLastTarget = prefab.AddComponent<AttackLastTarget>();
-                    actionAtkLastTarget.evaluatePriority = AttackSettings.EvaluatePriority;
-                    actionAtkLastTarget.swimVelocity = AttackSettings.ChargeVelocity;
-                    actionAtkLastTarget.aggressionThreshold = 0.02f;
-                    actionAtkLastTarget.minAttackDuration = AttackSettings.MinAttackLength;
-                    actionAtkLastTarget.maxAttackDuration = AttackSettings.MaxAttackLength;
-                    actionAtkLastTarget.pauseInterval = AttackSettings.AttackInterval;
-                    actionAtkLastTarget.rememberTargetTime = AttackSettings.RememberTargetTime;
-                    actionAtkLastTarget.priorityMultiplier = ECCHelpers.Curve_Flat();
-                    actionAtkLastTarget.lastTarget = components.lastTarget;
-                }
+                AggressiveToPilotingVehicle atpv = prefab.AddComponent<AggressiveToPilotingVehicle>();
+                atpv.aggressionPerSecond = AggressivenessToSmallVehicles.Aggression;
+                atpv.range = AggressivenessToSmallVehicles.MaxRange;
+                atpv.creature = components.creature;
+                atpv.lastTarget = components.lastTarget;
+            }
+            if (AttackSettings.EvaluatePriority > 0f)
+            {
+                AttackLastTarget actionAtkLastTarget = prefab.AddComponent<AttackLastTarget>();
+                actionAtkLastTarget.evaluatePriority = AttackSettings.EvaluatePriority;
+                actionAtkLastTarget.swimVelocity = AttackSettings.ChargeVelocity;
+                actionAtkLastTarget.aggressionThreshold = 0.02f;
+                actionAtkLastTarget.minAttackDuration = AttackSettings.MinAttackLength;
+                actionAtkLastTarget.maxAttackDuration = AttackSettings.MaxAttackLength;
+                actionAtkLastTarget.pauseInterval = AttackSettings.AttackInterval;
+                actionAtkLastTarget.rememberTargetTime = AttackSettings.RememberTargetTime;
+                actionAtkLastTarget.priorityMultiplier = ECCHelpers.Curve_Flat();
+                actionAtkLastTarget.lastTarget = components.lastTarget;
             }
             components.swimRandom = prefab.AddComponent<SwimRandom>();
             components.swimRandom.swimRadius = SwimRandomSettings.SwimRadius;
@@ -674,7 +671,7 @@ namespace ECCLibrary
             }
         }
         /// <summary>
-        /// The type of sound effects this creature will use in the Inventory.
+        /// The type of sound effects this creature will use in the Inventory. By default is ItemSoundsType.Fish.
         /// </summary>
         public virtual ItemSoundsType ItemSounds
         {
@@ -720,7 +717,7 @@ namespace ECCLibrary
             }
         }
         /// <summary>
-        /// Settings related to respawning. By default respawns after 300 seconds.
+        /// Settings related to respawning. By default a creature respawns after 300 seconds.
         /// </summary>
         public virtual RespawnData RespawnSettings
         {
@@ -740,7 +737,7 @@ namespace ECCLibrary
             }
         }
         /// <summary>
-        /// Used only for the 'speed' parameter on the Animator. By default is SwimRandomSettings.SwimVelocity + 1.
+        /// Used only for the 'speed' parameter on the Animator. By default is equal to SwimRandomSettings.SwimVelocity + 1.
         /// </summary>
         public virtual float MaxVelocityForSpeedParameter
         {
@@ -770,7 +767,7 @@ namespace ECCLibrary
             }
         }
         /// <summary>
-        /// Whether the creature can be picked up and held, or not. Pickupable fish can also be placed in the Small Aquarium if ViewModelSettings are set correctly.
+        /// Whether the creature can be picked up and held, or not. Pickupable fish can also be placed in the Small Aquarium if ViewModelSettings are set correctly. False by default.
         /// </summary>
         public virtual bool Pickupable
         {
@@ -780,7 +777,7 @@ namespace ECCLibrary
             }
         }
         /// <summary>
-        /// Whether the creature is immune to brine or not.
+        /// Whether the creature is immune to brine or not. False by default. Mainly used for Lost River creatures.
         /// </summary>
         public virtual bool AcidImmune
         {
@@ -790,7 +787,7 @@ namespace ECCLibrary
             }
         }
         /// <summary>
-        /// Possible sizes for this creature. Randomly picks a value in the range of 0 to 1. This value can not go above 1.
+        /// Possible sizes for this creature. Randomly picks a value in the range of 0 to 1. This value can not go above 1. Flat curve at 1 by default.
         /// </summary>
         public virtual AnimationCurve SizeDistribution
         {
@@ -800,7 +797,7 @@ namespace ECCLibrary
             }
         }
         /// <summary>
-        /// If set to true, the Scanner Room can scan for this creature.
+        /// If set to true, the Scanner Room can scan for this creature. False by default.
         /// </summary>
         public virtual bool ScannerRoomScannable
         {
@@ -812,7 +809,7 @@ namespace ECCLibrary
 
 #if SN1
         /// <summary>
-        /// Whether this creature can randomly spawn with Kharaa symptoms.
+        /// Whether this creature can randomly spawn with Kharaa symptoms. True by default.
         /// </summary>
         public virtual bool CanBeInfected
         {
@@ -824,7 +821,7 @@ namespace ECCLibrary
 #endif
 
         /// <summary>
-        /// By default, the creature does not roar.
+        /// Settings related to random roaring, using the Unity audio system. Please note it is recommended to create your own audio controller for the creature, using FMOD if possible.
         /// </summary>
         public virtual RoarAbilityData RoarAbilitySettings { get; }
 
@@ -846,17 +843,6 @@ namespace ECCLibrary
             get
             {
                 return new AttackLastTargetSettings(0f, 0f, 0f, 0f, 0f, 0f);
-            }
-        }
-
-        /// <summary>
-        /// Determines whether AttackSettings and AggressivenessToSmallVehicles actually apply.
-        /// </summary>
-        public virtual bool EnableAggression
-        {
-            get
-            {
-                return false;
             }
         }
 #if SN1
@@ -983,7 +969,7 @@ namespace ECCLibrary
         }
 
         /// <summary>
-        /// Settings on how this creature will avoid terrain and/or obstacles.
+        /// Settings on how this creature will avoid terrain and/or obstacles. You will likely have to do some manual field tweaking in your AddCustomBehaviour to get the desired results.
         /// </summary>
         public virtual AvoidObstaclesData AvoidObstaclesSettings
         {
@@ -1022,11 +1008,11 @@ namespace ECCLibrary
         /// <summary>
         /// The creature prefab used for reference. Easier than declaring every stat manually.
         /// </summary>
-        [System.Obsolete("Doesn't do anything.")]
+        [System.Obsolete("Doesn't do anything anymore.")]
         public virtual TechType CreatureTraitsReference { get; }
 
         /// <summary>
-        /// Determines how fast the creature turns while swimming. One by default.
+        /// (Incorrectly) determines how fast the creature turns while swimming. Default value is 1f.
         /// </summary>
         [System.Obsolete("The field set by this value is not used. Please use the TurnSpeedHorizontal and TurnSpeedVertical properties instead.")]
         public virtual float TurnSpeed
@@ -1034,6 +1020,18 @@ namespace ECCLibrary
             get
             {
                 return 1f;
+            }
+        }
+
+        /// <summary>
+        /// Used to determine whether AttackSettings and AggressivenessToSmallVehicles actually apply.
+        /// </summary>
+        [System.Obsolete("This property is redundant. The functionality was removed in ECC 1.1.5")]
+        public virtual bool EnableAggression
+        {
+            get
+            {
+                return false;
             }
         }
 

@@ -13,12 +13,26 @@ using System.Globalization;
 
 namespace ECCLibrary
 {
+    /// <summary>
+    /// Various helpers related to ECCLibrary and creating creature mods.
+    /// </summary>
     public static class ECCHelpers
     {
+        /// <summary>
+        /// Helps in the loading of AssetBundles from an "Assets" folder in your mod folder root. An example of an AssetBundle path: `...Subnautica\QMods\DeExtinction\Assets\deextinctionassets`.
+        /// </summary>
+        /// <param name="modAssembly">The assembly to grab the mod from. See <see cref="Assembly.GetExecutingAssembly"/>.</param>
+        /// <param name="assetsFileName">The name of the AssetBundle file in your assets folder, that will be loaded. For De-Extinction, it is `deextinctionassets`.</param>
+        /// <returns>A loaded AssetBundle.</returns>
         public static AssetBundle LoadAssetBundleFromAssetsFolder(Assembly modAssembly, string assetsFileName)
         {
             return AssetBundle.LoadFromFile(Path.Combine(Path.GetDirectoryName(modAssembly.Location), "Assets", assetsFileName));
         }
+        /// <summary>
+        /// Applies the MarmosetUBER shader to all renderers in a given prefab and its children, including inactive children.
+        /// </summary>
+        /// <param name="prefab">The GameObject to fi. Does not necessarily have to be a prefab.</param>
+        /// <param name="materialSettings">A set of </param>
         public static void ApplySNShaders(GameObject prefab, UBERMaterialProperties materialSettings)
         {
             var renderers = prefab.GetComponentsInChildren<Renderer>(true);
@@ -103,26 +117,36 @@ namespace ECCLibrary
             bLod.farThreshold = far;
             return bLod;
         }
+        /// <summary>
+        /// Makes a given TechType immune to acid, such as brine.
+        /// </summary>
+        /// <param name="techType"></param>
         public static void MakeAcidImmune(TechType techType)
         {
             List<TechType> acidImmuneList = new List<TechType>(DamageSystem.acidImmune);
             acidImmuneList.Add(techType);
             DamageSystem.acidImmune = acidImmuneList.ToArray();
         }
+        /// <returns>An arbitrary <see cref="AnimationCurve"/> which is used in ECC TrailManagers by default.</returns>
         public static AnimationCurve Curve_Trail()
         {
             return new AnimationCurve(new Keyframe[] { new Keyframe(0f, 0.25f), new Keyframe(1f, 0.75f) });
         }
+        /// <returns>An <see cref="AnimationCurve"/> with no variation in value.</returns>
         public static AnimationCurve Curve_Flat(float value = 1f)
         {
             return new AnimationCurve(new Keyframe[] { new Keyframe(0f, value), new Keyframe(1f, value) });
         }
-
+        /// <returns>A new instance of a <see cref="LiveMixinData"/>.</returns>
         public static LiveMixinData CreateNewLiveMixinData()
         {
             return ScriptableObject.CreateInstance<LiveMixinData>();
         }
-        
+        /// <summary>
+        /// Makes a given GameObject scannable with the scanner room, using the <see cref="ResourceTracker"/> component.
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="updatePositionPeriodically">Whether to automatically update the position of this ResourceTracker or not (should always be true for creatures).</param>
         public static void MakeObjectScannerRoomScannable(GameObject gameObject, bool updatePositionPeriodically)
         {
             ResourceTracker resourceTracker = gameObject.AddComponent<ResourceTracker>();
@@ -231,6 +255,13 @@ namespace ECCLibrary
         {
             return ECCPatch.config.VolumeNew / 100f;
         }
+        /// <summary>
+        /// Compares two strings using the simplified ECCStringComparison.
+        /// </summary>
+        /// <param name="original"></param>
+        /// <param name="compareTo"></param>
+        /// <param name="comparisonMode"></param>
+        /// <returns></returns>
         public static bool CompareStrings(string original, string compareTo, ECCStringComparison comparisonMode)
         {
             switch (comparisonMode)
@@ -252,8 +283,18 @@ namespace ECCLibrary
             }
         }
     }
+    /// <summary>
+    /// Various ECC-related extensions for GameObjects.
+    /// </summary>
     public static class GameObjectExtensions
     {
+        /// <summary>
+        /// Find a GameObject in this object's hiearchy, by name.
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="byName"></param>
+        /// <param name="stringComparison"></param>
+        /// <returns></returns>
         public static GameObject SearchChild(this GameObject gameObject, string byName, ECCStringComparison stringComparison = ECCStringComparison.Equals)
         {
             GameObject obj = SearchChildRecursive(gameObject, byName, stringComparison);
@@ -281,15 +322,39 @@ namespace ECCLibrary
             return null;
         }
     }
+    /// <summary>
+    /// Enum which is solely used for ECCHelper methods.
+    /// </summary>
     public enum ECCStringComparison
     {
+        /// <summary>
+        /// 'A' == 'a'
+        /// </summary>
         Equals,
+        /// <summary>
+        /// 'A' != 'a'
+        /// </summary>
         EqualsCaseSensitive,
+        /// <summary>
+        /// Whether this string starts with the other given string. Not case sensitive.
+        /// </summary>
         StartsWith,
+        /// <summary>
+        /// Whether this string starts with the other given string. Case sensitive.
+        /// </summary>
         StartsWithCaseSensitive,
+        /// <summary>
+        /// Whether a given string is located anywhere inside of a larger string. Not case sensitive.
+        /// </summary>
         Contains,
+        /// <summary>
+        /// Whether a given string is located anywhere inside of a larger string. Case sensitive.
+        /// </summary>
         ContainsCaseSensitive
     }
+    /// <summary>
+    /// Enum with values that correspond to item pickup sounds.
+    /// </summary>
     public enum ItemSoundsType
     {
         Default,

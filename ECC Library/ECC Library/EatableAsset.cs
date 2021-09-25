@@ -129,6 +129,10 @@ namespace ECCLibrary
             };
         }
 
+        /// <summary>
+        /// Already set by ECC by default. Only override this if you want unique recipes.
+        /// </summary>
+        /// <returns></returns>
         protected override RecipeData GetBlueprintRecipe()
         {
             if (cured)
@@ -212,14 +216,24 @@ namespace ECCLibrary
             yield return null;
             gameObject.Set(prefab);
         }
-
+        
+        /// <summary>
+        /// The sprite for this item. Set automatically by ECC but can be overriden.
+        /// </summary>
+        /// <returns></returns>
         protected override Sprite GetItemSprite()
         {
             return sprite;
         }
 
+        /// <summary>
+        /// By default, crafted at Fabricator.
+        /// </summary>
         public override CraftTree.Type FabricatorType => CraftTree.Type.Fabricator;
 
+        /// <summary>
+        /// Set automatically by ECC but can be overriden. Not that you should.
+        /// </summary>
         public override string[] StepsToFabricatorTab
         {
             get
@@ -235,8 +249,14 @@ namespace ECCLibrary
             }
         }
 
+        /// <summary>
+        /// The material settings of the physical food item.
+        /// </summary>
         public UBERMaterialProperties MaterialSettings = new UBERMaterialProperties(8f, 1f);
 
+        /// <summary>
+        /// Automatically set for both SN1 and BZ. Only override if you want something special.
+        /// </summary>
         public override TechCategory CategoryForPDA
         {
             get
@@ -256,6 +276,9 @@ namespace ECCLibrary
             }
         }
 
+        /// <summary>
+        /// By default <see cref="TechGroup.Survival"/>.
+        /// </summary>
         public override TechGroup GroupForPDA
         {
             get
@@ -264,6 +287,9 @@ namespace ECCLibrary
             }
         }
 
+        /// <summary>
+        /// By default, this is the original fish.
+        /// </summary>
         public override TechType RequiredForUnlock
         {
             get
@@ -272,6 +298,10 @@ namespace ECCLibrary
             }
         }
 
+        /// <summary>
+        /// No idea what this does.
+        /// </summary>
+        [System.Obsolete("Not used anywhere")]
         public override string DiscoverMessage => "NotificationCreatureDiscovered";
     }
 }
