@@ -26,6 +26,10 @@ namespace ECCLibrary
         protected GameObject prefab;
 
         static GameObject electricalDamagePrefab;
+
+        static GameObject damageEffectPrefab;
+
+        static GameObject deathEffectPrefab;
 #if BZ
         private WaterParkCreatureData myWaterParkData;
 #endif
@@ -82,14 +86,18 @@ namespace ECCLibrary
 #if SN1
         private static void ValidatePrefabs()
         {
-            if (electricalDamagePrefab == null)
+            if (electricalDamagePrefab != null && damageEffectPrefab != null && deathEffectPrefab != null)
             {
-                GameObject reaperLeviathan = Resources.Load<GameObject>("WorldEntities/Creatures/ReaperLeviathan");
-                if (reaperLeviathan)
-                {
-                    electricalDamagePrefab = reaperLeviathan.GetComponent<LiveMixin>().data.electricalDamageEffect;
-                }
+                return;
             }
+            GameObject reaperLeviathan = Resources.Load<GameObject>("WorldEntities/Creatures/ReaperLeviathan");
+            if (reaperLeviathan == null)
+            {
+                return;
+            }
+            electricalDamagePrefab = reaperLeviathan.GetComponent<LiveMixin>().data.electricalDamageEffect;
+            damageEffectPrefab = reaperLeviathan.GetComponent<LiveMixin>().data.damageEffect;
+            deathEffectPrefab = reaperLeviathan.GetComponent<LiveMixin>().data.deathEffect;
         }
 #endif
 
@@ -303,6 +311,8 @@ namespace ECCLibrary
             components.liveMixin = prefab.EnsureComponent<LiveMixin>();
             components.liveMixin.data = ECCHelpers.CreateNewLiveMixinData();
             components.liveMixin.data.electricalDamageEffect = electricalDamagePrefab;
+            components.liveMixin.data.damageEffect = damageEffectPrefab;
+            components.liveMixin.data.deathEffect = deathEffectPrefab;
             SetLiveMixinData(ref components.liveMixin.data);
             if (components.liveMixin.data.maxHealth <= 0f)
             {
