@@ -80,16 +80,15 @@ namespace ECCLibrary
         }
 
 #if SN1
-        private static void ValidateElectricalDamagePrefab()
+        private static void ValidatePrefabs()
         {
-            if(electricalDamagePrefab)
+            if (electricalDamagePrefab == null)
             {
-                return;
-            }
-            GameObject reaperLeviathan = Resources.Load<GameObject>("WorldEntities/Creatures/ReaperLeviathan");
-            if (reaperLeviathan)
-            {
-                electricalDamagePrefab = reaperLeviathan.GetComponent<LiveMixin>().data.electricalDamageEffect;                
+                GameObject reaperLeviathan = Resources.Load<GameObject>("WorldEntities/Creatures/ReaperLeviathan");
+                if (reaperLeviathan)
+                {
+                    electricalDamagePrefab = reaperLeviathan.GetComponent<LiveMixin>().data.electricalDamageEffect;
+                }
             }
         }
 #endif
@@ -233,12 +232,15 @@ namespace ECCLibrary
             meleeAttack.regurgitate = regurgitateLater;
             return meleeAttack;
         }
+
         /// <summary>
         /// A messy method that does most of the work.
         /// </summary>
         /// <returns></returns>
         private CreatureComponents SetupNecessaryComponents()
         {
+            ValidatePrefabs();
+
             CreatureComponents components = new CreatureComponents();
             components.prefabIdentifier = prefab.EnsureComponent<PrefabIdentifier>();
             components.prefabIdentifier.ClassId = ClassID;
@@ -298,7 +300,6 @@ namespace ECCLibrary
             components.worldForces.aboveWaterGravity = AboveWaterGravity;
             components.worldForces.underwaterDrag = UnderwaterDrag;
 
-            ValidateElectricalDamagePrefab();
             components.liveMixin = prefab.EnsureComponent<LiveMixin>();
             components.liveMixin.data = ECCHelpers.CreateNewLiveMixinData();
             components.liveMixin.data.electricalDamageEffect = electricalDamagePrefab;
