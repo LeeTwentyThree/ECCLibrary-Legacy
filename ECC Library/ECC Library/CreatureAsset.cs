@@ -544,6 +544,8 @@ namespace ECCLibrary
         /// <param name="multiplier">The total strength of the movement. A value too low or too high will break the trail completely.</param>
         protected TrailManager CreateTrail(GameObject trailParent, CreatureComponents components, float segmentSnapSpeed, float maxSegmentOffset = -1f, float multiplier = 1f)
         {
+            trailParent.gameObject.SetActive(false);
+
             TrailManager trail = trailParent.AddComponent<TrailManager>();
             trail.trails = trailParent.transform.GetChild(0).GetComponentsInChildren<Transform>();
             trail.rootTransform = prefab.transform;
@@ -556,6 +558,8 @@ namespace ECCLibrary
             trail.pitchMultiplier = decreasing;
             trail.rollMultiplier = decreasing;
             trail.yawMultiplier = decreasing;
+
+            trailParent.gameObject.SetActive(true);
             return trail;
         }
         /// <summary>
@@ -569,6 +573,7 @@ namespace ECCLibrary
         protected TrailManager CreateTrail(GameObject trailRoot, Transform[] trails, CreatureComponents components, float segmentSnapSpeed, float maxSegmentOffset = -1f)
         {
             trailRoot.gameObject.SetActive(false);
+
             TrailManager trail = trailRoot.AddComponent<TrailManager>();
             trail.trails = trails;
             trail.rootTransform = prefab.transform;
@@ -581,8 +586,7 @@ namespace ECCLibrary
             trail.pitchMultiplier = decreasing;
             trail.rollMultiplier = decreasing;
             trail.yawMultiplier = decreasing;
-            MethodInfo method = typeof(TrailManager).GetMethod("Initialize", BindingFlags.NonPublic | BindingFlags.Instance);
-            method.Invoke(trail, new object[] { });
+
             trailRoot.gameObject.SetActive(true);
             return trail;
         }

@@ -8,6 +8,9 @@ using UnityEngine.Assertions.Must;
 
 namespace ECCLibrary.Internal
 {
+    /// <summary>
+    /// This class helps with creating a simple melee attacks for creatures. However, if you need any customizability, please make your own class.
+    /// </summary>
     public class MeleeAttack_New : MeleeAttack
     {
         public OnTouch onTouch;

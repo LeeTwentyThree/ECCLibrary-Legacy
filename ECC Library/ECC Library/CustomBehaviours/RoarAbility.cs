@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace ECCLibrary.Internal
 {
+    [Obsolete("This class has no use. Implement your own Roar code, if needed.")]
     public class RoarAbility : MonoBehaviour
     {
         AudioSource source;
