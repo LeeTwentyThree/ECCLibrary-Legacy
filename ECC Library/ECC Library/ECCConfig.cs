@@ -11,13 +11,13 @@ namespace ECCLibrary
     /// <summary>
     /// Main and only config file for ECCLibrary.
     /// </summary>
-    [Menu("Eel's Creature Creator Settings")]
+    [Menu("Eel's Creature Creator Settings (ECC Library)")]
     public class ECCConfig : ConfigFile
     {
         /// <summary>
         /// This is called VolumeNew because there was an obsolete property here at one time that ranged only from 0-1. The normalized value should be gotten with the <see cref="ECCHelpers.GetECCVolume"/>.
         /// </summary>
-        [Slider("ECC Master volume", 0f, 100f, Step = 1f, DefaultValue = 100f, Tooltip = "Not influenced by the in-game sound setting.")]
+        [Slider("ECC Master volume", 0f, 100f, Step = 1f, DefaultValue = 100f, Tooltip = "This is the volume for all audio in mods that require ECC. Independent from the in-game sound setting.\nRESTART REQUIRED.")]
         public float VolumeNew = 50f;
         /// <summary>
         /// Whether messages are displayed on the screen or not.

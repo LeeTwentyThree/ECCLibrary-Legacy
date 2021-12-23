@@ -7,9 +7,18 @@ using UnityEngine;
 
 namespace ECCLibrary.Internal
 {
+    /// <summary>
+    /// This class simply 
+    /// </summary>
     public class BeingSuckedInWhole : MonoBehaviour
     {
+        /// <summary>
+        /// The "throat" of the Creature that is swallowing this.
+        /// </summary>
         public Transform target;
+        /// <summary>
+        /// How long it takes to get swallowed.
+        /// </summary>
         public float animationLength;
         float timeStarted;
         float timeFinished;

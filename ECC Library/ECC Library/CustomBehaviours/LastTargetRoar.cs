@@ -9,6 +9,9 @@ using UnityEngine;
 
 namespace ECCLibrary.Internal
 {
+    /// <summary>
+    /// LastTarget class but with support for the archaic "RoarAbility" class. ECC uses this class rather than LastTarget.
+    /// </summary>
     public class LastTarget_New : LastTarget
     {
         public RoarAbility roar;
