@@ -35,12 +35,22 @@ namespace ECCLibrary.Internal
             {
                 Destroy(collider);
             }
+#if SN1
             Creature creature = GetComponent<Creature>();
             if(creature != null)
             {
                 creature.flinch = 50f;
             }
+#endif
+#if BZ
+            var flinch = GetComponent<CreatureFlinch>();
+            if (flinch != null)
+            {
+                flinch.OnTakeDamage(new DamageInfo() { damage = 100f });
+            }
+#endif
         }
+    }
 
         void Update()
         {
