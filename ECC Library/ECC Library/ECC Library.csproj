@@ -110,6 +110,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AmphibiousCreatureAsset.cs" />
     <Compile Include="CommonStructs.cs" />
     <Compile Include="CreatureAsset.cs" />
     <Compile Include="CreatureEggAsset.cs" />
