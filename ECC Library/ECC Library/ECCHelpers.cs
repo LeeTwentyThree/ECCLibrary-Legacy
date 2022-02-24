@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using System.Reflection;
 using SMLHelper.V2.Assets;
+using SMLHelper.V2.Handlers;
 using System.IO;
 using FMOD;
 using ECCLibrary.Internal;
@@ -177,7 +178,7 @@ namespace ECCLibrary
         /// <param name="equipmentType"></param>
         public static void PatchEquipmentType(TechType techType, EquipmentType equipmentType)
         {
-            CraftData.equipmentTypes.Add(techType, equipmentType);
+            CraftDataHandler.SetEquipmentType(techType, equipmentType);
         }
 #if SN1
         /// <summary>

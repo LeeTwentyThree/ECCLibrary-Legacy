@@ -50,7 +50,7 @@ namespace ECCLibrary
                 //Thermoblade support
                 if (!cured && originalFish != TechType.None)
                 {
-                    CraftData.cookedCreatureList.Add(originalFish, TechType); 
+                    CraftDataHandler.SetCookedVariant(originalFish, TechType);
                 }
                 #if SN1
                 ECCHelpers.PatchItemSounds(TechType, soundType);
@@ -84,7 +84,7 @@ namespace ECCLibrary
                 //Thermoblade support
                 if (!cured && originalFish != TechType.None)
                 {
-                    CraftData.cookedCreatureList.Add(originalFish, TechType); 
+                    CraftDataHandler.SetCookedVariant(originalFish, TechType);
                 }
                 #if SN1
                 ECCHelpers.PatchItemSounds(TechType, soundType);
@@ -120,7 +120,7 @@ namespace ECCLibrary
                 //Thermoblade support
                 if (!cured && originalFish != TechType.None)
                 {
-                    CraftData.cookedCreatureList.Add(originalFish, TechType); 
+                    CraftDataHandler.SetCookedVariant(originalFish, TechType);
                 }
 #if SN1
                 ECCHelpers.PatchItemSounds(TechType, soundType);
