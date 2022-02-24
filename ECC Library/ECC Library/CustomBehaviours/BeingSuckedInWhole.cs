@@ -50,7 +50,6 @@ namespace ECCLibrary.Internal
             }
 #endif
         }
-    }
 
         void Update()
         {
