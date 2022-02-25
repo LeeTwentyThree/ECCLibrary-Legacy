@@ -19,7 +19,7 @@ public abstract class AmphibiousCreatureAsset : CreatureAsset
     /// <param name="classId"></param>
     /// <param name="friendlyName"></param>
     /// <param name="description"></param>
-    /// <param name="model"></param>
+    /// <param name="model">Requires a sphere collider.</param>
     /// <param name="spriteTexture"></param>
     protected AmphibiousCreatureAsset(string classId, string friendlyName, string description, GameObject model, Texture2D spriteTexture) : base(classId, friendlyName, description, model, spriteTexture)
     {
@@ -28,13 +28,35 @@ public abstract class AmphibiousCreatureAsset : CreatureAsset
     internal override void ApplyInternalChanges(CreatureComponents components)
     {
         var onSurfaceTracker = prefab.AddComponent<OnSurfaceTracker>();
+
         var onSurfaceMovement = prefab.AddComponent<OnSurfaceMovement>();
         onSurfaceMovement.onSurfaceTracker = onSurfaceTracker;
         onSurfaceMovement.locomotion = components.locomotion;
+
         var walkBehaviour = components.swimBehaviour as WalkBehaviour;
         walkBehaviour.onSurfaceMovement = onSurfaceMovement;
         walkBehaviour.onSurfaceTracker = onSurfaceTracker;
         walkBehaviour.allowSwimming = AllowSwimming;
+
+        var landCreatureGravity = prefab.AddComponent<LandCreatureGravity>();
+        landCreatureGravity.onSurfaceTracker = onSurfaceTracker;
+        landCreatureGravity.forceLandMode = !AllowSwimming;
+        landCreatureGravity.canGoInStasisUnderwater = WalkUnderwater;
+        landCreatureGravity.liveMixin = components.liveMixin;
+        landCreatureGravity.creatureRigidbody = components.rigidbody;
+        landCreatureGravity.worldForces = components.worldForces;
+        landCreatureGravity.bodyCollider = prefab.GetComponent<SphereCollider>();
+        landCreatureGravity.aboveWaterGravity = AboveWaterGravity;
+        landCreatureGravity.underWaterGravity = UnderwaterGravity;
+
+        var swimWalkCreatureController = prefab.AddComponent<SwimWalkCreatureController>();
+        swimWalkCreatureController.creature = components.creature;
+        swimWalkCreatureController.useRigidbody = components.rigidbody;
+        swimWalkCreatureController.onSurfaceTracker = onSurfaceTracker;
+        swimWalkCreatureController.walkBehaviour = walkBehaviour;
+        swimWalkCreatureController.locomotion = components.locomotion;
+        swimWalkCreatureController.animator = prefab.GetComponentInChildren<Animator>();
+        swimWalkCreatureController.animateByVelocity = components.animateByVelocity;
     }
 
     /// <summary>
@@ -46,5 +68,10 @@ public abstract class AmphibiousCreatureAsset : CreatureAsset
     /// If set to true, the creature will swim and walk. If set to false, the creature will be forced to walk.
     /// </summary>
     public abstract bool AllowSwimming { get; }
+
+    /// <summary>
+    /// Can the creature walk underwater?
+    /// </summary>
+    public abstract bool WalkUnderwater { get; }
 }
 #endif
