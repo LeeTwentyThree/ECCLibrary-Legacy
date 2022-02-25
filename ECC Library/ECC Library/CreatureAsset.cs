@@ -330,11 +330,16 @@ public abstract class CreatureAsset : Spawnable
             components.liveMixin.data.deathEffect = deathEffectPrefab;
         }
         SetLiveMixinData(ref components.liveMixin.data);
-        if (components.liveMixin.data.maxHealth <= 0f)
+        var maxHealth = components.liveMixin.data.maxHealth;
+        if (maxHealth <= 0f)
         {
             ECCLog.AddMessage("Warning: Creatures should not have a max health of zero or below.");
         }
-        components.liveMixin.health = components.liveMixin.maxHealth;
+        components.liveMixin.health = maxHealth;
+
+#if BZ
+        prefab.AddComponent<CreatureHealthFix>().maxHealth = maxHealth;
+#endif
 
         components.creature = prefab.AddComponent<Creature>();
 

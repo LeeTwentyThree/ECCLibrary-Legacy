@@ -114,6 +114,7 @@
     <Compile Include="CommonStructs.cs" />
     <Compile Include="CreatureAsset.cs" />
     <Compile Include="CreatureEggAsset.cs" />
+    <Compile Include="CustomBehaviours\CreatureHealthFix.cs" />
     <Compile Include="CustomBehaviours\BeingSuckedInWhole.cs" />
     <Compile Include="CustomBehaviours\HeldFish.cs" />
     <Compile Include="CustomBehaviours\MeleeAttack_New.cs" />

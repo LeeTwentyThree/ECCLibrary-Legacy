@@ -57,6 +57,10 @@ public abstract class AmphibiousCreatureAsset : CreatureAsset
         swimWalkCreatureController.locomotion = components.locomotion;
         swimWalkCreatureController.animator = prefab.GetComponentInChildren<Animator>();
         swimWalkCreatureController.animateByVelocity = components.animateByVelocity;
+        swimWalkCreatureController.landCreatureGravity = landCreatureGravity;
+        swimWalkCreatureController.walkBehaviours = new Behaviour[] { walkBehaviour };
+        swimWalkCreatureController.swimBehaviours = new Behaviour[] { walkBehaviour };
+        swimWalkCreatureController.creatureType = TechType;
     }
 
     /// <summary>
