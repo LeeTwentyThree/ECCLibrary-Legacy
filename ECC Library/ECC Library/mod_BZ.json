@@ -1,8 +1,8 @@
 {
-  "Id": "ECCLibrary",
-  "DisplayName": "Eel's Creature Creator",
+  "Id": "ECCLibraryBZ",
+  "DisplayName": "Eel's Creature Creator BZ",
   "Author": "Lee23",
-  "Version": "1.1.4",
+  "Version": "1.0.0",
   "Requires": [ ],
   "Enable": true,
 "VersionDependencies": {
