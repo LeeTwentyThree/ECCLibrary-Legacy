@@ -28,6 +28,7 @@ public abstract class AmphibiousCreatureAsset : CreatureAsset
     internal override void ApplyInternalChanges(CreatureComponents components)
     {
         var onSurfaceTracker = prefab.EnsureComponent<OnSurfaceTracker>();
+        onSurfaceTracker.maxSurfaceAngle = MaxSurfaceAngle;
 
         var onSurfaceMovement = prefab.EnsureComponent<OnSurfaceMovement>();
         onSurfaceMovement.onSurfaceTracker = onSurfaceTracker;
@@ -42,6 +43,11 @@ public abstract class AmphibiousCreatureAsset : CreatureAsset
         landCreatureGravity.onSurfaceTracker = onSurfaceTracker;
         landCreatureGravity.forceLandMode = !AllowSwimming;
         landCreatureGravity.canGoInStasisUnderwater = WalkUnderwater;
+        landCreatureGravity.applyDownforceUnderwater = WalkUnderwater;
+        if (WalkUnderwater)
+        {
+            landCreatureGravity.underWaterGravity = 3f;
+        }
         landCreatureGravity.liveMixin = components.liveMixin;
         landCreatureGravity.creatureRigidbody = components.rigidbody;
         landCreatureGravity.worldForces = components.worldForces;
@@ -49,6 +55,22 @@ public abstract class AmphibiousCreatureAsset : CreatureAsset
         landCreatureGravity.aboveWaterGravity = AboveWaterGravity;
         landCreatureGravity.underWaterGravity = UnderwaterGravity;
 
+        MoveOnSurface moveOnSurface = null;
+        if (MoveOnSurfaceSettings.evaluatePriority > 0f)
+        {
+            moveOnSurface = prefab.AddComponent<MoveOnSurface>();
+            moveOnSurface.evaluatePriority = MoveOnSurfaceSettings.evaluatePriority;
+            moveOnSurface.updateTargetInterval = MoveOnSurfaceSettings.updateTargetInterval;
+            moveOnSurface.updateTargetRandomInterval = MoveOnSurfaceSettings.updateTargetRandomInterval;
+            moveOnSurface.moveVelocity = MoveOnSurfaceSettings.moveVelocity;
+            moveOnSurface.moveRadius = MoveOnSurfaceSettings.moveRadius;
+            moveOnSurface.moveOnWalls = MoveOnSurfaceSettings.moveOnWalls;
+            moveOnSurface.onSurfaceTracker = onSurfaceTracker;
+            moveOnSurface.walkBehaviour = walkBehaviour;
+            moveOnSurface.onSurfaceMovement = onSurfaceMovement;
+        }
+
+        #region SwimWalkCreatureController
         var swimWalkCreatureController = prefab.EnsureComponent<SwimWalkCreatureController>();
         swimWalkCreatureController.creature = components.creature;
         swimWalkCreatureController.useRigidbody = components.rigidbody;
@@ -58,9 +80,31 @@ public abstract class AmphibiousCreatureAsset : CreatureAsset
         swimWalkCreatureController.animator = prefab.GetComponentInChildren<Animator>();
         swimWalkCreatureController.animateByVelocity = components.animateByVelocity;
         swimWalkCreatureController.landCreatureGravity = landCreatureGravity;
-        swimWalkCreatureController.walkBehaviours = new Behaviour[] { walkBehaviour };
-        swimWalkCreatureController.swimBehaviours = new Behaviour[] { walkBehaviour };
+
+        // walking or swimming specific components
+        var walkBehaviours = this.walkBehaviours;
+        if (moveOnSurface != null)
+        {
+            walkBehaviours.Add(moveOnSurface);
+        }
+        swimWalkCreatureController.walkBehaviours = walkBehaviours.ToArray();
+
+        var swimBehaviours = this.swimBehaviours;
+        if (components.swimRandom != null)
+        {
+            swimBehaviours.Add(components.swimRandom);
+        }
+        var avoidObstacles = prefab.GetComponent<AvoidObstacles>();
+        if (avoidObstacles != null)
+        {
+            swimBehaviours.Add(avoidObstacles);
+        }
+        swimWalkCreatureController.swimBehaviours = swimBehaviours.ToArray();
+
         swimWalkCreatureController.creatureType = TechType;
+        #endregion
+
+        components.locomotion.canWalkOnSurface = true;
     }
 
     /// <summary>
@@ -77,5 +121,35 @@ public abstract class AmphibiousCreatureAsset : CreatureAsset
     /// Can the creature walk underwater?
     /// </summary>
     public abstract bool WalkUnderwater { get; }
+
+    /// <summary>
+    /// Settings related to moving on surfaces.
+    /// </summary>
+    public abstract MoveOnSurfaceSettings MoveOnSurfaceSettings { get; }
+
+    /// <summary>
+    /// The maximum angle (in degrees) for something to be considered a surface. Values close to 90° result in the creature being forced to stand upright and never being able to walk. (0-180)
+    /// </summary>
+    public abstract float MaxSurfaceAngle { get; }
+
+    /// <summary>
+    /// Forces <paramref name="behaviour"/> to only work while on land.
+    /// </summary>
+    protected void AddWalkBehaviour(Behaviour behaviour)
+    {
+        walkBehaviours.Add(behaviour);
+    }
+
+    /// <summary>
+    /// Forces <paramref name="behaviour"/> to only work while in water.
+    /// </summary>
+    protected void AddSwimBehaviour(Behaviour behaviour)
+    {
+        swimBehaviours.Add(behaviour);
+    }
+
+    private List<Behaviour> walkBehaviours = new List<Behaviour>();
+
+    private List<Behaviour> swimBehaviours = new List<Behaviour>();
 }
 #endif

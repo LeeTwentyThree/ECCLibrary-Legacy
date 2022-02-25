@@ -164,4 +164,36 @@ namespace ECCLibrary
             EmissionScale = emissionScale;
         }
     }
+
+    /// <summary>
+    /// Settings related to the <see cref="MoveOnSurface"/> component.
+    /// </summary>
+    public struct MoveOnSurfaceSettings
+    {
+        public float evaluatePriority;
+        public float updateTargetInterval;
+        public float updateTargetRandomInterval;
+        public float moveVelocity;
+        public float moveRadius;
+        public bool moveOnWalls;
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="evaluatePriority">Evaluate priority for this action.</param>
+        /// <param name="updateTargetInterval">The interval for changing targets.</param>
+        /// <param name="updateTargetRandomInterval">Up to this many seconds will be added to the interval.</param>
+        /// <param name="moveVelocity">Velocity while moving.</param>
+        /// <param name="moveRadius">Wander radius.</param>
+        /// <param name="moveOnWalls">Whether the creature will attach to walls or not.</param>
+        public MoveOnSurfaceSettings(float evaluatePriority, float updateTargetInterval, float updateTargetRandomInterval, float moveVelocity, float moveRadius, bool moveOnWalls)
+        {
+            this.evaluatePriority = evaluatePriority;
+            this.updateTargetInterval = updateTargetInterval;
+            this.updateTargetRandomInterval = updateTargetRandomInterval;
+            this.moveVelocity = moveVelocity;
+            this.moveRadius = moveRadius;
+            this.moveOnWalls = moveOnWalls;
+        }
+    }
 }

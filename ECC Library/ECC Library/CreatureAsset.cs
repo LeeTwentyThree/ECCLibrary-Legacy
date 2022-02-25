@@ -338,7 +338,7 @@ public abstract class CreatureAsset : Spawnable
         components.liveMixin.health = maxHealth;
 
 #if BZ
-        prefab.AddComponent<CreatureHealthFix>().maxHealth = maxHealth;
+        components.liveMixin.tempDamage = -1f;
 #endif
 
         components.creature = prefab.AddComponent<Creature>();
