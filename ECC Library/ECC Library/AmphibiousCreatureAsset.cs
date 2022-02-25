@@ -27,9 +27,9 @@ public abstract class AmphibiousCreatureAsset : CreatureAsset
 
     internal override void ApplyInternalChanges(CreatureComponents components)
     {
-        var onSurfaceTracker = prefab.AddComponent<OnSurfaceTracker>();
+        var onSurfaceTracker = prefab.EnsureComponent<OnSurfaceTracker>();
 
-        var onSurfaceMovement = prefab.AddComponent<OnSurfaceMovement>();
+        var onSurfaceMovement = prefab.EnsureComponent<OnSurfaceMovement>();
         onSurfaceMovement.onSurfaceTracker = onSurfaceTracker;
         onSurfaceMovement.locomotion = components.locomotion;
 
@@ -38,7 +38,7 @@ public abstract class AmphibiousCreatureAsset : CreatureAsset
         walkBehaviour.onSurfaceTracker = onSurfaceTracker;
         walkBehaviour.allowSwimming = AllowSwimming;
 
-        var landCreatureGravity = prefab.AddComponent<LandCreatureGravity>();
+        var landCreatureGravity = prefab.EnsureComponent<LandCreatureGravity>();
         landCreatureGravity.onSurfaceTracker = onSurfaceTracker;
         landCreatureGravity.forceLandMode = !AllowSwimming;
         landCreatureGravity.canGoInStasisUnderwater = WalkUnderwater;
@@ -49,7 +49,7 @@ public abstract class AmphibiousCreatureAsset : CreatureAsset
         landCreatureGravity.aboveWaterGravity = AboveWaterGravity;
         landCreatureGravity.underWaterGravity = UnderwaterGravity;
 
-        var swimWalkCreatureController = prefab.AddComponent<SwimWalkCreatureController>();
+        var swimWalkCreatureController = prefab.EnsureComponent<SwimWalkCreatureController>();
         swimWalkCreatureController.creature = components.creature;
         swimWalkCreatureController.useRigidbody = components.rigidbody;
         swimWalkCreatureController.onSurfaceTracker = onSurfaceTracker;

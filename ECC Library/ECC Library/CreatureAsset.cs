@@ -303,6 +303,10 @@ public abstract class CreatureAsset : Spawnable
         components.splineFollowing.useRigidbody = components.rigidbody;
         components.splineFollowing.locomotion = components.locomotion;
 #endif
+        if (UseWalkBehaviour)
+        {
+            prefab.AddComponent<OnSurfaceMovement>();
+        }
         components.swimBehaviour = UseWalkBehaviour ? prefab.AddComponent<WalkBehaviour>() : prefab.AddComponent<SwimBehaviour>();
         components.swimBehaviour.splineFollowing = components.splineFollowing;
         components.swimBehaviour.turnSpeed = TurnSpeed;
@@ -1049,7 +1053,7 @@ public abstract class CreatureAsset : Spawnable
     }
 
     /// <summary>
-    /// If set to true, the creature will use WalkBehaviour rather than the usual SwimBehaviour. Only override this if you know what you're doing! It will create errors otherwise.
+    /// If set to true, the creature will use WalkBehaviour rather than the usual SwimBehaviour. Only override this if you know what you're doing! It will create errors otherwise. Automatically adds <see cref="OnSurfaceMovement"/> because it is required.
     /// </summary>
     public virtual bool UseWalkBehaviour
     {
