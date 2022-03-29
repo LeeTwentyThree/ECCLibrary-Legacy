@@ -45,6 +45,7 @@ Shocker
 SpineEel
 Stalker
 Warper
+Player
 Prawn suit
 Seamoth
 ECO TARGET TYPE: Trap
