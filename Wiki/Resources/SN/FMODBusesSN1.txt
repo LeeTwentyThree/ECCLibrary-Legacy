@@ -1,0 +1,71 @@
+bus:/master/nofilter/music/mutable music/floating_islands_background_music
+bus:/master/all/misc/fixing the lamest bugs in docking and undocking because lame code is broken
+bus:/master/all
+bus:/master/nofilter/music/mutable music/jellyshroom_caves_music
+bus:/master/nofilter/music/mutable music/lava_background_music
+bus:/master/all/indoorsounds
+bus:/master/nofilter/music/mutable music
+bus:/master/all/SFX/backgrounds/underwater_backgrounds/lost_river_background
+bus:/master/all/SFX/backgrounds/underwater_backgrounds/grasy_background (2)
+bus:/master/all/SFX/swim_surface
+bus:/master/all/SFX/backgrounds/underwater_backgrounds/jellyshroom_caves
+bus:/master/all/SFX/deploys
+bus:/master/all/SFX/reverbsend/tech
+bus:/master/all/SFX/creatures/seadragon
+bus:/master/all/SFX/backgrounds/surface
+bus:/master/all/SFX/backgrounds
+bus:/master/all/SFX/creatures/reffback
+bus:/master/nofilter/music
+bus:/master/all/SFX/beach
+bus:/master/nofilter/music/mutable music/reef_background_music
+bus:/master
+bus:/master/nofilter/music/mutable music/blood_kelp_background_music
+bus:/master/all/SFX/backgrounds/underwater_backgrounds/lava_background
+bus:/master/all/misc/powerstuff
+bus:/master/all/misc/rocket loops
+bus:/master/nofilter/music/mutable music/grandreef_background_music
+bus:/master/all/SFX/backgrounds/underwater_backgrounds/mushroom_background
+bus:/master/nofilter/music/mutable music/prec_base_background_music
+bus:/master/nofilter/music/mutable music/kelp_background_music
+bus:/master/all/SFX/backgrounds/underwater_backgrounds/kelp_background
+bus:/master/all/SFX/backgrounds/underwater_backgrounds/underislands_background
+bus:/master/all/intro
+bus:/master/all/SFX/dives
+bus:/master/all/SFX/cyclops_loop
+bus:/master/all/SFX/floating_islands_background
+bus:/master/all/SFX
+bus:/master/all/SFX/cyclops_stop
+bus:/master/all/misc
+bus:/master/nofilter/music/mutable music/mushroom_background_music
+bus:/master/nofilter/music/mutable music/arctic_background_music
+bus:/master/all/SFX/reverbsend
+bus:/master/all/all voice
+bus:/master/all/SFX/creatures/bonesharkbitemutes
+bus:/master/all/all voice/AI voice
+bus:/master/nofilter/music/mutable music/grasy_background_music
+bus:/master/all/Sounds_muted by pain
+bus:/master/all/all voice/VOs
+bus:/master/all/SFX/backgrounds/underwater_backgrounds/blood_kelp_background
+bus:/master/all/SFX/creatures
+bus:/master/nofilter/music/mutable music/grasy_background (2)_music
+bus:/master/all/SFX/backgrounds/underwater_backgrounds/arctic_background
+bus:/master/all/SFX/backgrounds/underwater_backgrounds
+bus:/master/nofilter/music/mutable music/twisty_bridges_background_music
+bus:/master/nofilter
+bus:/master/all/SFX/creatures surface
+bus:/master/all/SFX/backgrounds/underwater_backgrounds/grandreef_background
+bus:/master/all/SFX/reverbsend/fabricator close
+bus:/master/nofilter/music/mutable music/lost_river_background_music
+bus:/master/all/all voice/Aurora warnings
+bus:/master/all/SFX/backgrounds/underwater_backgrounds/twisty_bridges_background
+bus:/master/all/all voice/cyclops voice
+bus:/master/all/SFX/backgrounds/underwater_backgrounds/reef_background
+bus:/master/nofilter/music/mutable music/underislands_background_music
+bus:/master/all/SFX/backgrounds/underwater_backgrounds/grasy_background
+bus:/master/nofilter/music/mutable music/koosh_background_music
+bus:/master/all/SFX/backgrounds/underwater_backgrounds/koosh_background
+bus:/master/all/SFX/creatures/ghost
+bus:/master/all/regularverb
+bus:/master/all/reverb
+bus:/master/all/SFX/reverb
+bus:/

@@ -1,0 +1,203 @@
+ECO TARGET TYPE: HeatArea
+KooshZone_Geyser
+Geyser
+GeyserShort
+Heat Area
+ThermalVent_Bright_Big
+ThermalVent_Bright_Small
+ThermalVent_Dark_Big
+ThermalVent_Dark_Huge
+ThermalVent_Dark_Small
+ThermalVent_EcoEvent_Big
+ECO TARGET TYPE: MediumFish
+Biter
+Biter_02
+Boomerang
+BoomerangLava
+CuteFish
+GhostRayBlue
+GhostRayRed
+Hoopfish school
+Jellyray
+LavaLarva
+Mesmer
+Oculus
+Peeper
+Rabbit ray
+SpadeFish
+ECO TARGET TYPE: SmallFish
+BladderFish
+Bleeder
+Eyeye
+EyeyeLava
+GarryFish
+Holefish
+HoopFish
+HoopFish_02
+HoverFish
+Reginald
+RockGrub
+ECO TARGET TYPE: Shark
+BoneShark
+LavaLizard
+Sand shark
+Shocker
+SpineEel
+Stalker
+Warper
+Prawn suit
+Seamoth
+ECO TARGET TYPE: Trap
+CrabSnake
+Crashfish
+ECO TARGET TYPE: Whale
+Gasopod
+Reefback
+Reefback
+ECO TARGET TYPE: Leviathan
+GhostLeviathan
+GhostLeviathanJuvenile
+ReaperLeviathan
+SeaDragon
+ECO TARGET TYPE: Tech
+Coral_reef_kelp_01_long
+Coral_reef_kelp_01_mid
+Coral_reef_kelp_dense_01
+Coral_reef_kelp_dense_03
+Coral_reef_kelp_young_04
+basalt
+Creepvine
+limestone
+obsidian
+quartz
+sandstone
+shale
+Constructor
+Powerglide
+Seaglide
+ECO TARGET TYPE: Coral
+Coral_reef_shell_tunnel_01
+Coral_reef_shell_tunnel_02
+Coral_reef_shell_tunnel_03
+ECO TARGET TYPE: Mushroom
+Crab_snake_mushrooms_01
+Crab_snake_mushrooms_03
+Crab_snake_mushrooms_04
+ECO TARGET TYPE: Fragment
+Scanner room fragment
+Scanner room fragment
+Scanner room fragment
+Scanner room fragment
+Moonpool fragment
+Moonpool fragment
+Moonpool fragment
+Moonpool fragment
+Moonpool fragment
+Moonpool fragment
+Bulkhead fragment
+Multipurpose room fragment
+Vehicle upgrade console fragment
+Battery charger fragment
+Battery charger fragment
+Bioreactor fragment
+Bioreactor fragment
+Bioreactor fragment
+Bioreactor fragment
+Mobile Vehicle Bay fragment
+Mobile Vehicle Bay fragment
+Mobile Vehicle Bay fragment
+Mobile Vehicle Bay fragment
+Cyclops bridge fragment
+Cyclops bridge fragment
+Cyclops bridge fragment
+Cyclops engine fragment
+Cyclops engine fragment
+Cyclops engine fragment
+Cyclops hull fragment
+Cyclops hull fragment
+Cyclops hull fragment
+Cyclops hull fragment
+Cyclops hull fragment
+Cyclops hull fragment
+Cyclops hull fragment
+Cyclops hull fragment
+Cyclops hull fragment
+Prawn suit fragment
+Prawn suit fragment
+Prawn suit fragment
+Prawn suit fragment
+Prawn suit fragment
+Nuclear reactor fragment
+Nuclear reactor fragment
+Nuclear reactor fragment
+Nuclear reactor fragment
+Power cell charger fragment
+Power cell charger fragment
+Modification station fragment
+Modification station fragment
+Modification station fragment
+Thermal Plant fragment
+Thermal Plant fragment
+Thermal Plant fragment
+Laser cutter fragment
+propulsioncannonfragment
+reinforcehullfragment
+Seamoth fragment
+Seamoth fragment
+Seamoth fragment
+Seamoth fragment
+Seamoth fragment
+Seamoth fragment
+Seamoth fragment
+stasisriflefragment
+ECO TARGET TYPE: DeadMeat
+CookedBladderfish
+CookedBoomerang
+CookedEyeye
+CookedGarryfish
+CookedHolefish
+CookedHoopfish
+CookedHoverfish
+CookedLavaBoomerang
+CookedLavaEyeye
+CookedOculus
+CookedPeeper
+CookedReginald
+CookedSpadefish
+CookedSpinefish
+CuredBladderfish
+CuredBoomerang
+CuredEyeye
+CuredGarryfish
+CuredHolefish
+CuredHoopfish
+CuredHoverfish
+CuredLavaBoomerang
+CuredLavaEyeye
+CuredOculus
+CuredPeeper
+CuredReginald
+CuredSpadefish
+CuredSpinefish
+ECO TARGET TYPE: None
+bloodoil
+ECO TARGET TYPE: Shiny
+copper
+gold
+kyanite
+metal1
+metal2
+metal3
+metal4
+nickel
+reactorrod
+silver
+uranium
+DoubleTank
+HighCapacityTank
+Knife
+MapRoomCamera
+PlasteelTank
+Tank
+ECO TARGET TYPE: SubDecoy
+Creature decoy
