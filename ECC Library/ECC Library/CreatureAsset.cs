@@ -150,6 +150,12 @@ public abstract class CreatureAsset : Spawnable
                     action.swimBehaviour = components.swimBehaviour;
                 }
 #endif
+            
+            var task = PrefabDatabase.GetPrefabAsync("d8c7c300-cf01-448e-9bea-829b67ddfbbc");
+            yield return task;
+            task.TryGetPrefab(out var respawnerPrefab);
+            components.creatureDeath.respawnerPrefab = respawnerPrefab;
+            
             CompletePrefab(components);
         }
         yield return null;
@@ -497,16 +503,12 @@ public abstract class CreatureAsset : Spawnable
         components.creatureDeath.useRigidbody = components.rigidbody;
         components.creatureDeath.liveMixin = components.liveMixin;
         components.creatureDeath.eatable = eatable;
-        if (RespawnSettings.CanRespawn)
-        {
-            GameObject respawnerPrefab = new GameObject("Respawner");
-            var respawnComponent = respawnerPrefab.AddComponent<Respawn>();
-            respawnComponent.techType = TechType;
-            respawnComponent.spawnTime = RespawnSettings.RespawnDelay;
-
-            respawnerPrefab.SetActive(false);
-            components.creatureDeath.respawnerPrefab = respawnerPrefab;
-        }
+        components.creatureDeath.respawnInterval = RespawnSettings.RespawnDelay;
+        components.creatureDeath.respawn = RespawnSettings.CanRespawn;
+#if SN1
+        PrefabDatabase.TryGetPrefab("d8c7c300-cf01-448e-9bea-829b67ddfbbc", out var respawnerPrefab);
+        components.creatureDeath.respawnerPrefab = respawnerPrefab;
+#endif
         var deadAnimationOnEnable = prefab.AddComponent<DeadAnimationOnEnable>();
         deadAnimationOnEnable.enabled = false;
         deadAnimationOnEnable.animator = components.creature.GetAnimator();
