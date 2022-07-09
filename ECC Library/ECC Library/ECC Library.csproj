@@ -120,6 +120,7 @@
     <Compile Include="CustomBehaviours\MeleeAttack_New.cs" />
     <Compile Include="CustomBehaviours\RoarAbility.cs" />
     <Compile Include="CustomBehaviours\RoarRandomAction.cs" />
+    <Compile Include="CustomBehaviours\TrailManagerECC.cs" />
     <Compile Include="EatableAsset.cs" />
     <Compile Include="ECCConfig.cs" />
     <Compile Include="ECCHelpers.cs" />

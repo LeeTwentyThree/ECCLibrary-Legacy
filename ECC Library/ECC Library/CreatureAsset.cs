@@ -566,7 +566,7 @@ public abstract class CreatureAsset : Spawnable
     {
         trailParent.gameObject.SetActive(false);
 
-        TrailManager trail = trailParent.AddComponent<TrailManager>();
+        TrailManagerECC trail = trailParent.AddComponent<TrailManagerECC>();
         trail.trails = trailParent.transform.GetChild(0).GetComponentsInChildren<Transform>();
         trail.rootTransform = prefab.transform;
         trail.rootSegment = trail.transform;
@@ -594,7 +594,7 @@ public abstract class CreatureAsset : Spawnable
     {
         trailRoot.gameObject.SetActive(false);
 
-        TrailManager trail = trailRoot.AddComponent<TrailManager>();
+        TrailManagerECC trail = trailRoot.AddComponent<TrailManagerECC>();
         trail.trails = trails;
         trail.rootTransform = prefab.transform;
         trail.rootSegment = trail.transform;
