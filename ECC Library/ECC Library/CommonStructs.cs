@@ -116,13 +116,18 @@ namespace ECCLibrary
             this.scannable = scannable;
             this.scanTime = scanTime;
             this.encyPath = encyPath;
-            this.encyNodes = encyPath.Split('/');
+            if (string.IsNullOrEmpty(encyPath)) encyNodes = new string[0];
+            else encyNodes = encyPath.Split('/');
             this.popup = popup;
             this.encyImage = encyImage;
         }
 
         internal void AttemptPatch(ModPrefab prefab, string encyTitle, string encyDesc)
         {
+            if (string.IsNullOrEmpty(encyPath) || encyNodes == null)
+            {
+                return;
+            }
             PDAEncyclopediaHandler.AddCustomEntry(new PDAEncyclopedia.EntryData()
             {
                 key = prefab.ClassID,
