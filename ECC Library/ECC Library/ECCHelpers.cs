@@ -283,6 +283,30 @@ namespace ECCLibrary
                     return original.Contains(compareTo);
             }
         }
+
+        private static PhysicMaterial noFrictionPhysicMaterial;
+
+        /// <summary>
+        /// Returns an instance of the PhysicMaterial class that should be used for creatures. The dynamicFriction and staticFriction fields are set to 0 and the combine mode is set to multiply. Please do not modify fields on this class.
+        /// </summary>
+        /// <returns></returns>
+        public static PhysicMaterial FrictionlessPhysicMaterial
+        {
+            get
+            {
+                if (noFrictionPhysicMaterial == null)
+                {
+                    noFrictionPhysicMaterial = new PhysicMaterial("NoFriction")
+                    {
+                        dynamicFriction = 0f,
+                        staticFriction = 0f,
+                        frictionCombine = PhysicMaterialCombine.Multiply,
+                        bounceCombine = PhysicMaterialCombine.Multiply
+                    };
+                }
+                return noFrictionPhysicMaterial;
+            }
+        }
     }
     /// <summary>
     /// Various ECC-related extensions for GameObjects.

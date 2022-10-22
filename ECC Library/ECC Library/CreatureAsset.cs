@@ -286,6 +286,16 @@ public abstract class CreatureAsset : Spawnable
         components.vfxSurface = prefab.EnsureComponent<VFXSurface>();
         components.vfxSurface.surfaceType = SurfaceType;
 
+        var physicMaterial = PhysicMaterial;
+        if (physicMaterial != null)
+        {
+            var colliders = prefab.GetComponentsInChildren<Collider>();
+            foreach (var collider in colliders)
+            {
+                collider.sharedMaterial = PhysicMaterial;
+            }
+        }
+
         components.behaviourLOD = prefab.EnsureComponent<BehaviourLOD>();
         components.behaviourLOD.veryCloseThreshold = BehaviourLODSettings.Close;
         components.behaviourLOD.closeThreshold = BehaviourLODSettings.Close;
@@ -657,6 +667,17 @@ public abstract class CreatureAsset : Spawnable
     #endregion
 
     #region Overrideable
+    /// <summary>
+    /// Instance of the PhysicMaterial class to be used for the creature's colliders. By default uses <see cref="ECCHelpers.FrictionlessPhysicMaterial"/>
+    /// </summary>
+    public virtual PhysicMaterial PhysicMaterial
+    {
+        get
+        {
+            return ECCHelpers.FrictionlessPhysicMaterial;
+        }
+    }
+
     /// <summary>
     /// Settings related to more complex animations.
     /// </summary>
