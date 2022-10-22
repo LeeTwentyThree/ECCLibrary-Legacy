@@ -123,6 +123,10 @@ public abstract class CreatureAsset : Spawnable
     /// <returns></returns>
     public override GameObject GetGameObject()
     {
+        if (!prefabPropertiesCached)
+        {
+            CachePrefabProperties();
+        }
         if (prefab == null)
         {
             SetupPrefab(out CreatureComponents components);
@@ -138,6 +142,10 @@ public abstract class CreatureAsset : Spawnable
     /// <returns></returns>
     public override IEnumerator GetGameObjectAsync(IOut<GameObject> gameObject)
     {
+        if (!prefabPropertiesCached)
+        {
+            CachePrefabProperties();
+        }
         if (prefab == null)
         {
             SetupPrefab(out CreatureComponents components);
@@ -715,6 +723,7 @@ public abstract class CreatureAsset : Spawnable
             }
         }
     }
+
     /// <summary>
     /// The type of sound effects this creature will use in the Inventory. By default is ItemSoundsType.Fish.
     /// </summary>
@@ -761,6 +770,7 @@ public abstract class CreatureAsset : Spawnable
             return new HeldFishData();
         }
     }
+
     /// <summary>
     /// Settings related to respawning. By default a creature respawns after 300 seconds.
     /// </summary>
@@ -791,6 +801,7 @@ public abstract class CreatureAsset : Spawnable
             return SwimRandomSettings.SwimVelocity + 1f;
         }
     }
+
     /// <summary>
     /// The horizontal turn speed. Default value is 0.6f.
     /// </summary>
@@ -831,6 +842,7 @@ public abstract class CreatureAsset : Spawnable
             return false;
         }
     }
+
     /// <summary>
     /// Possible sizes for this creature. Randomly picks a value in the range of 0 to 1. This value can not go above 1. Flat curve at 1 by default.
     /// </summary>
@@ -868,6 +880,7 @@ public abstract class CreatureAsset : Spawnable
     /// <summary>
     /// Settings related to random roaring, using the Unity audio system. Please note it is recommended to create your own audio controller for the creature, using FMOD if possible.
     /// </summary>
+    [System.Obsolete("It is recommended to create your own audio using SMLHelper's FMOD tools.")]
     public virtual RoarAbilityData RoarAbilitySettings { get; }
 
     /// <summary>
@@ -880,6 +893,7 @@ public abstract class CreatureAsset : Spawnable
             return new SmallVehicleAggressivenessSettings(0f, 0f);
         }
     }
+
     /// <summary>
     /// Settings based around how this creature attacks its LastTarget.
     /// </summary>
@@ -950,6 +964,7 @@ public abstract class CreatureAsset : Spawnable
             }
         }
 #endif
+
     /// <summary>
     /// The mass of the Rigidbody.
     /// </summary>
@@ -1044,6 +1059,82 @@ public abstract class CreatureAsset : Spawnable
         {
             return new SwimInSchoolData();
         }
+    }
+
+    #endregion
+
+    #region Cached values to prevent creating unnecessary references for each spawned creature
+
+    private LargeWorldEntity.CellLevel _cellLevel;
+    private SwimRandomData _swimRandomSettings;
+    private EcoTargetType _ecoTargetType;
+    private PhysicMaterial _physicMaterial;
+    private AnimateByVelocityData _animateByVelocity;
+    private float _underwaterDrag;
+    private CreatureTraitsData _traitsSettings;
+    private bool _useBloodEffects;
+    private UBERMaterialProperties _materialSettings;
+    private StayAtLeashData _stayAtLeashSettings;
+    private HeldFishData _heldFishData;
+    private EatableData _eatableSettings;
+    private float _maxVelocityForSpeedParameter;
+    private float _turnSpeedHorizontal;
+    private float _turnSpeedVertical;
+    private bool _pickupable;
+    private AnimationCurve _sizeDistribution;
+    private bool _scannerRoomScannable;
+    private bool _canBeInfected;
+    private RoarAbilityData _roarAbilitySettings;
+    private SmallVehicleAggressivenessSettings _aggressivenessToSmallVehicles;
+    private AttackLastTargetSettings _attackSettings;
+    private float _mass;
+    private float _aboveWaterGravity;
+    private float _underwaterGravity;
+    private VFXSurfaceTypes _surfaceType;
+    private BehaviourLODLevelsStruct _behaviourLODSettings;
+    private float _eyeFov;
+    private AvoidObstaclesData _avoidObstaclesSettings;
+    private SwimInSchoolData _swimInSchoolSettings;
+
+    #endregion
+
+    #region Caching Logic
+
+    private bool prefabPropertiesCached = false;
+    private void CachePrefabProperties() // caches properties that are called multiple times during prefab initialization
+    {
+        _cellLevel = CellLevel;
+        _swimRandomSettings = SwimRandomSettings;
+        _ecoTargetType = EcoTargetType;
+        _physicMaterial = PhysicMaterial;
+        _animateByVelocity = AnimateByVelocitySettings;
+        _underwaterDrag = UnderwaterDrag;
+        _traitsSettings = TraitsSettings;
+        _useBloodEffects = UseBloodEffects;
+        _materialSettings = MaterialSettings;
+        _stayAtLeashSettings = StayAtLeashSettings;
+        _heldFishData = ViewModelSettings;
+        _eatableSettings = EatableSettings;
+        _maxVelocityForSpeedParameter = MaxVelocityForSpeedParameter;
+        _turnSpeedHorizontal = TurnSpeedHorizontal;
+        _turnSpeedVertical = TurnSpeedVertical;
+        _pickupable = Pickupable;
+        _sizeDistribution = SizeDistribution;
+        _scannerRoomScannable = ScannerRoomScannable;
+        _canBeInfected = CanBeInfected;
+        _roarAbilitySettings = RoarAbilitySettings;
+        _aggressivenessToSmallVehicles = AggressivenessToSmallVehicles;
+        _attackSettings = AttackSettings;
+        _mass = Mass;
+        _aboveWaterGravity = AboveWaterGravity;
+        _underwaterGravity = UnderwaterGravity;
+        _surfaceType = SurfaceType;
+        _behaviourLODSettings = BehaviourLODSettings;
+        _eyeFov = EyeFov;
+        _avoidObstaclesSettings = AvoidObstaclesSettings;
+        _swimInSchoolSettings = SwimInSchoolSettings;
+
+        prefabPropertiesCached = true;
     }
 
     #endregion
