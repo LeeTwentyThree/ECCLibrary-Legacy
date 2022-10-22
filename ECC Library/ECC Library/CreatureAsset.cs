@@ -280,7 +280,7 @@ public abstract class CreatureAsset : Spawnable
         components.techTag.type = TechType;
 
         components.largeWorldEntity = prefab.EnsureComponent<LargeWorldEntity>();
-        components.largeWorldEntity.cellLevel = CellLevel;
+        components.largeWorldEntity.cellLevel = _cellLevel;
 
         components.entityTag = prefab.EnsureComponent<EntityTag>();
         components.entityTag.slotType = EntitySlot.Type.Creature;
@@ -289,34 +289,34 @@ public abstract class CreatureAsset : Spawnable
         components.skyApplier.renderers = prefab.GetComponentsInChildren<Renderer>(true);
 
         components.ecoTarget = prefab.AddComponent<EcoTarget>();
-        components.ecoTarget.type = EcoTargetType;
+        components.ecoTarget.type = _ecoTargetType;
 
         components.vfxSurface = prefab.EnsureComponent<VFXSurface>();
-        components.vfxSurface.surfaceType = SurfaceType;
+        components.vfxSurface.surfaceType = _surfaceType;
 
-        var physicMaterial = PhysicMaterial;
+        var physicMaterial = _physicMaterial;
         if (physicMaterial != null)
         {
             var colliders = prefab.GetComponentsInChildren<Collider>();
             foreach (var collider in colliders)
             {
-                collider.sharedMaterial = PhysicMaterial;
+                collider.sharedMaterial = physicMaterial;
             }
         }
 
         components.behaviourLOD = prefab.EnsureComponent<BehaviourLOD>();
-        components.behaviourLOD.veryCloseThreshold = BehaviourLODSettings.Close;
-        components.behaviourLOD.closeThreshold = BehaviourLODSettings.Close;
-        components.behaviourLOD.farThreshold = BehaviourLODSettings.Far;
+        components.behaviourLOD.veryCloseThreshold = _behaviourLODSettings.Close;
+        components.behaviourLOD.closeThreshold = _behaviourLODSettings.Close;
+        components.behaviourLOD.farThreshold = _behaviourLODSettings.Far;
 
         components.rigidbody = prefab.EnsureComponent<Rigidbody>();
         components.rigidbody.useGravity = false;
-        components.rigidbody.mass = Mass;
+        components.rigidbody.mass = _mass;
 
         components.locomotion = prefab.AddComponent<Locomotion>();
         components.locomotion.useRigidbody = components.rigidbody;
-        components.locomotion.forwardRotationSpeed = TurnSpeedHorizontal;
-        components.locomotion.upRotationSpeed = TurnSpeedVertical;
+        components.locomotion.forwardRotationSpeed = _turnSpeedHorizontal;
+        components.locomotion.upRotationSpeed = _turnSpeedVertical;
 #if BZ
         components.locomotion.levelOfDetail = components.behaviourLOD;
 #endif
@@ -341,14 +341,14 @@ public abstract class CreatureAsset : Spawnable
         components.worldForces = prefab.EnsureComponent<WorldForces>();
         components.worldForces.useRigidbody = components.rigidbody;
         components.worldForces.handleGravity = true;
-        components.worldForces.underwaterGravity = UnderwaterGravity;
-        components.worldForces.aboveWaterGravity = AboveWaterGravity;
-        components.worldForces.underwaterDrag = UnderwaterDrag;
+        components.worldForces.underwaterGravity = _underwaterGravity;
+        components.worldForces.aboveWaterGravity = _aboveWaterGravity;
+        components.worldForces.underwaterDrag = _underwaterDrag;
 
         components.liveMixin = prefab.EnsureComponent<LiveMixin>();
         components.liveMixin.data = ECCHelpers.CreateNewLiveMixinData();
         components.liveMixin.data.electricalDamageEffect = electricalDamagePrefab;
-        if (UseBloodEffects)
+        if (_useBloodEffects)
         {
             components.liveMixin.data.damageEffect = damageEffectPrefab;
             components.liveMixin.data.deathEffect = deathEffectPrefab;
@@ -367,32 +367,32 @@ public abstract class CreatureAsset : Spawnable
 
         components.creature = prefab.AddComponent<Creature>();
 
-        components.creature.Aggression = new CreatureTrait(0f, TraitsSettings.AggressionDecreaseRate);
-        components.creature.Hunger = new CreatureTrait(0f, -TraitsSettings.HungerIncreaseRate);
-        components.creature.Scared = new CreatureTrait(0f, TraitsSettings.ScaredDecreaseRate);
+        components.creature.Aggression = new CreatureTrait(0f, _traitsSettings.AggressionDecreaseRate);
+        components.creature.Hunger = new CreatureTrait(0f, -_traitsSettings.HungerIncreaseRate);
+        components.creature.Scared = new CreatureTrait(0f, _traitsSettings.ScaredDecreaseRate);
 
         components.creature.liveMixin = components.liveMixin;
         components.creature.traitsAnimator = components.creature.GetComponentInChildren<Animator>();
-        components.creature.sizeDistribution = SizeDistribution;
-        components.creature.eyeFOV = EyeFov;
+        components.creature.sizeDistribution = _sizeDistribution;
+        components.creature.eyeFOV = _eyeFov;
 
         RoarAbility roar = null;
-        if (!string.IsNullOrEmpty(RoarAbilitySettings.AudioClipPrefix))
+        if (!string.IsNullOrEmpty(_roarAbilitySettings.AudioClipPrefix))
         {
             roar = prefab.AddComponent<RoarAbility>();
-            roar.minRoarDistance = RoarAbilitySettings.MinRoarDistance;
-            roar.maxRoarDistance = RoarAbilitySettings.MaxRoarDistance;
-            roar.animationName = RoarAbilitySettings.AnimationName;
-            roar.clipPrefix = RoarAbilitySettings.AudioClipPrefix;
-            roar.createCurrent = RoarAbilitySettings.CreateCurrentOnRoar;
-            roar.currentStrength = RoarAbilitySettings.CurrentStrength;
+            roar.minRoarDistance = _roarAbilitySettings.MinRoarDistance;
+            roar.maxRoarDistance = _roarAbilitySettings.MaxRoarDistance;
+            roar.animationName = _roarAbilitySettings.AnimationName;
+            roar.clipPrefix = _roarAbilitySettings.AudioClipPrefix;
+            roar.createCurrent = _roarAbilitySettings.CreateCurrentOnRoar;
+            roar.currentStrength = _roarAbilitySettings.CurrentStrength;
 
-            if (RoarAbilitySettings.RoarActionPriority > 0f)
+            if (_roarAbilitySettings.RoarActionPriority > 0f)
             {
                 RoarRandomAction roarAction = prefab.AddComponent<RoarRandomAction>();
-                roarAction.roarIntervalMin = RoarAbilitySettings.MinTimeBetweenRoars;
-                roarAction.roarIntervalMax = RoarAbilitySettings.MaxTimeBetweenRoars;
-                roarAction.evaluatePriority = RoarAbilitySettings.RoarActionPriority;
+                roarAction.roarIntervalMin = _roarAbilitySettings.MinTimeBetweenRoars;
+                roarAction.roarIntervalMax = _roarAbilitySettings.MaxTimeBetweenRoars;
+                roarAction.evaluatePriority = _roarAbilitySettings.RoarActionPriority;
             }
         }
 #if SN1
@@ -401,57 +401,57 @@ public abstract class CreatureAsset : Spawnable
 #else
         components.lastTarget = prefab.AddComponent<LastTarget>();
 #endif
-        if (AggressivenessToSmallVehicles.Aggression > 0f)
+        if (_aggressivenessToSmallVehicles.Aggression > 0f)
         {
             AggressiveToPilotingVehicle atpv = prefab.AddComponent<AggressiveToPilotingVehicle>();
-            atpv.aggressionPerSecond = AggressivenessToSmallVehicles.Aggression;
-            atpv.range = AggressivenessToSmallVehicles.MaxRange;
+            atpv.aggressionPerSecond = _aggressivenessToSmallVehicles.Aggression;
+            atpv.range = _aggressivenessToSmallVehicles.MaxRange;
             atpv.creature = components.creature;
             atpv.lastTarget = components.lastTarget;
         }
-        if (AttackSettings.EvaluatePriority > 0f)
+        if (_attackSettings.EvaluatePriority > 0f)
         {
             AttackLastTarget actionAtkLastTarget = prefab.AddComponent<AttackLastTarget>();
-            actionAtkLastTarget.evaluatePriority = AttackSettings.EvaluatePriority;
-            actionAtkLastTarget.swimVelocity = AttackSettings.ChargeVelocity;
+            actionAtkLastTarget.evaluatePriority = _attackSettings.EvaluatePriority;
+            actionAtkLastTarget.swimVelocity = _attackSettings.ChargeVelocity;
             actionAtkLastTarget.aggressionThreshold = 0.02f;
-            actionAtkLastTarget.minAttackDuration = AttackSettings.MinAttackLength;
-            actionAtkLastTarget.maxAttackDuration = AttackSettings.MaxAttackLength;
-            actionAtkLastTarget.pauseInterval = AttackSettings.AttackInterval;
-            actionAtkLastTarget.rememberTargetTime = AttackSettings.RememberTargetTime;
+            actionAtkLastTarget.minAttackDuration = _attackSettings.MinAttackLength;
+            actionAtkLastTarget.maxAttackDuration = _attackSettings.MaxAttackLength;
+            actionAtkLastTarget.pauseInterval = _attackSettings.AttackInterval;
+            actionAtkLastTarget.rememberTargetTime = _attackSettings.RememberTargetTime;
             actionAtkLastTarget.priorityMultiplier = ECCHelpers.Curve_Flat();
             actionAtkLastTarget.lastTarget = components.lastTarget;
         }
         components.swimRandom = prefab.AddComponent<SwimRandom>();
-        components.swimRandom.swimRadius = SwimRandomSettings.SwimRadius;
-        components.swimRandom.swimVelocity = SwimRandomSettings.SwimVelocity;
-        components.swimRandom.swimInterval = SwimRandomSettings.SwimInterval;
-        components.swimRandom.evaluatePriority = SwimRandomSettings.EvaluatePriority;
+        components.swimRandom.swimRadius = _swimRandomSettings.SwimRadius;
+        components.swimRandom.swimVelocity = _swimRandomSettings.SwimVelocity;
+        components.swimRandom.swimInterval = _swimRandomSettings.SwimInterval;
+        components.swimRandom.evaluatePriority = _swimRandomSettings.EvaluatePriority;
         components.swimRandom.priorityMultiplier = ECCHelpers.Curve_Flat();
-        if (AvoidObstaclesSettings.evaluatePriority > 0f)
+        if (_avoidObstaclesSettings.evaluatePriority > 0f)
         {
             AvoidObstacles avoidObstacles = prefab.AddComponent<AvoidObstacles>();
-            avoidObstacles.avoidTerrainOnly = AvoidObstaclesSettings.terrainOnly;
-            avoidObstacles.avoidanceDistance = AvoidObstaclesSettings.avoidDistance;
-            avoidObstacles.scanDistance = AvoidObstaclesSettings.avoidDistance;
+            avoidObstacles.avoidTerrainOnly = _avoidObstaclesSettings.terrainOnly;
+            avoidObstacles.avoidanceDistance = _avoidObstaclesSettings.avoidDistance;
+            avoidObstacles.scanDistance = _avoidObstaclesSettings.avoidDistance;
             avoidObstacles.priorityMultiplier = ECCHelpers.Curve_Flat();
-            avoidObstacles.evaluatePriority = AvoidObstaclesSettings.evaluatePriority;
-            avoidObstacles.swimVelocity = SwimRandomSettings.SwimVelocity;
+            avoidObstacles.evaluatePriority = _avoidObstaclesSettings.evaluatePriority;
+            avoidObstacles.swimVelocity = _swimRandomSettings.SwimVelocity;
         }
 #if SN1
-        if (CanBeInfected)
+        if (_canBeInfected)
         {
             components.infectedMixin = prefab.AddComponent<InfectedMixin>();
             components.infectedMixin.renderers = prefab.GetComponentsInChildren<Renderer>(true);
         }
 #endif
-        if (Pickupable)
+        if (_pickupable)
         {
             components.pickupable = prefab.EnsureComponent<Pickupable>();
-            if (ViewModelSettings.ReferenceHoldingAnimation != TechType.None)
+            if (_viewModelSettings.ReferenceHoldingAnimation != TechType.None)
             {
                 HeldFish heldFish = prefab.EnsureComponent<HeldFish>();
-                heldFish.animationName = ViewModelSettings.ReferenceHoldingAnimation.ToString().ToLower();
+                heldFish.animationName = _viewModelSettings.ReferenceHoldingAnimation.ToString().ToLower();
                 heldFish.mainCollider = prefab.GetComponent<Collider>();
                 heldFish.pickupable = components.pickupable;
             }
@@ -459,13 +459,13 @@ public abstract class CreatureAsset : Spawnable
             {
                 ECCLog.AddMessage("Creature {0} is Pickupable but has no applied ViewModelSettings. This is necessary to be held and placed in an aquarium.", TechType);
             }
-            if (!string.IsNullOrEmpty(ViewModelSettings.ViewModelName))
+            if (!string.IsNullOrEmpty(_viewModelSettings.ViewModelName))
             {
                 var fpsModel = prefab.EnsureComponent<FPModel>();
-                fpsModel.propModel = prefab.SearchChild(ViewModelSettings.WorldModelName);
+                fpsModel.propModel = prefab.SearchChild(_viewModelSettings.WorldModelName);
                 if (fpsModel.propModel == null)
                 {
-                    ECCLog.AddMessage("Error finding World model. No child of name {0} exists in the hierarchy of item {1}.", ViewModelSettings.WorldModelName, TechType);
+                    ECCLog.AddMessage("Error finding World model. No child of name {0} exists in the hierarchy of item {1}.", _viewModelSettings.WorldModelName, TechType);
                 }
                 else
                 {
@@ -474,16 +474,16 @@ public abstract class CreatureAsset : Spawnable
                     {
                         AnimateByVelocity animateByVelocity = fpsModel.propModel.AddComponent<AnimateByVelocity>();
                         animateByVelocity.animator = components.creature.GetAnimator();
-                        animateByVelocity.animationMoveMaxSpeed = MaxVelocityForSpeedParameter;
-                        animateByVelocity.useStrafeAnimation = AnimateByVelocitySettings.UseStrafeAnimation;
-                        animateByVelocity.animationMaxPitch = AnimateByVelocitySettings.AnimationMaxPitch;
-                        animateByVelocity.animationMaxTilt = AnimateByVelocitySettings.AnimationMaxTilt;
-                        animateByVelocity.dampTime = AnimateByVelocitySettings.DampTime;
+                        animateByVelocity.animationMoveMaxSpeed = _maxVelocityForSpeedParameter;
+                        animateByVelocity.useStrafeAnimation = _animateByVelocitySettings.UseStrafeAnimation;
+                        animateByVelocity.animationMaxPitch = _animateByVelocitySettings.AnimationMaxPitch;
+                        animateByVelocity.animationMaxTilt = _animateByVelocitySettings.AnimationMaxTilt;
+                        animateByVelocity.dampTime = _animateByVelocitySettings.DampTime;
                         animateByVelocity.levelOfDetail = components.behaviourLOD;
                         animateByVelocity.rootGameObject = fpsModel.propModel;
                     }
                 }
-                fpsModel.viewModel = prefab.SearchChild(ViewModelSettings.ViewModelName);
+                fpsModel.viewModel = prefab.SearchChild(_viewModelSettings.ViewModelName);
                 if (fpsModel.viewModel == null)
                 {
                     ECCLog.AddMessage("Error finding View model. No child of name {0} exists in the hierarchy of item {1}.", ViewModelSettings.ViewModelName, TechType);
@@ -491,29 +491,29 @@ public abstract class CreatureAsset : Spawnable
             }
         }
         Eatable eatable = null;
-        if (EatableSettings.CanBeEaten)
+        if (_eatableSettings.CanBeEaten)
         {
-            eatable = EatableSettings.MakeItemEatable(prefab);
+            eatable = _eatableSettings.MakeItemEatable(prefab);
         }
-        if (SwimInSchoolSettings.EvaluatePriority > 0f)
+        if (_swimInSchoolSettings.EvaluatePriority > 0f)
         {
             SwimInSchool swimInSchool = prefab.AddComponent<SwimInSchool>();
             swimInSchool.priorityMultiplier = ECCHelpers.Curve_Flat();
-            swimInSchool.evaluatePriority = SwimInSchoolSettings.EvaluatePriority;
-            swimInSchool.swimInterval = SwimInSchoolSettings.SwimInterval;
-            swimInSchool.swimVelocity = SwimInSchoolSettings.SwimVelocity;
-            swimInSchool.schoolSize = SwimInSchoolSettings.SchoolSize;
-            swimInSchool.percentFindLeaderRespond = SwimInSchoolSettings.FindLeaderChance;
-            swimInSchool.chanceLoseLeader = SwimInSchoolSettings.LoseLeaderChance;
-            swimInSchool.kBreakDistance = SwimInSchoolSettings.BreakDistance;
+            swimInSchool.evaluatePriority = _swimInSchoolSettings.EvaluatePriority;
+            swimInSchool.swimInterval = _swimInSchoolSettings.SwimInterval;
+            swimInSchool.swimVelocity = _swimInSchoolSettings.SwimVelocity;
+            swimInSchool.schoolSize = _swimInSchoolSettings.SchoolSize;
+            swimInSchool.percentFindLeaderRespond = _swimInSchoolSettings.FindLeaderChance;
+            swimInSchool.chanceLoseLeader = _swimInSchoolSettings.LoseLeaderChance;
+            swimInSchool.kBreakDistance = _swimInSchoolSettings.BreakDistance;
         }
         components.animateByVelocity = prefab.AddComponent<AnimateByVelocity>();
         components.animateByVelocity.animator = components.creature.GetAnimator();
-        components.animateByVelocity.animationMoveMaxSpeed = MaxVelocityForSpeedParameter;
-        components.animateByVelocity.useStrafeAnimation = AnimateByVelocitySettings.UseStrafeAnimation;
-        components.animateByVelocity.animationMaxPitch = AnimateByVelocitySettings.AnimationMaxPitch;
-        components.animateByVelocity.animationMaxTilt = AnimateByVelocitySettings.AnimationMaxTilt;
-        components.animateByVelocity.dampTime = AnimateByVelocitySettings.DampTime;
+        components.animateByVelocity.animationMoveMaxSpeed = _maxVelocityForSpeedParameter;
+        components.animateByVelocity.useStrafeAnimation = _animateByVelocitySettings.UseStrafeAnimation;
+        components.animateByVelocity.animationMaxPitch = _animateByVelocitySettings.AnimationMaxPitch;
+        components.animateByVelocity.animationMaxTilt = _animateByVelocitySettings.AnimationMaxTilt;
+        components.animateByVelocity.dampTime = _animateByVelocitySettings.DampTime;
         components.animateByVelocity.levelOfDetail = components.behaviourLOD;
         components.animateByVelocity.rootGameObject = prefab;
 
@@ -521,8 +521,8 @@ public abstract class CreatureAsset : Spawnable
         components.creatureDeath.useRigidbody = components.rigidbody;
         components.creatureDeath.liveMixin = components.liveMixin;
         components.creatureDeath.eatable = eatable;
-        components.creatureDeath.respawnInterval = RespawnSettings.RespawnDelay;
-        components.creatureDeath.respawn = RespawnSettings.CanRespawn;
+        components.creatureDeath.respawnInterval = _respawnSettings.RespawnDelay;
+        components.creatureDeath.respawn = _respawnSettings.CanRespawn;
 #if SN1
         PrefabDatabase.TryGetPrefab("d8c7c300-cf01-448e-9bea-829b67ddfbbc", out var respawnerPrefab);
         components.creatureDeath.respawnerPrefab = respawnerPrefab;
@@ -532,15 +532,15 @@ public abstract class CreatureAsset : Spawnable
         deadAnimationOnEnable.animator = components.creature.GetAnimator();
         deadAnimationOnEnable.liveMixin = components.liveMixin;
         deadAnimationOnEnable.enabled = true;
-        if (StayAtLeashSettings.EvaluatePriority > 0f)
+        if (_stayAtLeashSettings.EvaluatePriority > 0f)
         {
             var stayAtLeash = prefab.AddComponent<StayAtLeashPosition>();
-            stayAtLeash.evaluatePriority = StayAtLeashSettings.EvaluatePriority;
+            stayAtLeash.evaluatePriority = _stayAtLeashSettings.EvaluatePriority;
             stayAtLeash.priorityMultiplier = ECCHelpers.Curve_Flat(1f);
-            stayAtLeash.swimVelocity = SwimRandomSettings.SwimVelocity;
-            stayAtLeash.leashDistance = StayAtLeashSettings.MaxDistance;
+            stayAtLeash.swimVelocity = _swimRandomSettings.SwimVelocity;
+            stayAtLeash.leashDistance = _stayAtLeashSettings.MaxDistance;
         }
-        if (ScannerRoomScannable)
+        if (_scannerRoomScannable)
         {
             ECCHelpers.MakeObjectScannerRoomScannable(prefab, true);
         }
@@ -1069,13 +1069,14 @@ public abstract class CreatureAsset : Spawnable
     private SwimRandomData _swimRandomSettings;
     private EcoTargetType _ecoTargetType;
     private PhysicMaterial _physicMaterial;
-    private AnimateByVelocityData _animateByVelocity;
+    private AnimateByVelocityData _animateByVelocitySettings;
     private float _underwaterDrag;
     private CreatureTraitsData _traitsSettings;
     private bool _useBloodEffects;
     private UBERMaterialProperties _materialSettings;
     private StayAtLeashData _stayAtLeashSettings;
-    private HeldFishData _heldFishData;
+    private HeldFishData _viewModelSettings;
+    private RespawnData _respawnSettings;
     private EatableData _eatableSettings;
     private float _maxVelocityForSpeedParameter;
     private float _turnSpeedHorizontal;
@@ -1107,13 +1108,14 @@ public abstract class CreatureAsset : Spawnable
         _swimRandomSettings = SwimRandomSettings;
         _ecoTargetType = EcoTargetType;
         _physicMaterial = PhysicMaterial;
-        _animateByVelocity = AnimateByVelocitySettings;
+        _animateByVelocitySettings = AnimateByVelocitySettings;
         _underwaterDrag = UnderwaterDrag;
         _traitsSettings = TraitsSettings;
         _useBloodEffects = UseBloodEffects;
         _materialSettings = MaterialSettings;
         _stayAtLeashSettings = StayAtLeashSettings;
-        _heldFishData = ViewModelSettings;
+        _viewModelSettings = ViewModelSettings;
+        _respawnSettings = RespawnSettings;
         _eatableSettings = EatableSettings;
         _maxVelocityForSpeedParameter = MaxVelocityForSpeedParameter;
         _turnSpeedHorizontal = TurnSpeedHorizontal;
