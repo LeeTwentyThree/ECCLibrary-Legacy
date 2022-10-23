@@ -172,6 +172,7 @@ namespace ECCLibrary
                 Rigidbody rb = prefab.EnsureComponent<Rigidbody>();
                 rb.mass = 10f;
                 rb.isKinematic = true;
+                rb.useGravity = false;
 
                 WorldForces worldForces = prefab.EnsureComponent<WorldForces>();
                 worldForces.useRigidbody = rb;
