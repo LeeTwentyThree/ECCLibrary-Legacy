@@ -78,6 +78,10 @@ namespace ECCLibrary
                 {
                     ScannableSettings.AttemptPatch(this, GetEncyTitle, GetEncyDesc);
                 }
+                if (!WaterParkCreature.creatureEggs.ContainsKey(hatchingCreature))
+                {
+                    WaterParkCreature.creatureEggs.Add(hatchingCreature, TechType);
+                }
                 ECCHelpers.PatchItemSounds(TechType, ItemSoundsType.Egg);
             };
         }
