@@ -281,9 +281,6 @@ public abstract class CreatureAsset : Spawnable
 
         components.largeWorldEntity = prefab.EnsureComponent<LargeWorldEntity>();
         components.largeWorldEntity.cellLevel = _cellLevel;
-#if BZ
-        components.largeWorldEntity.fadeRenderers = new List<Renderer>(prefab.GetComponentsInChildren<Renderer>());
-#endif
 
         components.entityTag = prefab.EnsureComponent<EntityTag>();
         components.entityTag.slotType = EntitySlot.Type.Creature;
