@@ -1123,7 +1123,9 @@ public abstract class CreatureAsset : Spawnable
         _pickupable = Pickupable;
         _sizeDistribution = SizeDistribution;
         _scannerRoomScannable = ScannerRoomScannable;
+#if SN1
         _canBeInfected = CanBeInfected;
+#endif
         _roarAbilitySettings = RoarAbilitySettings;
         _aggressivenessToSmallVehicles = AggressivenessToSmallVehicles;
         _attackSettings = AttackSettings;
@@ -1139,9 +1141,9 @@ public abstract class CreatureAsset : Spawnable
         prefabPropertiesCached = true;
     }
 
-    #endregion
+#endregion
 
-    #region Unused
+#region Unused
 
     /// <summary>
     /// The creature prefab used for reference. Easier than declaring every stat manually.
@@ -1184,9 +1186,9 @@ public abstract class CreatureAsset : Spawnable
         }
     }
 
-    #endregion
+#endregion
 
-    #region Ency Related Overridables
+#region Ency Related Overridables
     /// <summary>
     /// The Title of the encyclopedia entry.
     /// </summary>
@@ -1219,9 +1221,9 @@ public abstract class CreatureAsset : Spawnable
             return new ScannableItemData();
         }
     }
-    #endregion
+#endregion
 
-    #region Structs
+#region Structs
     /// <summary>
     /// First person view model settings.
     /// </summary>
@@ -1551,5 +1553,5 @@ public abstract class CreatureAsset : Spawnable
             ScaredDecreaseRate = scaredDecreaseRate;
         }
     }
-    #endregion
+#endregion
 }
