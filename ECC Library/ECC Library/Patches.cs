@@ -31,6 +31,7 @@ namespace ECCLibrary
             }
         }
 
+#if SN1
         [HarmonyPatch(typeof(TrailManager), nameof(TrailManager.UpdateTrails))]
         public static class TrailManagerUpdateTrailsPatch
         {
@@ -79,5 +80,6 @@ namespace ECCLibrary
                 return false;
             }
         }
+#endif
     }
 }
