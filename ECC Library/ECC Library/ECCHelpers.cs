@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using System.Reflection;
-using SMLHelper.V2.Assets;
 using SMLHelper.V2.Handlers;
 using System.IO;
-using FMOD;
 using ECCLibrary.Internal;
-using System.Globalization;
+using System.Reflection;
 
 namespace ECCLibrary
 {

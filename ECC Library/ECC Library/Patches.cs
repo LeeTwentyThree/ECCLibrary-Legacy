@@ -14,7 +14,7 @@ namespace ECCLibrary
 {
     internal class Patches
     {
-        [HarmonyPatch(typeof(LargeWorldStreamer), "Initialize")]
+        [HarmonyPatch(typeof(LargeWorldStreamer), nameof(LargeWorldStreamer.Initialize))]
         public static class LWSInitPatch
         {
             [HarmonyPostfix()]

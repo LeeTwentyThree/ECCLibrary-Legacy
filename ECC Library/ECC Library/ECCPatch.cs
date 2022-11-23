@@ -1,5 +1,4 @@
 ﻿using QModManager.API.ModLoading;
-using UnityEngine;
 using SMLHelper.V2.Handlers;
 using HarmonyLib;
 using System.Reflection;
