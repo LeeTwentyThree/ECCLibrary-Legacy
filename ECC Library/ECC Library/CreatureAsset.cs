@@ -2,6 +2,7 @@
 using SMLHelper.V2.Utility;
 using SMLHelper.V2.Handlers;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using HarmonyLib;
 using ECCLibrary.Internal;
@@ -280,6 +281,9 @@ public abstract class CreatureAsset : Spawnable
 
         components.largeWorldEntity = prefab.EnsureComponent<LargeWorldEntity>();
         components.largeWorldEntity.cellLevel = _cellLevel;
+#if BZ
+        components.largeWorldEntity.fadeRenderers = new List<Renderer>(prefab.GetComponentsInChildren<Renderer>());
+#endif
 
         components.entityTag = prefab.EnsureComponent<EntityTag>();
         components.entityTag.slotType = EntitySlot.Type.Creature;
@@ -366,9 +370,9 @@ public abstract class CreatureAsset : Spawnable
 
         components.creature = prefab.AddComponent<Creature>();
 
-        components.creature.Aggression = new CreatureTrait(0f, _traitsSettings.AggressionDecreaseRate);
-        components.creature.Hunger = new CreatureTrait(0f, -_traitsSettings.HungerIncreaseRate);
-        components.creature.Scared = new CreatureTrait(0f, _traitsSettings.ScaredDecreaseRate);
+        components.creature.Aggression = new AggressionCreatureTrait() { value = 0, falloff = _traitsSettings.AggressionDecreaseRate };
+        components.creature.Hunger = new CreatureTrait() { value = 0, falloff = -_traitsSettings.HungerIncreaseRate };
+        components.creature.Scared = new CreatureTrait() { value = 0, falloff = _traitsSettings.ScaredDecreaseRate };
 
         components.creature.liveMixin = components.liveMixin;
         components.creature.traitsAnimator = components.creature.GetComponentInChildren<Animator>();
