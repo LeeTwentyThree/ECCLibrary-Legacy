@@ -2,7 +2,7 @@
   "Id": "ECCLibrary",
   "DisplayName": "Eel's Creature Creator",
   "Author": "Lee23",
-  "Version": "1.2.0",
+  "Version": "1.2.1",
   "Requires": [ ],
   "Enable": true,
 "VersionDependencies": {
