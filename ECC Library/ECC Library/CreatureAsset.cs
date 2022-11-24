@@ -317,6 +317,8 @@ public abstract class CreatureAsset : Spawnable
         components.locomotion.useRigidbody = components.rigidbody;
         components.locomotion.forwardRotationSpeed = _turnSpeedHorizontal;
         components.locomotion.upRotationSpeed = _turnSpeedVertical;
+        components.locomotion.maxVelocity = _locomotionSettings.MaxVelocity;
+        components.locomotion.maxAcceleration = _locomotionSettings.MaxAcceleration;
 #if BZ
         components.locomotion.levelOfDetail = components.behaviourLOD;
 #endif
@@ -682,6 +684,16 @@ public abstract class CreatureAsset : Spawnable
 #endregion
 
 #region Overrideable
+    /// <summary>
+    /// Settings related to the <see cref="Locomotion"/> component which determines how a creature moves.
+    /// </summary>
+    public virtual LocomotionData LocomotionSettings
+    {
+        get
+        {
+            return new LocomotionData(10, 10);
+        }
+    }
     /// <summary>
     /// Instance of the PhysicMaterial class to be used for the creature's colliders. By default uses <see cref="ECCHelpers.FrictionlessPhysicMaterial"/>
     /// </summary>
@@ -1103,6 +1115,8 @@ public abstract class CreatureAsset : Spawnable
     private float _eyeFov;
     private AvoidObstaclesData _avoidObstaclesSettings;
     private SwimInSchoolData _swimInSchoolSettings;
+    private LocomotionData _locomotionSettings;
+
     private LiveMixinData _liveMixinData;
 
     #endregion
@@ -1145,6 +1159,7 @@ public abstract class CreatureAsset : Spawnable
         _eyeFov = EyeFov;
         _avoidObstaclesSettings = AvoidObstaclesSettings;
         _swimInSchoolSettings = SwimInSchoolSettings;
+        _locomotionSettings = LocomotionSettings;
 
         _liveMixinData = ECCHelpers.CreateNewLiveMixinData();
 
@@ -1231,9 +1246,28 @@ public abstract class CreatureAsset : Spawnable
             return new ScannableItemData();
         }
     }
-#endregion
+    #endregion
 
-#region Structs
+    #region Structs
+    /// <summary>
+    /// Settings related to the <see cref="Locomotion"/> component. Also see the <see cref="TurnSpeedHorizontal"/> and <see cref="TurnSpeedVertical"/> properties.
+    /// </summary>
+    public struct LocomotionData
+    {
+        public float MaxVelocity;
+        public float MaxAcceleration;
+
+        /// <summary>
+        /// Settings related to the <see cref="Locomotion"/> component.
+        /// </summary>
+        /// <param name="maxVelocity">Default value is 10f.</param>
+        /// <param name="maxAcceleration">Default value is 10f.</param>
+        public LocomotionData(float maxVelocity, float maxAcceleration = 10f)
+        {
+            MaxVelocity = maxVelocity;
+            MaxAcceleration = maxAcceleration;
+        }
+    }
     /// <summary>
     /// First person view model settings.
     /// </summary>
