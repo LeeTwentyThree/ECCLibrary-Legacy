@@ -346,15 +346,15 @@ public abstract class CreatureAsset : Spawnable
         components.worldForces.underwaterDrag = _underwaterDrag;
 
         components.liveMixin = prefab.EnsureComponent<LiveMixin>();
-        components.liveMixin.data = ECCHelpers.CreateNewLiveMixinData();
-        components.liveMixin.data.electricalDamageEffect = electricalDamagePrefab;
+        components.liveMixin.data = _liveMixinData;
+        _liveMixinData.electricalDamageEffect = electricalDamagePrefab;
         if (_useBloodEffects)
         {
-            components.liveMixin.data.damageEffect = damageEffectPrefab;
-            components.liveMixin.data.deathEffect = deathEffectPrefab;
+            _liveMixinData.damageEffect = damageEffectPrefab;
+            _liveMixinData.deathEffect = deathEffectPrefab;
         }
-        SetLiveMixinData(ref components.liveMixin.data);
-        var maxHealth = components.liveMixin.data.maxHealth;
+        SetLiveMixinData(ref _liveMixinData);
+        var maxHealth = _liveMixinData.maxHealth;
         if (maxHealth <= 0f)
         {
             ECCLog.AddMessage("Warning: Creatures should not have a max health of zero or below.");
@@ -1103,13 +1103,14 @@ public abstract class CreatureAsset : Spawnable
     private float _eyeFov;
     private AvoidObstaclesData _avoidObstaclesSettings;
     private SwimInSchoolData _swimInSchoolSettings;
+    private LiveMixinData _liveMixinData;
 
-#endregion
+    #endregion
 
-#region Caching Logic
+    #region Caching Logic
 
     private bool prefabPropertiesCached = false;
-    private void CachePrefabProperties() // caches properties that are called multiple times during prefab initialization
+    private void CachePrefabProperties() // caches properties that are called multiple times during prefab initialization. called before the prefab is created
     {
         _cellLevel = CellLevel;
         _swimRandomSettings = SwimRandomSettings;
@@ -1144,6 +1145,8 @@ public abstract class CreatureAsset : Spawnable
         _eyeFov = EyeFov;
         _avoidObstaclesSettings = AvoidObstaclesSettings;
         _swimInSchoolSettings = SwimInSchoolSettings;
+
+        _liveMixinData = ECCHelpers.CreateNewLiveMixinData();
 
         prefabPropertiesCached = true;
     }
