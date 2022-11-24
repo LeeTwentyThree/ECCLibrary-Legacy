@@ -305,7 +305,7 @@ public abstract class CreatureAsset : Spawnable
         }
 
         components.behaviourLOD = prefab.EnsureComponent<BehaviourLOD>();
-        components.behaviourLOD.veryCloseThreshold = _behaviourLODSettings.Close;
+        components.behaviourLOD.veryCloseThreshold = _behaviourLODSettings.VeryClose;
         components.behaviourLOD.closeThreshold = _behaviourLODSettings.Close;
         components.behaviourLOD.farThreshold = _behaviourLODSettings.Far;
 
