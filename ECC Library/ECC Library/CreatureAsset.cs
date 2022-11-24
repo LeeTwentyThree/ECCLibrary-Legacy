@@ -319,6 +319,8 @@ public abstract class CreatureAsset : Spawnable
         components.locomotion.upRotationSpeed = _turnSpeedVertical;
         components.locomotion.maxVelocity = _locomotionSettings.MaxVelocity;
         components.locomotion.maxAcceleration = _locomotionSettings.MaxAcceleration;
+        components.locomotion.driftFactor = _locomotionSettings.DriftFactor;
+        components.locomotion.freezeHorizontalRotation = _locomotionSettings.FreezeHorizontalRotation;
 #if BZ
         components.locomotion.levelOfDetail = components.behaviourLOD;
 #endif
@@ -691,7 +693,7 @@ public abstract class CreatureAsset : Spawnable
     {
         get
         {
-            return new LocomotionData(10, 10);
+            return new LocomotionData(10, 10, 0.5f, false);
         }
     }
     /// <summary>
@@ -1256,16 +1258,22 @@ public abstract class CreatureAsset : Spawnable
     {
         public float MaxVelocity;
         public float MaxAcceleration;
+        public float DriftFactor;
+        public bool FreezeHorizontalRotation;
 
         /// <summary>
         /// Settings related to the <see cref="Locomotion"/> component.
         /// </summary>
         /// <param name="maxVelocity">Default value is 10f.</param>
         /// <param name="maxAcceleration">Default value is 10f.</param>
-        public LocomotionData(float maxVelocity, float maxAcceleration = 10f)
+        /// <param name="driftFactor">Default value is 0.5f. Values should be in the range [0f, 1f].</param>
+        /// <param name="freezeHorizontalRotation">Default value is false. This is used by Reefbacks and Rabbit Rays so that their body always remains perpendicular to the seabed.</param>
+        public LocomotionData(float maxVelocity, float maxAcceleration = 10f, float driftFactor = 0.5f, bool freezeHorizontalRotation = false)
         {
             MaxVelocity = maxVelocity;
             MaxAcceleration = maxAcceleration;
+            DriftFactor = driftFactor;
+            FreezeHorizontalRotation = freezeHorizontalRotation;
         }
     }
     /// <summary>
