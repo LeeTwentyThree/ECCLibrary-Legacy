@@ -367,9 +367,16 @@ public abstract class CreatureAsset : Spawnable
 
         components.creature = prefab.AddComponent<Creature>();
 
+#if SN1
+        components.creature.Aggression = new CreatureTrait(0f, _traitsSettings.AggressionDecreaseRate);
+        components.creature.Hunger = new CreatureTrait(0f, -_traitsSettings.HungerIncreaseRate);
+        components.creature.Scared = new CreatureTrait(0f, _traitsSettings.ScaredDecreaseRate);
+#endif
+#if BZ
         components.creature.Aggression = new AggressionCreatureTrait() { value = 0, falloff = _traitsSettings.AggressionDecreaseRate };
         components.creature.Hunger = new CreatureTrait() { value = 0, falloff = -_traitsSettings.HungerIncreaseRate };
         components.creature.Scared = new CreatureTrait() { value = 0, falloff = _traitsSettings.ScaredDecreaseRate };
+#endif
 
         components.creature.liveMixin = components.liveMixin;
         components.creature.traitsAnimator = components.creature.GetComponentInChildren<Animator>();
@@ -629,7 +636,7 @@ public abstract class CreatureAsset : Spawnable
         return trail;
     }
 
-    #region Abstracts
+#region Abstracts
 
     /// <summary>
     /// Add CreatureActions and things of that like here.
@@ -672,9 +679,9 @@ public abstract class CreatureAsset : Spawnable
     /// <param name="liveMixinData"></param>
     public abstract void SetLiveMixinData(ref LiveMixinData liveMixinData);
 
-    #endregion
+#endregion
 
-    #region Overrideable
+#region Overrideable
     /// <summary>
     /// Instance of the PhysicMaterial class to be used for the creature's colliders. By default uses <see cref="ECCHelpers.FrictionlessPhysicMaterial"/>
     /// </summary>
@@ -1061,9 +1068,9 @@ public abstract class CreatureAsset : Spawnable
         }
     }
 
-    #endregion
+#endregion
 
-    #region Cached values to prevent creating unnecessary references for each spawned creature
+#region Cached values to prevent creating unnecessary references for each spawned creature
 
     private LargeWorldEntity.CellLevel _cellLevel;
     private SwimRandomData _swimRandomSettings;
@@ -1097,9 +1104,9 @@ public abstract class CreatureAsset : Spawnable
     private AvoidObstaclesData _avoidObstaclesSettings;
     private SwimInSchoolData _swimInSchoolSettings;
 
-    #endregion
+#endregion
 
-    #region Caching Logic
+#region Caching Logic
 
     private bool prefabPropertiesCached = false;
     private void CachePrefabProperties() // caches properties that are called multiple times during prefab initialization
