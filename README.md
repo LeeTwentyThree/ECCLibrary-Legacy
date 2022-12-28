@@ -5,4 +5,6 @@ Creature and egg modding library for Subnautica.
 
 # This mod has been archived for the legacy branch.
 
-# [When it is ready, the new version should be available here](https://github.com/LeeTwentyThree/Lee23-SubnauticaMods)
+# When it is ready, the new version should be available [here](https://github.com/LeeTwentyThree/SubnauticaMods/blob/main/README.md)
+
+# More LEGACY mods can be found [here](https://github.com/LeeTwentyThree/Lee23-SubnauticaMods)
